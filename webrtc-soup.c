@@ -13,15 +13,12 @@
 SoupWebsocketConnection *receiver;
 SoupWebsocketConnection *transceiver;
 
-void soup_websocket_closed(SoupWebsocketConnection *connection,
-                           gpointer user_data) {
+void soup_websocket_closed(SoupWebsocketConnection *connection, gpointer user_data) {
   GHashTable *entry_table = (GHashTable *)user_data;
   g_hash_table_remove(entry_table, connection);
 }
 
-void soup_websocket_message(G_GNUC_UNUSED SoupWebsocketConnection *connection,
-                            SoupWebsocketDataType data_type, GBytes *message,
-                            gpointer user_data) {
+void soup_websocket_message(G_GNUC_UNUSED SoupWebsocketConnection *connection, SoupWebsocketDataType data_type, GBytes *message, gpointer user_data) {
   if (data_type == SOUP_WEBSOCKET_DATA_TEXT) {
     gsize size;
     const gchar *data = g_bytes_get_data(message, &size);
@@ -42,11 +39,7 @@ void soup_websocket_message(G_GNUC_UNUSED SoupWebsocketConnection *connection,
   }
 }
 
-void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server,
-                            SoupWebsocketConnection *connection,
-                            G_GNUC_UNUSED const char *path,
-                            G_GNUC_UNUSED SoupClientContext *client_context,
-                            gpointer user_data) {
+void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server, SoupWebsocketConnection *connection, G_GNUC_UNUSED const char *path, G_GNUC_UNUSED SoupClientContext *client_context, gpointer user_data) {
   GHashTable *entry_table = (GHashTable *)user_data;
   g_object_ref(G_OBJECT(connection));
   const char *protocol = soup_websocket_connection_get_protocol(connection);
@@ -57,10 +50,8 @@ void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server,
       transceiver = connection;
     }
   }
-  g_signal_connect(G_OBJECT(connection), "closed",
-                   G_CALLBACK(soup_websocket_closed), (gpointer)entry_table);
-  g_signal_connect(G_OBJECT(connection), "message",
-                   G_CALLBACK(soup_websocket_message), NULL);
+  g_signal_connect(G_OBJECT(connection), "closed", G_CALLBACK(soup_websocket_closed), (gpointer)entry_table);
+  g_signal_connect(G_OBJECT(connection), "message", G_CALLBACK(soup_websocket_message), NULL);
   g_hash_table_replace(entry_table, connection, connection);
   return;
 }
@@ -76,11 +67,7 @@ gchar *read_file(const gchar *path) {
   return content;
 }
 
-void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server,
-                       SoupMessage *message, const char *path,
-                       G_GNUC_UNUSED GHashTable *query,
-                       G_GNUC_UNUSED SoupClientContext *client_context,
-                       G_GNUC_UNUSED gpointer user_data) {
+void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server, SoupMessage *message, const char *path, G_GNUC_UNUSED GHashTable *query, G_GNUC_UNUSED SoupClientContext *client_context, G_GNUC_UNUSED gpointer user_data) {
   if (g_strcmp0(path, "/") == 0) {
     path = "/index.html";
   }
@@ -98,8 +85,7 @@ void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server,
     return;
   }
 
-  SoupBuffer *soup_buffer =
-      soup_buffer_new(SOUP_MEMORY_TAKE, file_content, file_size);
+  SoupBuffer *soup_buffer = soup_buffer_new(SOUP_MEMORY_TAKE, file_content, file_size);
   soup_message_body_append_buffer(message->response_body, soup_buffer);
   soup_buffer_free(soup_buffer);
 
@@ -112,8 +98,7 @@ void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server,
     content_type = "image/x-icon";
   }
 
-  soup_message_headers_set_content_type(message->response_headers, content_type,
-                                        NULL);
+  soup_message_headers_set_content_type(message->response_headers, content_type, NULL);
   soup_message_set_status(message, SOUP_STATUS_OK);
   g_free(file_path);
 }
@@ -140,8 +125,7 @@ gboolean exit_sighandler(gpointer user_data) {
 int main(int argc, char *argv[]) {
   setlocale(LC_ALL, "");
 
-  GHashTable *entry_table =
-      g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, destroy_entry);
+  GHashTable *entry_table = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, destroy_entry);
   GMainLoop *mainloop = g_main_loop_new(NULL, FALSE);
   g_assert_nonnull(mainloop);
 
@@ -150,21 +134,14 @@ int main(int argc, char *argv[]) {
   g_unix_signal_add(SIGTERM, exit_sighandler, mainloop);
 #endif
 
-  SoupServer *soup_server =
-      soup_server_new(SOUP_SERVER_SERVER_HEADER, "webrtc-soup-server", NULL);
+  SoupServer *soup_server = soup_server_new(SOUP_SERVER_SERVER_HEADER, "webrtc-soup-server", NULL);
   soup_server_add_handler(soup_server, "/", soup_http_handler, NULL, NULL);
   char *protocols[] = {"receiver", "transceiver", NULL};
-  soup_server_add_websocket_handler(soup_server, "/ws", NULL, protocols,
-                                    soup_websocket_handler,
-                                    (gpointer)entry_table, NULL);
-  soup_server_listen_all(soup_server, SOUP_HTTP_PORT,
-                         (SoupServerListenOptions)0, NULL);
+  soup_server_add_websocket_handler(soup_server, "/ws", NULL, protocols, soup_websocket_handler, (gpointer)entry_table, NULL);
+  soup_server_listen_all(soup_server, SOUP_HTTP_PORT, (SoupServerListenOptions)0, NULL);
 
-  g_printf("WebRTC receiver page link: http://127.0.0.1:%d/receiver.html\n",
-           (gint)SOUP_HTTP_PORT);
-  g_printf(
-      "WebRTC transceiver page link: http://127.0.0.1:%d/transceiver.html\n",
-      (gint)SOUP_HTTP_PORT);
+  g_printf("WebRTC receiver page link: http://127.0.0.1:%d/receiver.html\n", (gint)SOUP_HTTP_PORT);
+  g_printf("WebRTC transceiver page link: http://127.0.0.1:%d/transceiver.html\n", (gint)SOUP_HTTP_PORT);
   g_main_loop_run(mainloop);
 
   g_object_unref(G_OBJECT(soup_server));
