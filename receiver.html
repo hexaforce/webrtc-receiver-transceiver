@@ -23,8 +23,10 @@
           }
           const msg = JSON.parse(data)
           if (msg.type) {
+            console.log('===== RemoteDescription:', msg.sdp)
             await conn.setRemoteDescription(msg)
             const answer = await conn.createAnswer()
+            console.log('===== LocalDescription:', answer.sdp)
             await conn.setLocalDescription(answer)
             const [audioTransceiver, videoTransceiver] = conn.getTransceivers()
             if (videoTransceiver) {
@@ -55,7 +57,6 @@
       <div class="compass">
         <div class="compass-scale"><span>W</span><span>NW</span><span>N</span><span>NE</span><span>E</span><span>SE</span><span>S</span><span>SW</span><span>W</span></div>
         <div class="indicator">▲</div>
-        <!-- 現在の方向マーカー -->
       </div>
       <div class="hud">
         <div class="crosshair"></div>
