@@ -39,7 +39,7 @@ void soup_websocket_message(G_GNUC_UNUSED SoupWebsocketConnection *connection, S
   }
 }
 
-void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server, SoupWebsocketConnection *connection, G_GNUC_UNUSED const char *path, G_GNUC_UNUSED SoupClientContext *client_context, gpointer user_data) {
+void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server, SoupWebsocketConnection *connection, const char *path, SoupClientContext *client_context, gpointer user_data) {
   GHashTable *entry_table = (GHashTable *)user_data;
   g_object_ref(G_OBJECT(connection));
   const char *protocol = soup_websocket_connection_get_protocol(connection);
@@ -67,7 +67,7 @@ gchar *read_file(const gchar *path) {
   return content;
 }
 
-void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server, SoupMessage *message, const char *path, G_GNUC_UNUSED GHashTable *query, G_GNUC_UNUSED SoupClientContext *client_context, G_GNUC_UNUSED gpointer user_data) {
+void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server, SoupMessage *message, const char *path, GHashTable *query, SoupClientContext *client_context, gpointer user_data) {
   if (g_strcmp0(path, "/") == 0) {
     path = "/index.html";
   }
