@@ -20,7 +20,9 @@ function _i(Scrubber, numbers) {
   return Scrubber(numbers)
 }
 
-const numbers = Array.from({ length: 256 }, (_, i) => i)
+function _numbers() {
+  return Array.from({ length: 256 }, (_, i) => i)
+}
 
 function _5(md, i) {
   return md`The current value of *i* is ${i}.`
@@ -46,7 +48,7 @@ The _autoplay_ option, which defaults to true, specifies whether the animation p
   `
 }
 
-function _9(Scrubber) {
+function _9(Scrubber, numbers) {
   return Scrubber(numbers, { autoplay: false })
 }
 
@@ -56,7 +58,7 @@ The _loop_ option, which defaults to true, specifies whether the animation shoul
   `
 }
 
-function _11(Scrubber) {
+function _11(Scrubber, numbers) {
   return Scrubber(numbers, { loop: false })
 }
 
@@ -66,7 +68,7 @@ The _alternate_ option, which defaults to false, specifies whether the animation
   `
 }
 
-function _13(Scrubber) {
+function _13(Scrubber, numbers) {
   return Scrubber(numbers, { loop: false, alternate: true })
 }
 
@@ -86,7 +88,7 @@ The _loopDelay_ option, which defaults to 0, specifies how long to wait before l
   `
 }
 
-function _17(Scrubber) {
+function _17(Scrubber, numbers) {
   return Scrubber(numbers, { initial: numbers.length - 1, loopDelay: 1000 })
 }
 
@@ -194,21 +196,22 @@ export default function define(runtime, observer) {
   const main = runtime.module()
   main.variable(observer()).define(['md'], _1)
   main.variable(observer()).define(['md'], _2)
-  main.variable(observer('viewof i')).define('viewof i', ['Scrubber'], _i)
+  main.variable(observer('viewof i')).define('viewof i', ['Scrubber', 'numbers'], _i)
   main.variable(observer('i')).define('i', ['Generators', 'viewof i'], (G, _) => G.input(_))
+  main.variable(observer('numbers')).define('numbers', _numbers)
   main.variable(observer()).define(['md', 'i'], _5)
   main.variable(observer()).define(['md'], _6)
   main.variable(observer()).define(['md'], _7)
   main.variable(observer('autoplay')).define('autoplay', ['md'], _autoplay)
-  main.variable(observer()).define(['Scrubber'], _9)
+  main.variable(observer()).define(['Scrubber', 'numbers'], _9)
   main.variable(observer('loop')).define('loop', ['md'], _loop)
-  main.variable(observer()).define(['Scrubber'], _11)
+  main.variable(observer()).define(['Scrubber', 'numbers'], _11)
   main.variable(observer()).define(['md'], _12)
-  main.variable(observer()).define(['Scrubber'], _13)
+  main.variable(observer()).define(['Scrubber', 'numbers'], _13)
   main.variable(observer('delay')).define('delay', ['md'], _delay)
   main.variable(observer()).define(['Scrubber'], _15)
   main.variable(observer('loopDelay')).define('loopDelay', ['md'], _loopDelay)
-  main.variable(observer()).define(['Scrubber'], _17)
+  main.variable(observer()).define(['Scrubber', 'numbers'], _17)
   main.variable(observer('format')).define('format', ['md'], _format)
   main.variable(observer('dates')).define('dates', _dates)
   main.variable(observer('viewof date')).define('viewof date', ['Scrubber', 'dates'], _date)

@@ -1,7 +1,5 @@
 import define1 from './450051d7f1174df8@255.js'
 
-const renderForwardBy = 4
-
 function _frame(Scrubber, d3, frameCount, delay) {
   return Scrubber(d3.range(1, frameCount, 1), {
     loop: false,
@@ -177,6 +175,10 @@ function _now() {
   return Date.now()
 }
 
+function _renderForwardBy() {
+  return 4
+}
+
 function _d3(require) {
   return require('d3@v6')
 }
@@ -257,8 +259,7 @@ function _p50keyframes(getPData, keyframes, pDataSamplingRate) {
   return getPData(keyframes, 0.5, pDataSamplingRate)
 }
 
-function _getDataSlice(frameCount, chartFrameLimit, keyframes) {
-
+function _getDataSlice(frameCount, renderForwardBy, chartFrameLimit, keyframes) {
   return (frame) => {
     let forwardBy = frame > frameCount ? 0 : renderForwardBy
 
@@ -270,7 +271,7 @@ function _getDataSlice(frameCount, chartFrameLimit, keyframes) {
   }
 }
 
-function _getPDataSlice(pDataSamplingRate, p50keyframes, p90keyframes, chartFrameLimit) {
+function _getPDataSlice(pDataSamplingRate, p50keyframes, p90keyframes, chartFrameLimit, renderForwardBy) {
   return (frame, pType) => {
     let syncedFrame = frame / pDataSamplingRate
     let source = pType === 'p50' ? p50keyframes : p90keyframes
@@ -318,7 +319,6 @@ function _bisect(d3) {
     const i = bisectTs(data, ts, 1)
     const a = data[i - 1],
       b = data[i]
-
     return ts - a.ts > b.ts - ts ? b : a
   }
 }
@@ -373,6 +373,7 @@ export default function define(runtime, observer) {
   main.variable(observer('chartFrameLimit')).define('chartFrameLimit', _chartFrameLimit)
   main.variable(observer('frameCount')).define('frameCount', _frameCount)
   main.variable(observer('now')).define('now', _now)
+  main.variable(observer('renderForwardBy')).define('renderForwardBy', _renderForwardBy)
   main.variable(observer('d3')).define('d3', ['require'], _d3)
   const child1 = runtime.module(define1)
   main.import('Scrubber', child1)
@@ -387,8 +388,8 @@ export default function define(runtime, observer) {
   main.variable(observer('keyframes')).define('keyframes', ['frameCount', 'now', 'delay', 'd3'], _keyframes)
   main.variable(observer('p90keyframes')).define('p90keyframes', ['getPData', 'keyframes', 'pDataSamplingRate'], _p90keyframes)
   main.variable(observer('p50keyframes')).define('p50keyframes', ['getPData', 'keyframes', 'pDataSamplingRate'], _p50keyframes)
-  main.variable(observer('getDataSlice')).define('getDataSlice', ['frameCount', 'chartFrameLimit', 'keyframes'], _getDataSlice)
-  main.variable(observer('getPDataSlice')).define('getPDataSlice', ['pDataSamplingRate', 'p50keyframes', 'p90keyframes', 'chartFrameLimit'], _getPDataSlice)
+  main.variable(observer('getDataSlice')).define('getDataSlice', ['frameCount', 'renderForwardBy', 'chartFrameLimit', 'keyframes'], _getDataSlice)
+  main.variable(observer('getPDataSlice')).define('getPDataSlice', ['pDataSamplingRate', 'p50keyframes', 'p90keyframes', 'chartFrameLimit', 'renderForwardBy'], _getPDataSlice)
   main.variable(observer('getPData')).define('getPData', ['tailessChunk', 'd3'], _getPData)
   main.variable(observer('tailessChunk')).define('tailessChunk', _tailessChunk)
   main.variable(observer('bisect')).define('bisect', ['d3'], _bisect)
