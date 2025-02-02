@@ -7,29 +7,29 @@
   <script type="module">
     const numbers = Array.from({ length: 256 }, (_, i) => i)
 
-    function _i(Scrubber) {
-      return Scrubber(numbers)
-    }
+    // function _i(Scrubber) {
+    //   return Scrubber(numbers)
+    // }
 
-    function _9(Scrubber) {
-      return Scrubber(numbers, { autoplay: false })
-    }
+    // function _9(Scrubber) {
+    //   return Scrubber(numbers, { autoplay: false })
+    // }
 
-    function _11(Scrubber) {
-      return Scrubber(numbers, { loop: false })
-    }
+    // function _11(Scrubber) {
+    //   return Scrubber(numbers, { loop: false })
+    // }
 
-    function _13(Scrubber) {
-      return Scrubber(numbers, { loop: false, alternate: true })
-    }
+    // function _13(Scrubber) {
+    //   return Scrubber(numbers, { loop: false, alternate: true })
+    // }
 
-    function _15(Scrubber) {
-      return Scrubber(['red', 'green', 'blue'], { delay: 1000 })
-    }
+    // function _15(Scrubber) {
+    //   return Scrubber(['red', 'green', 'blue'], { delay: 1000 })
+    // }
 
-    function _17(Scrubber) {
-      return Scrubber(numbers, { initial: numbers.length - 1, loopDelay: 1000 })
-    }
+    // function _17(Scrubber) {
+    //   return Scrubber(numbers, { initial: numbers.length - 1, loopDelay: 1000 })
+    // }
 
     const dates = Array.from({ length: 365 }, (_, i) => {
       const date = new Date(2025, 0, 1)
@@ -114,21 +114,6 @@
         Inputs.disposal(form).then(stop)
         return form
       }
-    }
-
-    function define1(runtime, observer) {
-      const main = runtime.module()
-      main.variable(observer('viewof i')).define('viewof i', ['Scrubber'], _i)
-      main.variable(observer('i')).define('i', ['Generators', 'viewof i'], (G, _) => G.input(_))
-      main.variable(observer()).define(['Scrubber'], _9)
-      main.variable(observer()).define(['Scrubber'], _11)
-      main.variable(observer()).define(['Scrubber'], _13)
-      main.variable(observer()).define(['Scrubber'], _15)
-      main.variable(observer()).define(['Scrubber'], _17)
-      main.variable(observer('viewof date')).define('viewof date', ['Scrubber'], _date)
-      main.variable(observer('date')).define('date', ['Generators', 'viewof date'], (G, _) => G.input(_))
-      main.variable(observer('Scrubber')).define('Scrubber', ['html', 'Inputs'], _Scrubber)
-      return main
     }
 
     const frameCount = 10000
@@ -402,7 +387,6 @@
       const i = bisectTs(data, ts, 1)
       const a = data[i - 1],
         b = data[i]
-      console.log(data)
       return ts - a.ts > b.ts - ts ? b : a
     }
 
@@ -442,12 +426,27 @@
       }
     }
 
+    function define1(runtime, observer) {
+      const main = runtime.module()
+      // main.variable(observer()).define(['Scrubber'], _9)
+      // main.variable(observer()).define(['Scrubber'], _11)
+      // main.variable(observer()).define(['Scrubber'], _13)
+      // main.variable(observer()).define(['Scrubber'], _15)
+      // main.variable(observer()).define(['Scrubber'], _17)
+      main.variable(observer('viewof date')).define('viewof date', ['Scrubber'], _date)
+      main.variable(observer('date')).define('date', ['Generators', 'viewof date'], (G, _) => G.input(_))
+      main.variable(observer('Scrubber')).define('Scrubber', ['html', 'Inputs'], _Scrubber)
+      return main
+    }
+
     function define(runtime, observer) {
       const main = runtime.module()
       main.variable(observer('viewof frame')).define('viewof frame', ['Scrubber'], _frame)
       main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
       main.variable(observer('chart')).define('chart', [], _chart)
       main.variable(observer()).define(['chart', 'frame'], _3)
+      // main.variable(observer('viewof i')).define('viewof i', ['Scrubber'], _i)
+      // main.variable(observer('i')).define('i', ['Generators', 'viewof i'], (G, _) => G.input(_))
       const child1 = runtime.module(define1)
       main.import('Scrubber', child1)
       return main
