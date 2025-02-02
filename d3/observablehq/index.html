@@ -6,18 +6,6 @@
 <body>
   <script type="module">
 
-    const numbers = Array.from({ length: 256 }, (_, i) => i)
-
-    const dates = Array.from({ length: 365 }, (_, i) => {
-      const date = new Date(2025, 0, 1)
-      date.setDate(i + 1)
-      return date
-    })
-
-    function _date(Scrubber) {
-      return Scrubber(dates, { autoplay: false, format: (date) => date.toLocaleString('en', { month: 'long', day: 'numeric' }) })
-    }
-
     function _Scrubber(html, Inputs) {
       return function Scrubber(values, { format = (value) => value, initial = 0, direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
         values = Array.from(values)
@@ -174,6 +162,7 @@
       let transformG = pathG.append('g')
 
       const tooltip = new Tooltip(transformG)
+
       let p50G = transformG.append('g').attr('fill', '#0F3460')
       let p90G = transformG.append('g').attr('fill', '#E94560')
       let rawDataG = transformG.append('g').attr('fill', '#16213E')
@@ -321,11 +310,9 @@
 
     function getDataSlice(frame) {
       let forwardBy = frame > frameCount ? 0 : renderForwardBy
-
       if (frame < chartFrameLimit) {
         return keyframes.slice(0, frame + forwardBy)
       }
-
       return keyframes.slice(frame - chartFrameLimit, frame + forwardBy)
     }
 
@@ -403,19 +390,6 @@
       }
     }
 
-    // function define1(runtime, observer) {
-    //   const main = runtime.module()
-    //   // main.variable(observer()).define(['Scrubber'], _9)
-    //   // main.variable(observer()).define(['Scrubber'], _11)
-    //   // main.variable(observer()).define(['Scrubber'], _13)
-    //   // main.variable(observer()).define(['Scrubber'], _15)
-    //   // main.variable(observer()).define(['Scrubber'], _17)
-    //   main.variable(observer('viewof date')).define('viewof date', ['Scrubber'], _date)
-    //   main.variable(observer('date')).define('date', ['Generators', 'viewof date'], (G, _) => G.input(_))
-    //   main.variable(observer('Scrubber')).define('Scrubber', ['html', 'Inputs'], _Scrubber)
-    //   return main
-    // }
-
     function define(runtime, observer) {
       const main = runtime.module()
       main.variable(observer('Scrubber')).define('Scrubber', ['html', 'Inputs'], _Scrubber)
@@ -423,10 +397,6 @@
       main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
       main.variable(observer('chart')).define('chart', [], _chart)
       main.variable(observer()).define(['chart', 'frame'], _3)
-      // main.variable(observer('viewof i')).define('viewof i', ['Scrubber'], _i)
-      // main.variable(observer('i')).define('i', ['Generators', 'viewof i'], (G, _) => G.input(_))
-      // const child1 = runtime.module(define1)
-      // main.import('Scrubber', child1)
       return main
     }
 
@@ -434,5 +404,6 @@
 
     const runtime = new Runtime()
     const main = runtime.module(define, Inspector.into(document.body))
+
   </script>
 </body>
