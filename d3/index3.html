@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D3 Chart with Scrubber</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+
+<body>
+  <h2>D3.js Chart with Scrubber</h2>
+  <div id="chart-container"></div>
+  <div id="scrubber-container"></div>
+
+  <script>
+    console.log("D3 Version:", d3.version); // D3が読み込まれているか確認
+
+    // SVGの幅と高さ
+    const width = 800, height = 400;
+    const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+
+    // X軸とY軸のスケール
+    const x = d3.scaleLinear().domain([0, 100]).range([margin.left, width - margin.right]);
+    const y = d3.scaleLinear().domain([0, 100]).range([height - margin.bottom, margin.top]);
+
+    // 軸の描画関数
+    const xAxis = g => g.attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
+    const yAxis = g => g.attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y));
+
+    // SVG作成
+    const svg = d3.create("svg").attr("viewBox", `0 0 ${width} ${height}`);
+    svg.append("g").call(xAxis);
+    svg.append("g").call(yAxis);
+
+    // SVGをHTMLに追加
+    document.getElementById("chart-container").appendChild(svg.node());
+
+    // データ生成
+    function getDataSlice(frame) {
+      return d3.range(0, 100).map(d => ({ x: d, y: Math.sin((frame + d) * 0.1) * 50 + 50 }));
+    }
+
+    // グラフの更新関数
+    function update(frame) {
+      const data = getDataSlice(frame);
+      const line = d3.line().x(d => x(d.x)).y(d => y(d.y));
+
+      let path = svg.selectAll(".line").data([data]);
+
+      path.enter()
+        .append("path")
+        .attr("class", "line")
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 2)
+        .merge(path)
+        .attr("d", line);
+    }
+
+    // スクラバー作成
+    function Scrubber(values) {
+      const input = document.createElement("input");
+      input.type = "range";
+      input.min = 0;
+      input.max = values.length - 1;
+      input.step = 1;
+      input.value = 0;
+
+      input.oninput = () => {
+        update(Number(input.value));
+      };
+
+      return input;
+    }
+
+    // スクラバーを追加
+    const scrubber = Scrubber(d3.range(0, 100));
+    document.getElementById("scrubber-container").appendChild(scrubber);
+
+    // 初期表示
+    update(0);
+  </script>
+</body>
+
+</html>

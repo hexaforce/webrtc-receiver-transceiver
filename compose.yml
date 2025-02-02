@@ -6,9 +6,16 @@ services:
   #   volumes:
   #     - ./threebox:/usr/share/nginx/html
 
-  webrtc:
-    build: ./webrtc
+  # webrtc:
+  #   build: ./webrtc
+  #   ports:
+  #     - 80:80
+  #   volumes:
+  #     - ./webrtc:/usr/share/nginx/html
+
+  d3:
+    build: ./d3
     ports:
       - 80:80
     volumes:
-      - ./webrtc:/usr/share/nginx/html
+      - ./d3:/usr/share/nginx/html
