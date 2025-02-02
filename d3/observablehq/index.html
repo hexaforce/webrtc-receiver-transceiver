@@ -164,6 +164,14 @@
       .nice()
       .range([height - margin.bottom, margin.top])
 
+      const keyframes = []
+      for (let index = 0; index < frameCount; ++index) {
+        keyframes.push({
+          ts: now + index * delay,
+          latency: Math.max(25, Math.min(d3.randomNormal(0.45, 0.13)() * 500, 500)),
+        })
+      }
+
     function _frame(Scrubber) {
       return Scrubber(d3.range(1, frameCount, 1), {
         loop: false,
@@ -343,26 +351,15 @@
           .call((g) => g.selectAll('.tick text').attr('x', -4))
     }
 
-    function _keyframes() {
-      const keyframes = []
-      for (let index = 0; index < frameCount; ++index) {
-        keyframes.push({
-          ts: now + index * delay,
-          latency: Math.max(25, Math.min(d3.randomNormal(0.45, 0.13)() * 500, 500)),
-        })
-      }
-      return keyframes
-    }
-
-    function _p90keyframes(getPData, keyframes) {
+    function _p90keyframes(getPData) {
       return getPData(keyframes, 0.9, pDataSamplingRate)
     }
 
-    function _p50keyframes(getPData, keyframes) {
+    function _p50keyframes(getPData) {
       return getPData(keyframes, 0.5, pDataSamplingRate)
     }
 
-    function _getDataSlice(keyframes) {
+    function _getDataSlice() {
       return (frame) => {
         let forwardBy = frame > frameCount ? 0 : renderForwardBy
 
@@ -475,10 +472,9 @@
       main.import('Scrubber', child1)
       main.variable(observer('xAxis')).define('xAxis', [], _xAxis)
       main.variable(observer('yAxis')).define('yAxis', [], _yAxis)
-      main.variable(observer('keyframes')).define('keyframes', [], _keyframes)
-      main.variable(observer('p90keyframes')).define('p90keyframes', ['getPData', 'keyframes'], _p90keyframes)
-      main.variable(observer('p50keyframes')).define('p50keyframes', ['getPData', 'keyframes'], _p50keyframes)
-      main.variable(observer('getDataSlice')).define('getDataSlice', ['keyframes'], _getDataSlice)
+      main.variable(observer('p90keyframes')).define('p90keyframes', ['getPData'], _p90keyframes)
+      main.variable(observer('p50keyframes')).define('p50keyframes', ['getPData'], _p50keyframes)
+      main.variable(observer('getDataSlice')).define('getDataSlice', [], _getDataSlice)
       main.variable(observer('getPDataSlice')).define('getPDataSlice', ['p50keyframes', 'p90keyframes'], _getPDataSlice)
       main.variable(observer('getPData')).define('getPData', ['tailessChunk'], _getPData)
       main.variable(observer('tailessChunk')).define('tailessChunk', _tailessChunk)
