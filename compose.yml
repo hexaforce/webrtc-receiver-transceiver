@@ -1,7 +1,7 @@
 services:
-  web:
-    build: ./web
+  threebox:
+    build: ./threebox
     ports:
       - 80:80
     volumes:
-      - ./web:/usr/share/nginx/html
+      - ./threebox:/usr/share/nginx/html
