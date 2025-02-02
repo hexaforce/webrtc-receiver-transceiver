@@ -5,23 +5,22 @@
 <body>
 <script type="module">
 
-function _i(Scrubber, numbers) {
+
+const numbers = Array.from({ length: 256 }, (_, i) => i)
+
+function _i(Scrubber) {
   return Scrubber(numbers)
 }
 
-function _numbers() {
-  return Array.from({ length: 256 }, (_, i) => i)
-}
-
-function _9(Scrubber, numbers) {
+function _9(Scrubber) {
   return Scrubber(numbers, { autoplay: false })
 }
 
-function _11(Scrubber, numbers) {
+function _11(Scrubber) {
   return Scrubber(numbers, { loop: false })
 }
 
-function _13(Scrubber, numbers) {
+function _13(Scrubber) {
   return Scrubber(numbers, { loop: false, alternate: true })
 }
 
@@ -29,7 +28,7 @@ function _15(Scrubber) {
   return Scrubber(['red', 'green', 'blue'], { delay: 1000 })
 }
 
-function _17(Scrubber, numbers) {
+function _17(Scrubber) {
   return Scrubber(numbers, { initial: numbers.length - 1, loopDelay: 1000 })
 }
 
@@ -115,14 +114,13 @@ function _Scrubber(html, Inputs) {
 
 export default function define1(runtime, observer) {
   const main = runtime.module()
-  main.variable(observer('viewof i')).define('viewof i', ['Scrubber', 'numbers'], _i)
+  main.variable(observer('viewof i')).define('viewof i', ['Scrubber'], _i)
   main.variable(observer('i')).define('i', ['Generators', 'viewof i'], (G, _) => G.input(_))
-  main.variable(observer('numbers')).define('numbers', _numbers)
-  main.variable(observer()).define(['Scrubber', 'numbers'], _9)
-  main.variable(observer()).define(['Scrubber', 'numbers'], _11)
-  main.variable(observer()).define(['Scrubber', 'numbers'], _13)
+  main.variable(observer()).define(['Scrubber'], _9)
+  main.variable(observer()).define(['Scrubber'], _11)
+  main.variable(observer()).define(['Scrubber'], _13)
   main.variable(observer()).define(['Scrubber'], _15)
-  main.variable(observer()).define(['Scrubber', 'numbers'], _17)
+  main.variable(observer()).define(['Scrubber'], _17)
   main.variable(observer('dates')).define('dates', _dates)
   main.variable(observer('viewof date')).define('viewof date', ['Scrubber', 'dates'], _date)
   main.variable(observer('date')).define('date', ['Generators', 'viewof date'], (G, _) => G.input(_))
