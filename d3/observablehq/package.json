@@ -8,7 +8,7 @@
     "url": "https://observablehq.com/@tomokazu"
   },
   "scripts": {
-    "fmt": "prettier --write \"./**/*.{js,jsx,css,scss}\""
+    "fmt": "prettier --write \"./**/*.{js,jsx,css,html}\""
   },
   "devDependencies": {
     "prettier": "^3.4.2"
