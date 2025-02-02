@@ -164,13 +164,13 @@
       .nice()
       .range([height - margin.bottom, margin.top])
 
-      const keyframes = []
-      for (let index = 0; index < frameCount; ++index) {
-        keyframes.push({
-          ts: now + index * delay,
-          latency: Math.max(25, Math.min(d3.randomNormal(0.45, 0.13)() * 500, 500)),
-        })
-      }
+    const keyframes = []
+    for (let index = 0; index < frameCount; ++index) {
+      keyframes.push({
+        ts: now + index * delay,
+        latency: Math.max(25, Math.min(d3.randomNormal(0.45, 0.13)() * 500, 500)),
+      })
+    }
 
     function _frame(Scrubber) {
       return Scrubber(d3.range(1, frameCount, 1), {
