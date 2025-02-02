@@ -127,13 +127,13 @@
       return main
     }
 
-    // const d3 = require('d3@v6')
-
     const frameCount = 10000
 
     const delay = 1000
 
     const height = 300
+
+    const margin = { top: 20, bottom: 20, left: 40, right: 20 }
 
     function _frame(Scrubber) {
       return Scrubber(d3.range(1, frameCount, 1), {
@@ -143,7 +143,7 @@
       })
     }
 
-    function _chart(width, xAxis, x, yAxis, y, Tooltip, margin, getDataSlice, getPDataSlice, defaultXDomain, genLine, bisect) {
+    function _chart(width, xAxis, x, yAxis, y, Tooltip, getDataSlice, getPDataSlice, defaultXDomain, genLine, bisect) {
       const svg = d3.create('svg').attr('viewBox', [0, 0, width, height])
 
       let gx = svg.append('g').call(xAxis, x)
@@ -298,10 +298,6 @@ const now = Date.now()
 
 const renderForwardBy = 4
 
-    function _margin() {
-      return { top: 20, bottom: 20, left: 40, right: 20 }
-    }
-
     function _defaultXDomain() {
       return [now - delay * chartFrameLimit, now]
     }
@@ -310,14 +306,14 @@ const renderForwardBy = 4
       return [0, 100]
     }
 
-    function _x(defaultXDomain, margin, width) {
+    function _x(defaultXDomain, width) {
       return d3
         .scaleTime()
         .domain(defaultXDomain)
         .range([margin.left, width - margin.right])
     }
 
-    function _y(defaultYDomain, margin) {
+    function _y(defaultYDomain) {
       return d3
         .scaleLinear()
         .domain(defaultYDomain)
@@ -325,7 +321,7 @@ const renderForwardBy = 4
         .range([height - margin.bottom, margin.top])
     }
 
-    function _xAxis( margin, width) {
+    function _xAxis( width) {
       return (g, x) =>
         g
           .attr('transform', `translate(0, ${height - margin.bottom})`)
@@ -340,7 +336,7 @@ const renderForwardBy = 4
           .call((g) => g.selectAll('.tick text').attr('y', 12))
     }
 
-    function _yAxis(margin, width) {
+    function _yAxis( width) {
       return (g, y) =>
         g
           .attr('text-anchor', 'end')
@@ -443,7 +439,7 @@ const renderForwardBy = 4
           .y((d) => y(d.latency))
     }
 
-    function _Tooltip( margin, y) {
+    function _Tooltip( y) {
       return class Tooltip {
         constructor(parent) {
           this.g = parent.append('g').attr('pointer-events', 'none').attr('display', 'none').attr('font-size', '10').attr('font-family', 'sans-serif').attr('text-anchor', 'middle')
@@ -477,17 +473,16 @@ const renderForwardBy = 4
       const main = runtime.module()
       main.variable(observer('viewof frame')).define('viewof frame', ['Scrubber'], _frame)
       main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
-      main.variable(observer('chart')).define('chart', ['width', 'xAxis', 'x', 'yAxis', 'y', 'Tooltip', 'margin', 'getDataSlice', 'getPDataSlice', 'defaultXDomain', 'genLine', 'bisect'], _chart)
+      main.variable(observer('chart')).define('chart', ['width', 'xAxis', 'x', 'yAxis', 'y', 'Tooltip', 'getDataSlice', 'getPDataSlice', 'defaultXDomain', 'genLine', 'bisect'], _chart)
       main.variable(observer()).define(['chart', 'frame'], _3)
       const child1 = runtime.module(define1)
       main.import('Scrubber', child1)
-      main.variable(observer('margin')).define('margin', _margin)
       main.variable(observer('defaultXDomain')).define('defaultXDomain', [], _defaultXDomain)
       main.variable(observer('defaultYDomain')).define('defaultYDomain', _defaultYDomain)
-      main.variable(observer('x')).define('x', ['defaultXDomain', 'margin', 'width'], _x)
-      main.variable(observer('y')).define('y', ['defaultYDomain',  'margin'], _y)
-      main.variable(observer('xAxis')).define('xAxis', [ 'margin', 'width'], _xAxis)
-      main.variable(observer('yAxis')).define('yAxis', ['margin', 'width'], _yAxis)
+      main.variable(observer('x')).define('x', ['defaultXDomain',  'width'], _x)
+      main.variable(observer('y')).define('y', ['defaultYDomain'], _y)
+      main.variable(observer('xAxis')).define('xAxis', [  'width'], _xAxis)
+      main.variable(observer('yAxis')).define('yAxis', [ 'width'], _yAxis)
       main.variable(observer('keyframes')).define('keyframes', [], _keyframes)
       main.variable(observer('p90keyframes')).define('p90keyframes', ['getPData', 'keyframes'], _p90keyframes)
       main.variable(observer('p50keyframes')).define('p50keyframes', ['getPData', 'keyframes'], _p50keyframes)
@@ -497,7 +492,7 @@ const renderForwardBy = 4
       main.variable(observer('tailessChunk')).define('tailessChunk', _tailessChunk)
       main.variable(observer('bisect')).define('bisect', [], _bisect)
       main.variable(observer('genLine')).define('genLine', ['y'], _genLine)
-      main.variable(observer('Tooltip')).define('Tooltip', [ 'margin', 'y'], _Tooltip)
+      main.variable(observer('Tooltip')).define('Tooltip', [  'y'], _Tooltip)
       return main
     }
 
