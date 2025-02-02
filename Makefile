@@ -18,5 +18,5 @@ clean:
 fmt:
 	find . -name '*.h' -o -name '*.c' | xargs clang-format -i
 
-clear:
-	rm -rf  ~/.cache/gstreamer-1.0
+server:
+	COMPOSE_PROJECT_NAME=x docker compose up --build
