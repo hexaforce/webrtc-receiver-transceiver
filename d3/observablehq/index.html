@@ -292,9 +292,7 @@ const pDataSamplingRate = 4
 
 const chartFrameLimit = 200
 
-    function _now() {
-      return Date.now()
-    }
+const now = Date.now()
 
 const renderForwardBy = 4
 
@@ -306,7 +304,7 @@ const renderForwardBy = 4
       return { top: 20, bottom: 20, left: 40, right: 20 }
     }
 
-    function _defaultXDomain(now) {
+    function _defaultXDomain() {
       return [now - delay * chartFrameLimit, now]
     }
 
@@ -355,7 +353,7 @@ const renderForwardBy = 4
           .call((g) => g.selectAll('.tick text').attr('x', -4))
     }
 
-    function _keyframes(now) {
+    function _keyframes() {
       const keyframes = []
       for (let index = 0; index < frameCount; ++index) {
         keyframes.push({
@@ -483,18 +481,17 @@ const renderForwardBy = 4
       main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
       main.variable(observer('chart')).define('chart', ['width', 'height', 'xAxis', 'x', 'yAxis', 'y', 'Tooltip', 'margin', 'getDataSlice', 'getPDataSlice', 'defaultXDomain', 'genLine', 'bisect'], _chart)
       main.variable(observer()).define(['chart', 'frame'], _3)
-      main.variable(observer('now')).define('now', _now)
       const child1 = runtime.module(define1)
       main.import('Scrubber', child1)
       main.variable(observer('height')).define('height', _height)
       main.variable(observer('margin')).define('margin', _margin)
-      main.variable(observer('defaultXDomain')).define('defaultXDomain', ['now'], _defaultXDomain)
+      main.variable(observer('defaultXDomain')).define('defaultXDomain', [], _defaultXDomain)
       main.variable(observer('defaultYDomain')).define('defaultYDomain', _defaultYDomain)
       main.variable(observer('x')).define('x', ['defaultXDomain', 'margin', 'width'], _x)
       main.variable(observer('y')).define('y', ['defaultYDomain', 'height', 'margin'], _y)
       main.variable(observer('xAxis')).define('xAxis', ['height', 'margin', 'width'], _xAxis)
       main.variable(observer('yAxis')).define('yAxis', ['margin', 'width'], _yAxis)
-      main.variable(observer('keyframes')).define('keyframes', ['now'], _keyframes)
+      main.variable(observer('keyframes')).define('keyframes', [], _keyframes)
       main.variable(observer('p90keyframes')).define('p90keyframes', ['getPData', 'keyframes'], _p90keyframes)
       main.variable(observer('p50keyframes')).define('p50keyframes', ['getPData', 'keyframes'], _p50keyframes)
       main.variable(observer('getDataSlice')).define('getDataSlice', [ 'keyframes'], _getDataSlice)
