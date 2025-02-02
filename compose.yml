@@ -1,7 +1,14 @@
 services:
-  threebox:
-    build: ./threebox
+  # threebox:
+  #   build: ./threebox
+  #   ports:
+  #     - 80:80
+  #   volumes:
+  #     - ./threebox:/usr/share/nginx/html
+
+  webrtc:
+    build: ./webrtc
     ports:
       - 80:80
     volumes:
-      - ./threebox:/usr/share/nginx/html
+      - ./webrtc:/usr/share/nginx/html
