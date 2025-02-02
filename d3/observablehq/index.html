@@ -5,7 +5,6 @@
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <body>
   <script type="module">
-
     const frameCount = 10000
 
     const delay = 1000
@@ -304,7 +303,7 @@
     }
 
     function _frame(Scrubber) {
-      return Scrubber( {
+      return Scrubber({
         loop: false,
         autoplay: false,
         delay,
@@ -312,9 +311,10 @@
     }
 
     function _Scrubber(html, Inputs) {
-      return function Scrubber( { format = (value) => value, initial = 0, direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
+      return function Scrubber({ format = (value) => value, initial = 0, direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
+
         var values = Array.from(d3.range(1, frameCount, 1))
-        
+
         const form = html`<form style="font: 12px var(--sans-serif); font-variant-numeric: tabular-nums; display: flex; height: 33px; align-items: center;">
           <button name="b" type="button" style="margin-right: 0.4em; width: 5em;"></button>
           <label style="display: flex; align-items: center;">
@@ -322,6 +322,7 @@
             <output name="o" style="margin-left: 0.4em;"></output>
           </label>
         </form>`
+
         let frame = null
         let timer = null
         let interval = null
@@ -386,13 +387,11 @@
         return form
       }
     }
-    
-
 
     function _chart() {
       return chart()
     }
-    
+
     function _bind(chart, frame) {
       return chart.update(frame)
     }
