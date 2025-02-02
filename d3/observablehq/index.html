@@ -347,11 +347,11 @@
       return chart.update(frame)
     }
 
-    function _p90keyframes(getPData) {
+    function _p90keyframes() {
       return getPData(keyframes, 0.9, pDataSamplingRate)
     }
 
-    function _p50keyframes(getPData) {
+    function _p50keyframes() {
       return getPData(keyframes, 0.5, pDataSamplingRate)
     }
 
@@ -378,13 +378,11 @@
       }
     }
 
-    function _getPData() {
-      return function (rawData, p, samplingRate) {
+    function getPData(rawData, p, samplingRate) {
         return tailessChunk(rawData, samplingRate).map((d) => ({
           ts: d[Math.floor(d.length / 2)].ts,
           latency: d3.quantile(d, p, (d) => d.latency),
         }))
-      }
     }
 
     function tailessChunk(array, chunkSize) {
@@ -461,11 +459,10 @@
       main.variable(observer()).define(['chart', 'frame'], _3)
       const child1 = runtime.module(define1)
       main.import('Scrubber', child1)
-      main.variable(observer('p90keyframes')).define('p90keyframes', ['getPData'], _p90keyframes)
-      main.variable(observer('p50keyframes')).define('p50keyframes', ['getPData'], _p50keyframes)
+      main.variable(observer('p90keyframes')).define('p90keyframes', [], _p90keyframes)
+      main.variable(observer('p50keyframes')).define('p50keyframes', [], _p50keyframes)
       main.variable(observer('getDataSlice')).define('getDataSlice', [], _getDataSlice)
       main.variable(observer('getPDataSlice')).define('getPDataSlice', ['p50keyframes', 'p90keyframes'], _getPDataSlice)
-      main.variable(observer('getPData')).define('getPData', [], _getPData)
       main.variable(observer('bisect')).define('bisect', [], _bisect)
       return main
     }
