@@ -202,7 +202,7 @@
         .call((g) => g.selectAll('.tick text').attr('x', -4))
     }
 
-    function _chart(bisect) {
+    function _chart() {
       const svg = d3.create('svg').attr('viewBox', [0, 0, width, height])
 
       let gx = svg.append('g').call(xAxis, x)
@@ -396,14 +396,14 @@
       return arr
     }
 
-    function _bisect() {
-      const bisectTs = d3.bisector((d) => d.ts).left
-      return (data, ts) => {
-        const i = bisectTs(data, ts, 1)
-        const a = data[i - 1],
-          b = data[i]
-        return ts - a.ts > b.ts - ts ? b : a
-      }
+    const bisectTs = d3.bisector((d) => d.ts).left
+
+    function bisect(data, ts) {
+      const i = bisectTs(data, ts, 1)
+      const a = data[i - 1],
+        b = data[i]
+      console.log(data)
+      return ts - a.ts > b.ts - ts ? b : a
     }
 
     function genLine(xScale) {
@@ -446,11 +446,10 @@
       const main = runtime.module()
       main.variable(observer('viewof frame')).define('viewof frame', ['Scrubber'], _frame)
       main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
-      main.variable(observer('chart')).define('chart', ['bisect'], _chart)
+      main.variable(observer('chart')).define('chart', [], _chart)
       main.variable(observer()).define(['chart', 'frame'], _3)
       const child1 = runtime.module(define1)
       main.import('Scrubber', child1)
-      main.variable(observer('bisect')).define('bisect', [], _bisect)
       return main
     }
 
