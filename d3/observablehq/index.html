@@ -202,7 +202,7 @@
         .call((g) => g.selectAll('.tick text').attr('x', -4))
     }
 
-    function _chart(Tooltip, getDataSlice, getPDataSlice, genLine, bisect) {
+    function _chart(Tooltip, getDataSlice, getPDataSlice, bisect) {
       const svg = d3.create('svg').attr('viewBox', [0, 0, width, height])
 
       let gx = svg.append('g').call(xAxis, x)
@@ -417,9 +417,8 @@
       }
     }
 
-    function _genLine() {
-      return (xScale) =>
-        d3
+    function genLine(xScale) {
+        return d3
           .line()
           .curve(d3.curveCardinal.tension(0.85))
           .x((d) => xScale(d.ts))
@@ -460,7 +459,7 @@
       const main = runtime.module()
       main.variable(observer('viewof frame')).define('viewof frame', ['Scrubber'], _frame)
       main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
-      main.variable(observer('chart')).define('chart', ['Tooltip', 'getDataSlice', 'getPDataSlice', 'genLine', 'bisect'], _chart)
+      main.variable(observer('chart')).define('chart', ['Tooltip', 'getDataSlice', 'getPDataSlice', 'bisect'], _chart)
       main.variable(observer()).define(['chart', 'frame'], _3)
       const child1 = runtime.module(define1)
       main.import('Scrubber', child1)
@@ -470,7 +469,6 @@
       main.variable(observer('getPDataSlice')).define('getPDataSlice', ['p50keyframes', 'p90keyframes'], _getPDataSlice)
       main.variable(observer('getPData')).define('getPData', [], _getPData)
       main.variable(observer('bisect')).define('bisect', [], _bisect)
-      main.variable(observer('genLine')).define('genLine', [], _genLine)
       main.variable(observer('Tooltip')).define('Tooltip', [], _Tooltip)
       return main
     }
