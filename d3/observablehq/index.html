@@ -296,9 +296,7 @@ const chartFrameLimit = 200
       return Date.now()
     }
 
-    function _renderForwardBy() {
-      return 4
-    }
+const renderForwardBy = 4
 
     function _height() {
       return 300
@@ -376,7 +374,7 @@ const chartFrameLimit = 200
       return getPData(keyframes, 0.5, pDataSamplingRate)
     }
 
-    function _getDataSlice(renderForwardBy, keyframes) {
+    function _getDataSlice( keyframes) {
       return (frame) => {
         let forwardBy = frame > frameCount ? 0 : renderForwardBy
 
@@ -388,7 +386,7 @@ const chartFrameLimit = 200
       }
     }
 
-    function _getPDataSlice(p50keyframes, p90keyframes, renderForwardBy) {
+    function _getPDataSlice(p50keyframes, p90keyframes) {
       return (frame, pType) => {
         let syncedFrame = frame / pDataSamplingRate
         let source = pType === 'p50' ? p50keyframes : p90keyframes
@@ -486,7 +484,6 @@ const chartFrameLimit = 200
       main.variable(observer('chart')).define('chart', ['width', 'height', 'xAxis', 'x', 'yAxis', 'y', 'Tooltip', 'margin', 'getDataSlice', 'getPDataSlice', 'defaultXDomain', 'genLine', 'bisect'], _chart)
       main.variable(observer()).define(['chart', 'frame'], _3)
       main.variable(observer('now')).define('now', _now)
-      main.variable(observer('renderForwardBy')).define('renderForwardBy', _renderForwardBy)
       const child1 = runtime.module(define1)
       main.import('Scrubber', child1)
       main.variable(observer('height')).define('height', _height)
@@ -500,8 +497,8 @@ const chartFrameLimit = 200
       main.variable(observer('keyframes')).define('keyframes', ['now'], _keyframes)
       main.variable(observer('p90keyframes')).define('p90keyframes', ['getPData', 'keyframes'], _p90keyframes)
       main.variable(observer('p50keyframes')).define('p50keyframes', ['getPData', 'keyframes'], _p50keyframes)
-      main.variable(observer('getDataSlice')).define('getDataSlice', ['renderForwardBy', 'keyframes'], _getDataSlice)
-      main.variable(observer('getPDataSlice')).define('getPDataSlice', ['p50keyframes', 'p90keyframes', 'renderForwardBy'], _getPDataSlice)
+      main.variable(observer('getDataSlice')).define('getDataSlice', [ 'keyframes'], _getDataSlice)
+      main.variable(observer('getPDataSlice')).define('getPDataSlice', ['p50keyframes', 'p90keyframes'], _getPDataSlice)
       main.variable(observer('getPData')).define('getPData', ['tailessChunk'], _getPData)
       main.variable(observer('tailessChunk')).define('tailessChunk', _tailessChunk)
       main.variable(observer('bisect')).define('bisect', [], _bisect)
