@@ -5,7 +5,6 @@
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <body>
   <script type="module">
-
     function _Scrubber(html, Inputs) {
       return function Scrubber(values, { format = (value) => value, initial = 0, direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
         values = Array.from(values)
@@ -122,14 +121,6 @@
       })
     }
 
-    function _frame(Scrubber) {
-      return Scrubber(d3.range(1, frameCount, 1), {
-        loop: false,
-        autoplay: false,
-        delay,
-      })
-    }
-
     function xAxis(g, x) {
       g.attr('transform', `translate(0, ${height - margin.bottom})`)
         .call(
@@ -150,6 +141,14 @@
         .call((g) => g.selectAll('.tick line').attr('stroke-opacity', 0.3).attr('stroke-dasharray', '2,2'))
         .call((g) => g.select('.domain').attr('opacity', 0))
         .call((g) => g.selectAll('.tick text').attr('x', -4))
+    }
+
+    function _frame(Scrubber) {
+      return Scrubber(d3.range(1, frameCount, 1), {
+        loop: false,
+        autoplay: false,
+        delay,
+      })
     }
 
     function _chart() {
@@ -295,6 +294,8 @@
     }
 
     function _3(chart, frame) {
+      console.log('chart:', chart)
+      console.log('frame:', frame)
       return chart.update(frame)
     }
 
@@ -404,6 +405,5 @@
 
     const runtime = new Runtime()
     const main = runtime.module(define, Inspector.into(document.body))
-
   </script>
 </body>
