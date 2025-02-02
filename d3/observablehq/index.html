@@ -287,10 +287,10 @@
     function _3(chart, frame) {
       return chart.update(frame)
     }
-
-    function _pDataSamplingRate() {
-      return 4
-    }
+const pDataSamplingRate = 4
+    // function _pDataSamplingRate() {
+    //   return 4
+    // }
 
     function _chartFrameLimit() {
       return 200
@@ -372,11 +372,11 @@
       return keyframes
     }
 
-    function _p90keyframes(getPData, keyframes, pDataSamplingRate) {
+    function _p90keyframes(getPData, keyframes) {
       return getPData(keyframes, 0.9, pDataSamplingRate)
     }
 
-    function _p50keyframes(getPData, keyframes, pDataSamplingRate) {
+    function _p50keyframes(getPData, keyframes) {
       return getPData(keyframes, 0.5, pDataSamplingRate)
     }
 
@@ -392,7 +392,7 @@
       }
     }
 
-    function _getPDataSlice(pDataSamplingRate, p50keyframes, p90keyframes, chartFrameLimit, renderForwardBy) {
+    function _getPDataSlice(p50keyframes, p90keyframes, chartFrameLimit, renderForwardBy) {
       return (frame, pType) => {
         let syncedFrame = frame / pDataSamplingRate
         let source = pType === 'p50' ? p50keyframes : p90keyframes
@@ -489,7 +489,6 @@
       main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
       main.variable(observer('chart')).define('chart', ['width', 'height', 'xAxis', 'x', 'yAxis', 'y', 'Tooltip', 'margin', 'getDataSlice', 'getPDataSlice', 'defaultXDomain', 'genLine', 'bisect'], _chart)
       main.variable(observer()).define(['chart', 'frame'], _3)
-      main.variable(observer('pDataSamplingRate')).define('pDataSamplingRate', _pDataSamplingRate)
       main.variable(observer('chartFrameLimit')).define('chartFrameLimit', _chartFrameLimit)
       main.variable(observer('now')).define('now', _now)
       main.variable(observer('renderForwardBy')).define('renderForwardBy', _renderForwardBy)
@@ -504,10 +503,10 @@
       main.variable(observer('xAxis')).define('xAxis', ['height', 'margin', 'width'], _xAxis)
       main.variable(observer('yAxis')).define('yAxis', ['margin', 'width'], _yAxis)
       main.variable(observer('keyframes')).define('keyframes', ['now'], _keyframes)
-      main.variable(observer('p90keyframes')).define('p90keyframes', ['getPData', 'keyframes', 'pDataSamplingRate'], _p90keyframes)
-      main.variable(observer('p50keyframes')).define('p50keyframes', ['getPData', 'keyframes', 'pDataSamplingRate'], _p50keyframes)
+      main.variable(observer('p90keyframes')).define('p90keyframes', ['getPData', 'keyframes'], _p90keyframes)
+      main.variable(observer('p50keyframes')).define('p50keyframes', ['getPData', 'keyframes'], _p50keyframes)
       main.variable(observer('getDataSlice')).define('getDataSlice', ['renderForwardBy', 'chartFrameLimit', 'keyframes'], _getDataSlice)
-      main.variable(observer('getPDataSlice')).define('getPDataSlice', ['pDataSamplingRate', 'p50keyframes', 'p90keyframes', 'chartFrameLimit', 'renderForwardBy'], _getPDataSlice)
+      main.variable(observer('getPDataSlice')).define('getPDataSlice', ['p50keyframes', 'p90keyframes', 'chartFrameLimit', 'renderForwardBy'], _getPDataSlice)
       main.variable(observer('getPData')).define('getPData', ['tailessChunk'], _getPData)
       main.variable(observer('tailessChunk')).define('tailessChunk', _tailessChunk)
       main.variable(observer('bisect')).define('bisect', [], _bisect)
