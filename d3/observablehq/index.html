@@ -31,15 +31,13 @@
       return Scrubber(numbers, { initial: numbers.length - 1, loopDelay: 1000 })
     }
 
-    function _dates() {
-      return Array.from({ length: 365 }, (_, i) => {
-        const date = new Date(2019, 0, 1)
-        date.setDate(i + 1)
-        return date
-      })
-    }
+    const dates = Array.from({ length: 365 }, (_, i) => {
+      const date = new Date(2025, 0, 1)
+      date.setDate(i + 1)
+      return date
+    })
 
-    function _date(Scrubber, dates) {
+    function _date(Scrubber) {
       return Scrubber(dates, {
         autoplay: false,
         format: (date) => date.toLocaleString('en', { month: 'long', day: 'numeric' }),
@@ -120,8 +118,7 @@
       main.variable(observer()).define(['Scrubber'], _13)
       main.variable(observer()).define(['Scrubber'], _15)
       main.variable(observer()).define(['Scrubber'], _17)
-      main.variable(observer('dates')).define('dates', _dates)
-      main.variable(observer('viewof date')).define('viewof date', ['Scrubber', 'dates'], _date)
+      main.variable(observer('viewof date')).define('viewof date', ['Scrubber'], _date)
       main.variable(observer('date')).define('date', ['Generators', 'viewof date'], (G, _) => G.input(_))
       main.variable(observer('Scrubber')).define('Scrubber', ['html', 'Inputs'], _Scrubber)
       return main
@@ -184,9 +181,7 @@
         .attr('height', height)
 
       let path = rawDataG.append('g').append('path').attr('opacity', 0.5).attr('fill', 'none').attr('stroke', '#16213E').attr('class', 'line').attr('stroke-width', '1')
-
       let path50 = p50G.append('path').attr('fill', 'none').attr('stroke', '#0F3460').attr('class', 'line').attr('stroke-width', 1.5)
-
       let path90 = p90G.append('path').attr('fill', 'none').attr('stroke', '#E94560').attr('class', 'line').attr('stroke-width', 2)
 
       const zoom = d3
@@ -447,18 +442,18 @@
             .attr('fill', '#12355B')
 
           let textBox = this.g.append('g').attr('transform', `translate(0, ${margin.top})`)
-
           textBox.append('rect').attr('x', -29).attr('width', 58).attr('height', 15).attr('rx', 3).attr('ry', 3).attr('fill', '#16213E')
           textBox.append('text').attr('id', 'latency').attr('fill', 'white').attr('y', 12)
-
           this.g.append('circle').attr('id', 'tooltip-cir').attr('r', 6).attr('fill', '#16213E')
         }
+
         show(d, scaleX) {
           this.g.node().removeAttribute('display')
           this.g.attr('transform', `translate(${scaleX(d.ts)}, 0)`)
           this.g.select('circle').attr('transform', `translate(0, ${y(d.latency)})`)
           this.g.select('#latency').text(`${d.latency.toFixed(2)} ms`)
         }
+
         hide() {
           this.g.attr('display', 'none')
         }
