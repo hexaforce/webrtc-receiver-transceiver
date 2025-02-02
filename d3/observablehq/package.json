@@ -1,0 +1,29 @@
+{
+  "name": "7824c28cb404aad0",
+  "main": "7824c28cb404aad0@2273.js",
+  "version": "2273.0.0",
+  "homepage": "https://observablehq.com/d/7824c28cb404aad0",
+  "author": {
+    "name": "tomokazu",
+    "url": "https://observablehq.com/@tomokazu"
+  },
+  "scripts": {
+    "fmt": "prettier --write \"./**/*.{js,jsx,css,scss}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "printWidth": 1024
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "6.0.0"
+  }
+}
