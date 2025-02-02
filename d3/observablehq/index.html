@@ -143,15 +143,7 @@
         .call((g) => g.selectAll('.tick text').attr('x', -4))
     }
 
-    function _frame(Scrubber) {
-      return Scrubber(d3.range(1, frameCount, 1), {
-        loop: false,
-        autoplay: false,
-        delay,
-      })
-    }
-
-    function _chart() {
+    function chart() {
       const svg = d3.create('svg').attr('viewBox', [0, 0, width, height])
 
       let gx = svg.append('g').call(xAxis, x)
@@ -293,12 +285,6 @@
       })
     }
 
-    function _3(chart, frame) {
-      console.log('chart:', chart)
-      console.log('frame:', frame)
-      return chart.update(frame)
-    }
-
     function getPData(rawData, p, samplingRate) {
       return tailessChunk(rawData, samplingRate).map((d) => ({
         ts: d[Math.floor(d.length / 2)].ts,
@@ -391,13 +377,29 @@
       }
     }
 
+    function _frame(Scrubber) {
+      return Scrubber(d3.range(1, frameCount, 1), {
+        loop: false,
+        autoplay: false,
+        delay,
+      })
+    }
+
+    function _chart() {
+      return chart()
+    }
+    
+    function _bind(chart, frame) {
+      return chart.update(frame)
+    }
+
     function define(runtime, observer) {
       const main = runtime.module()
       main.variable(observer('Scrubber')).define('Scrubber', ['html', 'Inputs'], _Scrubber)
       main.variable(observer('viewof frame')).define('viewof frame', ['Scrubber'], _frame)
       main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
       main.variable(observer('chart')).define('chart', [], _chart)
-      main.variable(observer()).define(['chart', 'frame'], _3)
+      main.variable(observer()).define(['chart', 'frame'], _bind)
       return main
     }
 
