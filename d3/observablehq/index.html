@@ -310,14 +310,14 @@
       })
     }
 
-    let frame = null
-    let timer = null
-    let interval = null
-
     const $ = (id) => document.getElementById(id)
 
     function _Scrubber() {
       return function Scrubber({ direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
+        let frame = null
+        let timer = null
+        let interval = null
+
         var values = Array.from(d3.range(1, frameCount, 1))
         $('i').max = values.length - 1
 
