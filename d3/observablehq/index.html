@@ -374,12 +374,14 @@
       return $('f')
     }
 
-    function _frame() {
-      return Scrubber({
-        loop: false,
-        autoplay: false,
-        delay,
-      })
+    const _ = Scrubber({
+      loop: false,
+      autoplay: false,
+      delay,
+    })
+
+    function _Generators(G) {
+      return G.input(_)
     }
 
     function _chart() {
@@ -392,8 +394,7 @@
 
     function define(runtime, observer) {
       const main = runtime.module()
-      main.variable(observer('viewOfFrame')).define('viewOfFrame', [], _frame)
-      main.variable(observer('frame')).define('frame', ['Generators', 'viewOfFrame'], (G, _) => G.input(_))
+      main.variable(observer('frame')).define('frame', ['Generators'], _Generators)
       main.variable(observer('chart')).define('chart', [], _chart)
       main.variable(observer()).define(['chart', 'frame'], _bind)
       return main
