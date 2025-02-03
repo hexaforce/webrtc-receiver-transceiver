@@ -120,6 +120,7 @@
 
       return Object.assign(svg.node(), {
         update(frame) {
+          console.log('update:', frame)
           const newdata = getDataSlice(frame)
           const p50Data = getPDataSlice(frame, 'p50')
           const p90Data = getPDataSlice(frame, 'p90')
