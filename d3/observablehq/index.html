@@ -382,12 +382,12 @@
 
     import { Runtime, Inspector } from './runtime.js'
 
-    function _Generators(G) {
-      return G.input(_)
-    }
-
     function _chart() {
       return chart()
+    }
+
+    function _Generators(G) {
+      return G.input(_)
     }
 
     function _bind(chart, frame) {
@@ -397,8 +397,8 @@
     const runtime = new Runtime()
     const main = runtime.module((runtime, observer) => {
       const main = runtime.module()
-      main.variable(observer('chart')).define('chart', [], _chart)
-      main.variable(observer('frame')).define('frame', ['Generators'], _Generators)
+      main.variable(observer()).define('chart', [], _chart)
+      main.variable(observer()).define('frame', ['Generators'], _Generators)
       main.variable(observer()).define(['chart', 'frame'], _bind)
       return main
     }, Inspector.into(document.body))
