@@ -14,7 +14,6 @@
       height: 100%;
       margin: 0;
     }
-
     #map {
       width: 100%;
       height: 100%;
@@ -27,14 +26,10 @@
     ///// THIS EXTRUSION SAMPLE SHOWS HOW TO CREATE EXTRUSIONS IN TWO WAYS
     ///// THE FIRST WAY IS TO CREATE AN ARRAY OF VECTOR2 AND USE tb.extrusion
     ///// THE SECOND WAY IS TO READ geoJson FEATURES FROM A FILE
-
     if (!config) console.error("Config not set! Make a copy of 'config_template.js', add in your access token, and save the file as 'config.js'.")
-
     mapboxgl.accessToken = config.accessToken
-
     let origin1 = [-74.001058, 40.714914, 0]
     let origin2 = [-74.0001269, 40.7151698, 50]
-
     let map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/outdoors-v11',
@@ -45,7 +40,6 @@
       heading: 0,
       hash: true,
     })
-
     // we can add Threebox to mapbox to add built-in mouseover/mouseout and click behaviors
     window.tb = new Threebox(map, map.getCanvas().getContext('webgl'), {
       defaultLights: true,
@@ -53,26 +47,22 @@
       enableSelectingObjects: true, //change this to false to disable 3D objects selection
       enableTooltips: true, // change this to false to disable default tooltips on fill-extrusion and 3D models
     })
-
     let redMaterial = new THREE.MeshPhongMaterial({
       color: 0x660000,
       side: THREE.DoubleSide,
     })
-
     let stats
     import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
     function animate() {
       requestAnimationFrame(animate)
       stats.update()
     }
-
     let buildings = []
     map.on('style.load', function () {
       //// stats
       stats = new Stats()
       map.getContainer().appendChild(stats.dom)
       animate()
-
       map.addLayer({
         id: 'custom_layer',
         type: 'custom',
@@ -100,7 +90,6 @@
           star.setCoords(origin2)
           star.set({ rotation: { x: 0, y: 0, z: 720 }, duration: 20000 })
           tb.add(star)
-
           //[jscastro] we read a geoJson that is filled with 3 real features from the composite source
           d3.json('./geojson/extrusion.geojson').then(function (fc) {
             console.log(fc)
@@ -108,18 +97,15 @@
             addBuildings(fc.features)
           })
         },
-
         render: function (gl, matrix) {
           tb.update()
         },
       })
     })
-
     function addBuildings(data, info, height = 1) {
       data.forEach((b) => {
         let center = b.properties.center
         let s = tb.projectedUnitsPerMeter(center[1])
-
         let extrusion = tb.extrusion({
           coordinates: b.geometry.coordinates,
           geometryOptions: { curveSegments: 1, bevelEnabled: false, depth: b.layer.paint['fill-extrusion-height'] * s },

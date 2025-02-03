@@ -19,12 +19,10 @@
         height: 100%;
         margin: 0;
       }
-
       #map {
         width: 100%;
         height: 100%;
       }
-
       #time {
         position: absolute;
         left: 0;
@@ -34,7 +32,6 @@
         margin-right: auto;
         min-width: 90%;
       }
-
       #hour {
         background: rgba(0, 0, 0, 0.5);
         color: #fff;
@@ -52,7 +49,6 @@
         text-align: center;
       }
     </style>
-
     <script src="config.js"></script>
   </head>
   <body>
@@ -74,11 +70,8 @@
       //- Built-in shadows through 'castShadow' and 'tb.setBuildingShadows'
       //- Built-in raycasting and selection through 'enableSelectingObjects' <br />
       //- Built-in Tooltips on for through 'enableTooltips' <br />
-
       if (!config) console.error("Config not set! Make a copy of 'config_template.js', add in your access token, and save the file as 'config.js'.")
-
       mapboxgl.accessToken = config.accessToken
-
       //starting location for map
       let popup
       let minZoom = 12
@@ -112,13 +105,11 @@
       }
       let point = mapConfig.NYC
       let p = document.querySelector('#hour')
-
       let styles = {
         day: 'satellite-v9',
         night: 'dark-v10',
       }
       let selectedStyle = styles.day
-
       var map = new mapboxgl.Map({
         style: 'mapbox://styles/mapbox/' + selectedStyle, //'mapbox://styles/mapbox/satellite-v9',
         center: point.center,
@@ -129,7 +120,6 @@
         antialias: true,
         hash: true,
       })
-
       map.addControl(new mapboxgl.NavigationControl())
       // Add geolocate control to the map.
       map.addControl(
@@ -140,7 +130,6 @@
           trackUserLocation: true,
         }),
       )
-
       // we can add Threebox to mapbox to add built-in mouseover/mouseout and click behaviors
       window.tb = new Threebox(map, map.getCanvas().getContext('webgl'), {
         realSunlight: true,
@@ -148,7 +137,6 @@
         enableSelectingObjects: true, //change this to false to disable 3D objects selection
         enableTooltips: true, // change this to false to disable default tooltips on fill-extrusion and 3D models
       })
-
       var time = date.getHours() * 60 * 60 + date.getMinutes() * 60 + date.getSeconds()
       var timeInput = document.getElementById('time')
       timeInput.value = time
@@ -160,14 +148,12 @@
         console.log(date)
         map.triggerRepaint()
       }
-
       let stats
       import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
       function animate() {
         requestAnimationFrame(animate)
         stats.update()
       }
-
       // The 'building' layer in the mapbox-streets vector source contains building-height
       // data from OpenStreetMap.
       map.on('style.load', function () {
@@ -175,11 +161,9 @@
         stats = new Stats()
         map.getContainer().appendChild(stats.dom)
         animate()
-
         let mapCenter = map.getCenter()
         let center = [mapCenter.lng, mapCenter.lat]
         p.innerHTML = 'Local time: ' + dateToTimezone(date, point.timezone).toLocaleTimeString()
-
         map.addSource(mapConfig.names.fillExtrusion, {
           // GeoJSON Data source used in vector tiles, documented at
           // https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
@@ -187,9 +171,7 @@
           generateId: true, // This ensures that all features have unique IDs and allow selecting them
           data: './geojson/statue-of-liberty.geojson',
         })
-
         map.addLayer(createExtrusionLayer())
-
         map.addLayer({
           id: mapConfig.names.customLayer,
           type: 'custom',
@@ -205,7 +187,6 @@
               rotation: { x: 90, y: 0, z: 0 }, //default rotation
               anchor: 'center',
             }
-
             tb.loadObj(options, function (model) {
               model.setCoords(mapConfig.NYC.origin)
               model.setRotation({ x: 0, y: 0, z: -147 })
@@ -213,7 +194,6 @@
               model.castShadow = true
               tb.add(model)
             })
-
             // Creative Commons License attribution:  Eiffel Tower model by https://www.cgtrader.com/lefabshop
             // https://www.cgtrader.com/items/108594/download-page
             options = {
@@ -223,7 +203,6 @@
               units: 'meters',
               rotation: { x: 90, y: 0, z: 0 }, //default rotation
             }
-
             tb.loadObj(options, function (model) {
               model.setCoords(mapConfig.PAR.origin)
               model.setRotation({ x: 0, y: 0, z: 45.7 })
@@ -232,7 +211,6 @@
               tb.add(model)
             })
           },
-
           render: function (gl, matrix) {
             tb.setSunlight(date, point.center)
             hour.innerHTML = 'Local date/time: ' + dateToTimezone(date, point.timezone).toLocaleString()
@@ -240,7 +218,6 @@
           },
         })
       })
-
       function createExtrusionLayer() {
         let layer = {
           id: mapConfig.names.fillExtrusionLayer,
@@ -259,12 +236,10 @@
         }
         return layer
       }
-
       function reset() {
         date = new Date()
         seconds = 0
       }
-
       $('#NYC').on('click', function () {
         reset()
         point = mapConfig.NYC
@@ -277,7 +252,6 @@
         //we fly smoothly to the object selected
         flyTo(point)
       })
-
       function flyTo(coords) {
         //we fly smoothly to the object selected
         map.flyTo({
@@ -287,7 +261,6 @@
           bearing: coords.bearing,
         })
       }
-
       function dateToTimezone(date = new Date(), timezone) {
         var tzTime = date.toLocaleString('en-US', { timeZone: timezone })
         return new Date(tzTime)

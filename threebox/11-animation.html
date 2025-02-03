@@ -13,7 +13,6 @@
   <link href="css/free.min.css" rel="stylesheet" />
   <link href="css/free-v4-font-face-min.css" rel="stylesheet" />
   <link href="css/free-v4-shims.min.css" rel="stylesheet" />
-
   <style>
     body,
     html {
@@ -22,27 +21,22 @@
       margin: 0;
       background: black;
     }
-
     #map {
       width: 100%;
       height: 100%;
     }
-
     #explainer {
       z-index: 99;
     }
-
     .top-right-tools {
       display: flex;
       right: 40px;
       z-index: 10;
     }
-
     .tools-i.mapboxgl-ctrl {
       margin: 10px 20px 0 0;
       display: inline-flex;
     }
-
     .helpDiv {
       width: auto;
       left: 50%;
@@ -50,7 +44,6 @@
       z-index: 2;
       position: absolute;
     }
-
     .help {
       background: rgba(0, 0, 0, 0.5);
       color: #fff;
@@ -66,7 +59,6 @@
       z-index: 1;
       display: block;
     }
-
     /*these 3 clases will provide mapbox-like style for labels*/
     .toolTip {
       border: 0.5px black solid;
@@ -76,14 +68,12 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 11px !important;
     }
-
     .marker {
       max-width: 240px;
       display: flex;
       margin-bottom: 5em;
       text-align: center;
     }
-
     .mapboxgl-popup-tip {
       margin-top: -1px;
     }
@@ -102,18 +92,13 @@
     </div>
   </div>
   <div id="explainer">Select the soldier, drag, rotate, wireframe and play animation</div>
-
   <script type="module">
     // This example downloads a soldier model from an external OBJ/MTL file, adds it to the map, and drives it around via paths fetched from the Mapbox Directions API
-
     if (!config) console.error("Config not set! Make a copy of 'config_template.js', add in your access token, and save the file as 'config.js'.")
-
     mapboxgl.accessToken = config.accessToken
-
     var origin = [-122.47920912, 37.716351775]
     var destination, line
     var soldier
-
     var map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/outdoors-v11',
@@ -124,21 +109,18 @@
       bearing: 0,
     })
     map.addControl(new mapboxgl.NavigationControl())
-
     let stats
     import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
     function animate() {
       requestAnimationFrame(animate)
       stats.update()
     }
-
     map
       .on('style.load', function () {
         // stats
         stats = new Stats()
         map.getContainer().appendChild(stats.dom)
         animate()
-
         map.addLayer({
           id: 'custom_layer',
           type: 'custom',
@@ -152,11 +134,9 @@
               enableRotatingObjects: true,
               enableTooltips: true,
             })
-
             // import soldier from an external glb file, scaling up its size 20x
             // IMPORTANT: .glb is not a standard MIME TYPE, you'll have to add it to your web server config,
             // otherwise you'll receive a 404 error
-
             // Attribution: Soldier animated model by T. Choonyung at https://www.mixamo.com
             // from https://www.mixamo.com/#/?page=1&query=vanguard&type=Character
             var options = {
@@ -167,10 +147,8 @@
               rotation: { x: 90, y: 0, z: 0 },
               anchor: 'center', //default rotation
             }
-
             tb.loadObj(options, function (model) {
               soldier = model.setCoords(origin)
-
               // Listening to the events
               soldier.addEventListener('SelectedChange', onSelectedChange, false)
               soldier.addEventListener('Wireframed', onWireframed, false)
@@ -179,11 +157,9 @@
               soldier.addEventListener('ObjectMouseOver', onObjectMouseOver, false)
               soldier.addEventListener('ObjectMouseOut', onObjectMouseOut, false)
               soldier.addEventListener('ObjectChanged', onObjectChanged, false)
-
               tb.add(soldier)
             })
           },
-
           render: function (gl, matrix) {
             tb.update()
           },
@@ -193,12 +169,9 @@
         var pt = [e.lngLat.lng, e.lngLat.lat]
         travelPath(pt)
       })
-
     function travelPath(destination) {
       // request directions. See https://docs.mapbox.com/api/navigation/#directions for details
-
       var url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + [origin, destination].join(';') + '?geometries=geojson&access_token=' + config.accessToken
-
       fetchFunction(url, function (data) {
         let duration = 10000
         // extract path geometry from callback geojson, and set duration of travel
@@ -207,35 +180,27 @@
           path: data.routes[0].geometry.coordinates,
           duration: duration,
         }
-
         // start the soldier animation with above options, and remove the line when animation ends
         soldier.followPath(options, function () {
           tb.remove(line)
         })
-
         soldier.playAnimation(options)
-
         // set up geometry for a line to be added to map, lofting it up a bit for *style*
         var lineGeometry = options.path.map(function (coordinate) {
           return coordinate.concat([15])
         })
-
         // create and add line object
         line = tb.line({
           geometry: lineGeometry,
           width: 5,
           color: 'steelblue',
         })
-
         tb.add(line)
-
         // set destination as the new origin, for the next trip
         origin = destination
       })
     }
-
     //convenience function for fetch
-
     function fetchFunction(url, cb) {
       fetch(url).then(function (response) {
         if (response.status === 200) {
@@ -245,9 +210,7 @@
         }
       })
     }
-
     let selectedObject
-
     //actions to execute onSelectedChange
     function onSelectedChange(e) {
       let selected = e.detail.selected
@@ -256,7 +219,6 @@
       if (e.detail.hasDefaultAnimation) {
         $('#playButton')[0].disabled = !selected
       }
-
       if (selected) {
         selectedObject = e.detail
         $('#help')[0].innerHTML = "Press 'Shift' to drag or ress 'Alt' to rotate <br>\ Tap 'Wireframe' or 'Play' buttons "
@@ -266,7 +228,6 @@
       tb.update()
       map.repaint = true
     }
-
     //actions to execute onWireFramed
     function onWireframed(e) {
       if (e.detail.wireframe) {
@@ -278,7 +239,6 @@
       tb.update()
       map.repaint = true
     }
-
     //actions to execute onIsPlayingChanged
     function onIsPlayingChanged(e) {
       if (e.detail.isPlaying) {
@@ -287,31 +247,25 @@
         $('#playButton').children('.fas').removeClass('fa-pause').addClass('fa-play')
       }
     }
-
     //actions to execute onDraggedObject
     function onDraggedObject(e) {
       let draggedObject = e.detail.draggedObject
       let draggedAction = e.detail.draggedAction
-
       console.log('onDraggedObject' + draggedAction)
     }
-
     //actions to execute onObjectMouseOver
     function onObjectMouseOver(e) {
       console.log('onObjectMouseOver')
     }
-
     //actions to execute onObjectMouseOut
     function onObjectMouseOut(e) {
       console.log('onObjectMouseOut')
     }
-
     function onObjectChanged(e) {
       let model = e.detail.object //here's the object already modified
       let action = e.detail.action //here's the action that changed the object
       console.log(action)
     }
-
     //wire / unwire object
     $('#wireButton').on('click', function () {
       if (selectedObject) {
@@ -322,7 +276,6 @@
         }
       }
     })
-
     //play/pause default animation
     $('#playButton').on('click', function () {
       if (selectedObject) {

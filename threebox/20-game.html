@@ -13,12 +13,10 @@
       height: 100%;
       margin: 0;
     }
-
     #map {
       width: 100%;
       height: 100%;
     }
-
     .helpDiv {
       width: auto;
       left: 50%;
@@ -26,7 +24,6 @@
       z-index: 2;
       position: absolute;
     }
-
     .help {
       background: rgba(0, 0, 0, 0.5);
       color: #fff;
@@ -50,12 +47,9 @@
       <div id="help" class="help">Press "W", "A", "S", "D" keys to drive the truck</div>
     </div>
   </div>
-
   <script type="module">
     if (!config) console.error("Config not set! Make a copy of 'config_template.js', add in your access token, and save the file as 'config.js'.")
-
     mapboxgl.accessToken = config.accessToken
-
     let minZoom = 12
     let mapConfig = {
       map: { center: [-122.4301905, 37.7298202], zoom: 20, pitch: 60, bearing: 38 },
@@ -66,7 +60,6 @@
         compositeLayer: '3d-buildings',
       },
     }
-
     let map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/satellite-streets-v11',
@@ -76,7 +69,6 @@
       bearing: mapConfig.map.bearing,
       antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
     })
-
     window.tb = new Threebox(map, map.getCanvas().getContext('webgl'), {
       realSunlight: true,
       enableSelectingObjects: true,
@@ -84,12 +76,9 @@
       enableRotatingObjects: true,
       enableTooltips: true,
     })
-
     tb.setSunlight(new Date(2020, 6, 19, 23), map.getCenter())
-
     // parameters to ensure the model is georeferenced correctly on the map
     let truck
-
     function createCustomLayer(layerName) {
       let model
       //create the layer
@@ -113,7 +102,6 @@
             truck.castShadow = true
             truck.selected = true
             truck.addEventListener('ObjectChanged', onObjectChanged, false)
-
             tb.add(truck)
             init()
           })
@@ -124,19 +112,15 @@
       }
       return customLayer3D
     }
-
     function easing(t) {
       return t * (2 - t)
     }
-
     let velocity = 0.0,
       speed = 0.0,
       ds = 0.01
     let keys
-
     map.on('style.load', function () {
       map.addLayer(createCustomLayer('3d-model'))
-
       let l = mapConfig.names.compositeLayer
       if (api.buildings) {
         if (!map.getLayer(l)) {
@@ -145,7 +129,6 @@
       }
       map.getCanvas().focus()
     })
-
     function createCompositeLayer(layerId) {
       let layer = {
         id: layerId,
@@ -156,7 +139,6 @@
         minzoom: minZoom,
         paint: {
           'fill-extrusion-color': ['case', ['boolean', ['feature-state', 'select'], false], 'red', ['boolean', ['feature-state', 'hover'], false], 'lightblue', '#aaa'],
-
           // use an 'interpolate' expression to add a smooth transition effect to the
           // buildings as the user zooms in
           'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], minZoom, 0, minZoom + 0.05, ['get', 'height']],
@@ -166,30 +148,25 @@
       }
       return layer
     }
-
     import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js'
     import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
     let stats, gui
     let fHover
-
     let api = {
       buildings: true,
       acceleration: 5,
       inertia: 3,
     }
-
     function init() {
       // stats
       stats = new Stats()
       map.getContainer().appendChild(stats.dom)
-
       keys = {
         a: false,
         s: false,
         d: false,
         w: false,
       }
-
       document.body.addEventListener('keydown', function (e) {
         const key = e.code.replace('Key', '').toLowerCase()
         if (keys[key] !== undefined) keys[key] = true
@@ -198,9 +175,7 @@
         const key = e.code.replace('Key', '').toLowerCase()
         if (keys[key] !== undefined) keys[key] = false
       })
-
       animate()
-
       // gui
       gui = new GUI()
       // this will define if there's a fixed zoom level for the model
@@ -208,7 +183,6 @@
       gui.add(api, 'acceleration', 1, 10).step(0.5)
       gui.add(api, 'inertia', 1, 5).step(0.5)
     }
-
     function changeGui() {
       let l = mapConfig.names.compositeLayer
       if (api.buildings) {
@@ -220,15 +194,12 @@
           map.removeLayer(l)
         }
       }
-
       tb.map.repaint = true
     }
-
     function animate() {
       requestAnimationFrame(animate)
       stats.update()
       speed = 0.0
-
       if (!(keys.w || keys.s)) {
         if (velocity > 0) {
           speed = -api.inertia * ds
@@ -240,46 +211,36 @@
           return
         }
       }
-
       if (keys.w) speed = api.acceleration * ds
       else if (keys.s) speed = -api.acceleration * ds
-
       velocity += (speed - velocity) * api.acceleration * ds
       if (speed == 0.0) {
         velocity = 0
         return
       }
-
       truck.set({ worldTranslate: new THREE.Vector3(0, -velocity, 0) })
-
       let options = {
         center: truck.coordinates,
         bearing: map.getBearing(),
         easing: easing,
       }
-
       function toDeg(rad) {
         return (rad / Math.PI) * 180
       }
-
       function toRad(deg) {
         return (deg * Math.PI) / 180
       }
-
       let deg = 1
       let rad = toRad(deg)
       let zAxis = new THREE.Vector3(0, 0, 1)
-
       if (keys.a || keys.d) {
         rad *= keys.d ? -1 : 1
         truck.set({ quaternion: [zAxis, truck.rotation.z + rad] })
         options.bearing = -toDeg(truck.rotation.z)
       }
-
       map.jumpTo(options)
       tb.map.update = true
     }
-
     function onObjectChanged(e) {
       let model = e.detail.object //here's the object already modified
       if (api.buildings) {
@@ -291,7 +252,6 @@
         }
       }
     }
-
     function light(feature) {
       fHover = feature
       map.setFeatureState(

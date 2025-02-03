@@ -13,7 +13,6 @@
       height: 100%;
       margin: 0;
     }
-
     #map {
       width: 100%;
       height: 100%;
@@ -22,10 +21,8 @@
 </head>
 <body>
   <div id="map" class="map"></div>
-
   <script type="module">
     if (!config) console.error("Config not set! Make a copy of 'config_template.js', add in your access token, and save the file as 'config.js'.")
-
     mapboxgl.accessToken = config.accessToken
     let mapConfig = {
       MAD: {
@@ -42,7 +39,6 @@
         customLayer: 'custom-layer',
       },
     }
-
     let map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/satellite-v9',
@@ -52,7 +48,6 @@
       antialias: true,
       bearing: mapConfig.MAD.bearing,
     })
-
     // we can add Threebox to mapbox to add built-in mouseover/mouseout and click behaviors
     window.tb = new Threebox(map, map.getCanvas().getContext('webgl'), {
       realSunlight: true,
@@ -61,26 +56,21 @@
     })
     tb.altitudeStep = 1
     tb.setSunlight(new Date(2021, 0, 18, 12))
-
     import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js'
     import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
-
     let stats, gui
     function animate() {
       requestAnimationFrame(animate)
       stats.update()
     }
-
     let plane
     let api = {
       fixedZoom: true,
       pan: true,
       maxZoom: 15,
     }
-
     map.on('style.load', function () {
       init()
-
       map.addLayer({
         id: 'custom_layer',
         type: 'custom',
@@ -96,9 +86,7 @@
             anchor: 'center',
             bbox: false,
           }
-
           if (api.fixedZoom) options.fixedZoom = api.maxZoom
-
           tb.loadObj(options, function (model) {
             plane = model.setCoords(mapConfig.MAD.origin)
             plane.setRotation({ x: 0, y: 0, z: 135 })
@@ -106,9 +94,7 @@
             plane.addEventListener('ObjectChanged', onObjectChanged, false)
             plane.castShadow = true
             tb.add(plane)
-
             fly(flightPlan)
-
             //setTimeout(() => {
             //	let opt = {
             //		coords: mapConfig.MAD.destination, duration: 20000
@@ -117,13 +103,11 @@
             //}, 3000);
           })
         },
-
         render: function (gl, matrix) {
           tb.update()
         },
       })
     })
-
     function init() {
       // stats
       stats = new Stats()
@@ -136,45 +120,36 @@
       gui.add(api, 'pan').name('pan').onChange(changeScale)
       gui.add(api, 'maxZoom', 0, map.transform.maxZoom).step(0.5).onChange(changeScale)
     }
-
     function onObjectChanged(e) {
       let model = e.detail.object //here's the object already modified
       if (api.pan) map.panTo(model.coordinates)
     }
-
     function changeScale() {
       plane.fixedZoom = api.fixedZoom ? api.maxZoom : null
       plane.setObjectScale(map.transform.scale)
       tb.map.repaint = true
     }
-
     let line
-
     function fly(data) {
       // extract path geometry from callback geojson, and set duration of travel
       var options = {
         path: data.geometry.coordinates,
         duration: 40000,
       }
-
       // start the truck animation with above options, and remove the line when animation ends
       plane.followPath(options, function () {
         tb.remove(line)
       })
-
       // set up geometry for a line to be added to map, lofting it up a bit for *style*
       let lineGeometry = options.path
-
       // create and add line object
       line = tb.line({
         geometry: lineGeometry,
         width: 5,
         color: 'steelblue',
       })
-
       tb.add(line, mapConfig.names.customLayer)
     }
-
     let flightPlan = {
       geometry: {
         coordinates: [

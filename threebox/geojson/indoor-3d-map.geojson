@@ -1,6 +1,5 @@
 {
   "features": [
-
     {
       "type": "Feature",
       "properties": {
@@ -47,8 +46,6 @@
       },
       "id": "08a10ab2bf15c4d14669b588062f7f08"
     },
-
-
 
 
     {
@@ -203,7 +200,6 @@
       },
       "id": "4be6817c3b595042c8d971eebd0c4fd3"
     },
-
     {
       "type": "Feature",
       "properties": {
@@ -432,7 +428,6 @@
       },
       "id": "85547a1ecdbd2ca1fdc6324aea3c6b70"
     },
-
     {
       "type": "Feature",
       "properties": {
@@ -517,7 +512,6 @@
       },
       "id": "a37230898905988cab9b72927dc99258"
     },
-
     {
       "type": "Feature",
       "properties": {
@@ -556,7 +550,6 @@
       },
       "id": "cfbf2aee6a73a45c12e7fc7432d6009e"
     },
-
     {
       "type": "Feature",
       "properties": {
