@@ -451,29 +451,38 @@
         })
       },
     })
+
     import { Runtime, Inspector } from './runtime.js'
 
     function _chart() {
       return chart()
     }
 
-    function _Generators() {
+    function _frame() {
       return Ln.input(_)
     }
 
     function _bind(chart, frame) {
+      console.log('chart:', chart)
+      console.log('frame:', frame)
       return chart.update(frame)
     }
 
     const main = new Runtime().module((runtime, observer) => {
       const main = runtime.module()
       main.variable(observer()).define('chart', [], _chart)
-      main.variable(observer()).define('frame', [], _Generators)
+      main.variable(observer()).define('frame', [], _frame)
       main.variable(observer()).define(['chart', 'frame'], _bind)
       return main
     }, Inspector.into(document.body))
 
-    window.onload = () => {}
+    // window.onload = () => {
+    //   const chart2 = chart()
+    //   const frame2 = Ln.input(_)
+    //   console.log('chart2:', chart2)
+    //   console.log('frame2:', frame2)
+    //   chart2.update(frame2)
+    // }
   </script>
 
   <form id="f" style="font: 12px var(--sans-serif); font-variant-numeric: tabular-nums; display: flex; height: 33px; align-items: center">
