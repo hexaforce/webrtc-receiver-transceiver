@@ -16,18 +16,15 @@
     const renderForwardBy = 4
     const defaultYDomain = [0, 100]
     const defaultXDomain = [now - delay * chartFrameLimit, now]
-
     const x = d3
       .scaleTime()
       .domain(defaultXDomain)
       .range([margin.left, width - margin.right])
-
     const y = d3
       .scaleLinear()
       .domain(defaultYDomain)
       .nice()
       .range([height - margin.bottom, margin.top])
-
     function xAxis(g, x) {
       g.attr('transform', `translate(0, ${height - margin.bottom})`)
         .call(
@@ -40,7 +37,6 @@
         .call((g) => g.select('.domain').attr('opacity', 1))
         .call((g) => g.selectAll('.tick text').attr('y', 12))
     }
-
     function yAxis(g, y) {
       g.attr('text-anchor', 'end')
         .attr('transform', `translate(${margin.left}, 0)`)
@@ -49,7 +45,6 @@
         .call((g) => g.select('.domain').attr('opacity', 0))
         .call((g) => g.selectAll('.tick text').attr('x', -4))
     }
-
     const keyframes = []
     for (let index = 0; index < frameCount; ++index) {
       keyframes.push({
@@ -57,18 +52,13 @@
         latency: Math.max(25, Math.min(d3.randomNormal(0.45, 0.13)() * 500, 500)),
       })
     }
-
     function chart() {
       const svg = d3.create('svg').attr('viewBox', [0, 0, width, height])
-
       let gx = svg.append('g').call(xAxis, x)
       let gy = svg.append('g').call(yAxis, y)
-
       let pathG = svg.append('g').attr('clip-path', 'url(#clip)')
       let transformG = pathG.append('g')
-
       const tooltip = new Tooltip(transformG)
-
       let p50G = transformG.append('g').attr('fill', '#0F3460')
       let p90G = transformG.append('g').attr('fill', '#E94560')
       let rawDataG = transformG.append('g').attr('fill', '#16213E')
@@ -77,7 +67,6 @@
         .attr('pointer-events', 'all')
         .attr('fill', 'none')
         .on('mouseleave', () => tooltip.hide())
-
       let clipping = svg
         .append('defs')
         .append('clipPath')
@@ -86,11 +75,9 @@
         .attr('transform', `translate(${margin.left}, 0)`)
         .attr('width', width - margin.right - margin.left)
         .attr('height', height)
-
       let path = rawDataG.append('g').append('path').attr('opacity', 0.5).attr('fill', 'none').attr('stroke', '#16213E').attr('class', 'line').attr('stroke-width', '1')
       let path50 = p50G.append('path').attr('fill', 'none').attr('stroke', '#0F3460').attr('class', 'line').attr('stroke-width', 1.5)
       let path90 = p90G.append('path').attr('fill', 'none').attr('stroke', '#E94560').attr('class', 'line').attr('stroke-width', 2)
-
       const zoom = d3
         .zoom()
         .scaleExtent([1, 10])
@@ -102,12 +89,9 @@
           [margin.left, margin.top],
           [width - margin.right, height - margin.bottom],
         ])
-
       svg.call(zoom).transition().duration(750).call(zoom.scaleTo, 4, [0, 0])
-
       let offsetX = 0
       let zoomTransform = null
-
       return Object.assign(svg.node(), {
         update(frame) {
           console.log('update:', frame)
@@ -115,30 +99,24 @@
           const p50Data = getPDataSlice(frame, 'p50')
           const p90Data = getPDataSlice(frame, 'p90')
           const t = svg.transition().duration(delay).ease(d3.easeLinear)
-
           let xDomainShift = frame * delay // calculate how many pixels the distance of frame-dragging every update.
           let newDomainX = defaultXDomain.map((a) => a + xDomainShift)
           let horizScale = x.domain(newDomainX)
-
           if (zoomTransform) {
             horizScale = zoomTransform.rescaleX(horizScale)
             newDomainX = horizScale.domain()
           }
           let xRangeShift = horizScale(newDomainX[1]) - horizScale(newDomainX[1] - delay)
           let line = genLine(horizScale)
-
           // redraw domain
           gx.transition(t).call(xAxis, horizScale)
           gy.transition(t).call(yAxis, y.domain([0, d3.max(newdata, (d) => d.latency) + 100]).nice())
-
           // drag the frame to the left continuously to emulate continous line
           transformG.interrupt().attr('transform', null).transition(t).attr('transform', `translate(-${xRangeShift}, 0)`)
-
           // update path
           rawDataG.select('path').datum(newdata).attr('d', line)
           p50G.select('path').datum(p50Data).attr('d', line)
           p90G.select('path').datum(p90Data).attr('d', line)
-
           // update circles
           rawDataG
             .selectAll('circle')
@@ -151,7 +129,6 @@
             .attr('r', 1.5)
             .attr('cx', (d) => horizScale(d.ts))
             .attr('cy', (d) => y(d.latency))
-
           p50G
             .selectAll('circle')
             .data(p50Data)
@@ -163,7 +140,6 @@
             .attr('r', 3)
             .attr('cx', (d) => horizScale(d.ts))
             .attr('cy', (d) => y(d.latency))
-
           p90G
             .selectAll('circle')
             .data(p90Data)
@@ -175,42 +151,34 @@
             .attr('r', 3)
             .attr('cx', (d) => horizScale(d.ts))
             .attr('cy', (d) => y(d.latency))
-
           // update tooltip with latest data point
           let tooltipCb = (mouseAt) => tooltip.show(bisect(newdata, horizScale.invert(mouseAt)), horizScale, t)
-
           svg.on('mousemove', (event) => {
             tooltipCb(event.offsetX)
             offsetX = event.offsetX
           })
           tooltipCb(offsetX)
-
           // update zoom
           function zoomed(event) {
             const xz = event.transform.rescaleX(x)
             zoomTransform = event.transform
-
             line = genLine(xz)
             transformG.selectAll('circle:not(#tooltip-cir)').attr('cx', (d) => xz(d.ts))
             transformG.selectAll('path').attr('d', line)
             gx.call(xAxis, xz)
           }
-
           zoom.on('zoom', zoomed)
         },
       })
     }
-
     function getPData(rawData, p, samplingRate) {
       return tailessChunk(rawData, samplingRate).map((d) => ({
         ts: d[Math.floor(d.length / 2)].ts,
         latency: d3.quantile(d, p, (d) => d.latency),
       }))
     }
-
     const p90keyframes = getPData(keyframes, 0.9, pDataSamplingRate)
     const p50keyframes = getPData(keyframes, 0.5, pDataSamplingRate)
-
     function getDataSlice(frame) {
       let forwardBy = frame > frameCount ? 0 : renderForwardBy
       if (frame < chartFrameLimit) {
@@ -218,7 +186,6 @@
       }
       return keyframes.slice(frame - chartFrameLimit, frame + forwardBy)
     }
-
     function getPDataSlice(frame, pType) {
       let syncedFrame = frame / pDataSamplingRate
       let source = pType === 'p50' ? p50keyframes : p90keyframes
@@ -227,14 +194,12 @@
       }
       return source.slice(syncedFrame - chartFrameLimit, syncedFrame + renderForwardBy)
     }
-
     function tailessChunk(array, chunkSize) {
       // chunks an array into equally chunkSized subarrays
       // but discard the tail that doesn't have enough items left to make chunkSized subarray.
       let arr = []
       let temp = []
       let chunkcount = 0
-
       for (let i = 0; i < array.length; i++) {
         temp.push(array[i])
         if (chunkcount < chunkSize - 1) {
@@ -247,9 +212,7 @@
       }
       return arr
     }
-
     const bisectTs = d3.bisector((d) => d.ts).left
-
     function bisect(data, ts) {
       const i = bisectTs(data, ts, 1)
       const a = data[i - 1],
@@ -258,7 +221,6 @@
       if (!b.ts) return a
       return ts - a.ts > b.ts - ts ? b : a
     }
-
     function genLine(xScale) {
       return d3
         .line()
@@ -266,64 +228,51 @@
         .x((d) => xScale(d.ts))
         .y((d) => y(d.latency))
     }
-
     class Tooltip {
       constructor(parent) {
         this.g = parent.append('g').attr('pointer-events', 'none').attr('display', 'none').attr('font-size', '10').attr('font-family', 'sans-serif').attr('text-anchor', 'middle')
-
         this.g
           .append('rect')
           .attr('width', 1)
           .attr('height', height - margin.top)
           .attr('fill', '#12355B')
-
         let textBox = this.g.append('g').attr('transform', `translate(0, ${margin.top})`)
         textBox.append('rect').attr('x', -29).attr('width', 58).attr('height', 15).attr('rx', 3).attr('ry', 3).attr('fill', '#16213E')
         textBox.append('text').attr('id', 'latency').attr('fill', 'white').attr('y', 12)
         this.g.append('circle').attr('id', 'tooltip-cir').attr('r', 6).attr('fill', '#16213E')
       }
-
       show(d, scaleX) {
         this.g.node().removeAttribute('display')
         this.g.attr('transform', `translate(${scaleX(d.ts)}, 0)`)
         this.g.select('circle').attr('transform', `translate(0, ${y(d.latency)})`)
         this.g.select('#latency').text(`${d.latency.toFixed(2)} ms`)
       }
-
       hide() {
         this.g.attr('display', 'none')
       }
     }
-
     function Scrubber({ direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
       const $ = (id) => document.getElementById(id)
-
       let frame = null
       let timer = null
       let interval = null
-
       var values = Array.from(d3.range(1, frameCount, 1))
       $('i').max = values.length - 1
-
       const format = (value) => value
-
       function start() {
         $('b').textContent = 'Pause'
         if (delay === null) frame = requestAnimationFrame(tick)
         else interval = setInterval(tick, delay)
       }
-
       function stop() {
         $('b').textContent = 'Play'
         if (frame !== null) cancelAnimationFrame(frame), (frame = null)
         if (timer !== null) clearTimeout(timer), (timer = null)
         if (interval !== null) clearInterval(interval), (interval = null)
       }
-
       function running() {
         return frame !== null || timer !== null || interval !== null
       }
-
       function tick() {
         if ($('i').valueAsNumber === (direction > 0 ? values.length - 1 : direction < 0 ? 0 : NaN)) {
           if (!loop) return stop()
@@ -338,18 +287,15 @@
         if (delay === null) frame = requestAnimationFrame(tick)
         step()
       }
-
       function step() {
         $('i').valueAsNumber = ($('i').valueAsNumber + direction + values.length) % values.length
         $('i').dispatchEvent(new CustomEvent('input', { bubbles: true }))
       }
-
       $('i').oninput = (event) => {
         if (event && event.isTrusted && running()) stop()
         $('f').value = values[$('i').valueAsNumber]
         $('o').value = format($('f').value, $('i').valueAsNumber, values)
       }
-
       $('b').onclick = () => {
         if (running()) return stop()
         direction = alternate && $('i').valueAsNumber === values.length - 1 ? -1 : 1
@@ -357,25 +303,19 @@
         $('i').dispatchEvent(new CustomEvent('input', { bubbles: true }))
         start()
       }
-
       $('i').oninput()
-
       if (autoplay) start()
       else stop()
-
       return $('f')
     }
-
     const _ = Scrubber({
       loop: false,
       autoplay: false,
       delay,
     })
-
     function $n() {
       return this
     }
-
     function qn(e) {
       let t,
         n,
@@ -394,7 +334,6 @@
         },
       }
     }
-
     function On(e) {
       switch (e.type) {
         case 'range':
@@ -412,7 +351,6 @@
           return e.value
       }
     }
-
     var Ln = Object.freeze({
       __proto__: null,
       input: function (e) {
@@ -443,9 +381,7 @@
         })
       },
     })
-
     import { Runtime, Inspector } from './runtime.js'
-
     // let chart_ = chart()
     // console.log('chart_:', chart_)
     function _chart() {
@@ -453,7 +389,6 @@
       console.log('chart_:', chart_)
       return chart_
     }
-
     // let frame_ = Ln.input(_)
     // console.log('frame_:', frame_)
     function _frame() {
@@ -461,7 +396,6 @@
       console.log('frame_:', frame_)
       return frame_
     }
-
     function _bind(chart, frame) {
       console.log('chart:', chart)
       console.log('frame:', frame)
@@ -491,7 +425,6 @@
     //   chart2.update(frame2)
     // }
   </script>
-
   <form id="f" style="font: 12px var(--sans-serif); font-variant-numeric: tabular-nums; display: flex; height: 33px; align-items: center">
     <button id="b" type="button" style="margin-right: 0.4em; width: 5em"></button>
     <label style="display: flex; align-items: center">

@@ -4481,7 +4481,6 @@ Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
          * custom line shader by WestLangley, sourced from https://github.com/mrdoob/three.js/tree/master/examples/js/lines
          *
          */
-
         ;(function () {
           const _box = new THREE.Box3()
 
@@ -4659,7 +4658,6 @@ Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
          * @author WestLangley / http://github.com/WestLangley
          *
          */
-
         ;(function () {
           class LineGeometry extends THREE.LineSegmentsGeometry {
             constructor() {
@@ -4726,7 +4724,6 @@ Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
          * @author WestLangley / http://github.com/WestLangley
          *
          */
-
         ;(function () {
           class WireframeGeometry2 extends THREE.LineSegmentsGeometry {
             constructor(geometry) {
@@ -4754,7 +4751,6 @@ Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
          *  resolution: <Vector2>, // to be set by renderer
          * }
          */
-
         ;(function () {
           /**
            * parameters = {
@@ -5296,7 +5292,6 @@ Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
          * @author WestLangley / http://github.com/WestLangley
          *
          */
-
         ;(function () {
           const _start = new THREE.Vector3()
 
@@ -5544,7 +5539,6 @@ Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
          * @author WestLangley / http://github.com/WestLangley
          *
          */
-
         ;(function () {
           class Line2 extends THREE.LineSegments2 {
             constructor(
@@ -5567,7 +5561,6 @@ Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
          * @author WestLangley / http://github.com/WestLangley
          *
          */
-
         ;(function () {
           const _start = new THREE.Vector3()
 
