@@ -304,6 +304,7 @@
 
     function Scrubber({ direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
       const $ = (id) => document.getElementById(id)
+      console.log('===Scrubber')
 
       let frame = null
       let timer = null
@@ -373,11 +374,7 @@
       return $('f')
     }
 
-    function _Scrubber() {
-      return Scrubber
-    }
-
-    function _frame(Scrubber) {
+    function _frame() {
       return Scrubber({
         loop: false,
         autoplay: false,
@@ -395,18 +392,18 @@
 
     function define(runtime, observer) {
       const main = runtime.module()
-      main.variable(observer('Scrubber')).define('Scrubber', [], _Scrubber)
-      main.variable(observer('viewof frame')).define('viewof frame', ['Scrubber'], _frame)
-      main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
+      main.variable(observer('viewOfFrame')).define('viewOfFrame', [], _frame)
+      main.variable(observer('frame')).define('frame', ['Generators', 'viewOfFrame'], (G, _) => G.input(_))
       main.variable(observer('chart')).define('chart', [], _chart)
       main.variable(observer()).define(['chart', 'frame'], _bind)
       return main
     }
 
     import { Runtime, Library, Inspector } from './runtime.js'
-
     const runtime = new Runtime()
     const main = runtime.module(define, Inspector.into(document.body))
+
+    window.onload = () => {}
   </script>
 
   <form id="f" style="font: 12px var(--sans-serif); font-variant-numeric: tabular-nums; display: flex; height: 33px; align-items: center">
