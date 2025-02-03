@@ -380,14 +380,85 @@
       delay,
     })
 
+    function $n() {
+      return this
+    }
+
+    function qn(e) {
+      let t,
+        n,
+        r = !1
+      const a = e(function (e) {
+        n ? (n(e), (n = null)) : (r = !0)
+        return (t = e)
+      })
+      if (null != a && 'function' != typeof a) throw new Error('function' == typeof a.then ? 'async initializers are not supported' : 'initializer returned something, but not a dispose function')
+      return {
+        [Symbol.iterator]: $n,
+        throw: () => ({ done: !0 }),
+        return: () => (null != a && a(), { done: !0 }),
+        next: function () {
+          return { done: !1, value: r ? ((r = !1), Promise.resolve(t)) : new Promise((e) => (n = e)) }
+        },
+      }
+    }
+
+    function On(e) {
+      switch (e.type) {
+        case 'range':
+        case 'number':
+          return e.valueAsNumber
+        case 'date':
+          return e.valueAsDate
+        case 'checkbox':
+          return e.checked
+        case 'file':
+          return e.multiple ? e.files : e.files[0]
+        case 'select-multiple':
+          return Array.from(e.selectedOptions, (e) => e.value)
+        default:
+          return e.value
+      }
+    }
+
+    var Ln = Object.freeze({
+      __proto__: null,
+      input: function (e) {
+        return qn(function (t) {
+          var n = (function (e) {
+              switch (e.type) {
+                case 'button':
+                case 'submit':
+                case 'checkbox':
+                  return 'click'
+                case 'file':
+                  return 'change'
+                default:
+                  return 'input'
+              }
+            })(e),
+            r = On(e)
+          function a() {
+            t(On(e))
+          }
+          return (
+            e.addEventListener(n, a),
+            void 0 !== r && t(r),
+            function () {
+              e.removeEventListener(n, a)
+            }
+          )
+        })
+      },
+    })
     import { Runtime, Inspector } from './runtime.js'
 
     function _chart() {
       return chart()
     }
 
-    function _Generators(G) {
-      return G.input(_)
+    function _Generators() {
+      return Ln.input(_)
     }
 
     function _bind(chart, frame) {
@@ -397,7 +468,7 @@
     const main = new Runtime().module((runtime, observer) => {
       const main = runtime.module()
       main.variable(observer()).define('chart', [], _chart)
-      main.variable(observer()).define('frame', ['Generators'], _Generators)
+      main.variable(observer()).define('frame', [], _Generators)
       main.variable(observer()).define(['chart', 'frame'], _bind)
       return main
     }, Inspector.into(document.body))
