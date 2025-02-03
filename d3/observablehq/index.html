@@ -396,8 +396,8 @@
 
     function define(runtime, observer) {
       const main = runtime.module()
-      main.variable(observer('frame')).define('frame', ['Generators'], _Generators)
       main.variable(observer('chart')).define('chart', [], _chart)
+      main.variable(observer('frame')).define('frame', ['Generators'], _Generators)
       main.variable(observer()).define(['chart', 'frame'], _bind)
       return main
     }
