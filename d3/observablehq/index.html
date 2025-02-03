@@ -6,25 +6,15 @@
 <body>
   <script type="module">
     const frameCount = 10000
-
     const delay = 1000
-
     const height = 300
-
     const width = 1000
-
     const margin = { top: 20, bottom: 20, left: 40, right: 20 }
-
     const pDataSamplingRate = 4
-
     const chartFrameLimit = 200
-
     const now = Date.now()
-
     const renderForwardBy = 4
-
     const defaultYDomain = [0, 100]
-
     const defaultXDomain = [now - delay * chartFrameLimit, now]
 
     const x = d3
@@ -37,14 +27,6 @@
       .domain(defaultYDomain)
       .nice()
       .range([height - margin.bottom, margin.top])
-
-    const keyframes = []
-    for (let index = 0; index < frameCount; ++index) {
-      keyframes.push({
-        ts: now + index * delay,
-        latency: Math.max(25, Math.min(d3.randomNormal(0.45, 0.13)() * 500, 500)),
-      })
-    }
 
     function xAxis(g, x) {
       g.attr('transform', `translate(0, ${height - margin.bottom})`)
@@ -66,6 +48,14 @@
         .call((g) => g.selectAll('.tick line').attr('stroke-opacity', 0.3).attr('stroke-dasharray', '2,2'))
         .call((g) => g.select('.domain').attr('opacity', 0))
         .call((g) => g.selectAll('.tick text').attr('x', -4))
+    }
+
+    const keyframes = []
+    for (let index = 0; index < frameCount; ++index) {
+      keyframes.push({
+        ts: now + index * delay,
+        latency: Math.max(25, Math.min(d3.randomNormal(0.45, 0.13)() * 500, 500)),
+      })
     }
 
     function chart() {
@@ -475,18 +465,10 @@
       console.log('frame:', frame)
       return chart.update(frame)
     }
-
-    // var chart_
-    // var frame_
+  
     // function _bind() {
-    //   if (!chart_) {
-    //     chart_ = chart()
-    //     console.log('chart_:', chart_)
-    //   }
-    //   if (!frame_) {
-    //     frame_ = Ln.input(_)
-    //     console.log('frame_:', frame_)
-    //   }
+    //   console.log('chart:', chart_)
+    //   console.log('frame:', frame_)
     //   return chart_.update(frame_)
     // }
   
@@ -498,7 +480,7 @@
       // main.variable(observer()).define([], _bind)
       return main
     }, Inspector.into(document.body))
-
+    
     // window.onload = () => {
     //   const chart2 = chart()
     //   const frame2 = Ln.input(_)
