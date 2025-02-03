@@ -394,8 +394,7 @@
       return chart.update(frame)
     }
 
-    const runtime = new Runtime()
-    const main = runtime.module((runtime, observer) => {
+    const main = new Runtime().module((runtime, observer) => {
       const main = runtime.module()
       main.variable(observer()).define('chart', [], _chart)
       main.variable(observer()).define('frame', ['Generators'], _Generators)
