@@ -310,31 +310,28 @@
       })
     }
 
-    function _Scrubber(html, Inputs) {
-      return function Scrubber({ direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
-        var values = Array.from(d3.range(1, frameCount, 1))
-        const format = (value) => value
-        const form = html`
-        <form style="font: 12px var(--sans-serif); font-variant-numeric: tabular-nums; display: flex; height: 33px; align-items: center;">
-          <button name="b" type="button" style="margin-right: 0.4em; width: 5em;"></button>
-          <label style="display: flex; align-items: center;">
-            <input name="i" type="range" min="0" max=${values.length - 1} value=0 step="1" style="width: 180px;" />
-            <output name="o" style="margin-left: 0.4em;"></output>
-          </label>
-        </form>`
+    let frame = null
+    let timer = null
+    let interval = null
 
-        let frame = null
-        let timer = null
-        let interval = null
+    const $ = (id) => document.getElementById(id)
+
+    function _Scrubber(Inputs) {
+      return function Scrubber({ direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
+        
+        var values = Array.from(d3.range(1, frameCount, 1))
+        $('i').max = values.length - 1
+        
+        const format = (value) => value
 
         function start() {
-          form.b.textContent = 'Pause'
+          $('b').textContent = 'Pause'
           if (delay === null) frame = requestAnimationFrame(tick)
           else interval = setInterval(tick, delay)
         }
 
         function stop() {
-          form.b.textContent = 'Play'
+          $('b').textContent = 'Play'
           if (frame !== null) cancelAnimationFrame(frame), (frame = null)
           if (timer !== null) clearTimeout(timer), (timer = null)
           if (interval !== null) clearInterval(interval), (interval = null)
@@ -345,7 +342,7 @@
         }
 
         function tick() {
-          if (form.i.valueAsNumber === (direction > 0 ? values.length - 1 : direction < 0 ? 0 : NaN)) {
+          if ($('i').valueAsNumber === (direction > 0 ? values.length - 1 : direction < 0 ? 0 : NaN)) {
             if (!loop) return stop()
             if (alternate) direction = -direction
             if (loopDelay !== null) {
@@ -360,31 +357,31 @@
         }
 
         function step() {
-          form.i.valueAsNumber = (form.i.valueAsNumber + direction + values.length) % values.length
-          form.i.dispatchEvent(new CustomEvent('input', { bubbles: true }))
+          $('i').valueAsNumber = ($('i').valueAsNumber + direction + values.length) % values.length
+          $('i').dispatchEvent(new CustomEvent('input', { bubbles: true }))
         }
 
-        form.i.oninput = (event) => {
+        $('i').oninput = (event) => {
           if (event && event.isTrusted && running()) stop()
-          form.value = values[form.i.valueAsNumber]
-          form.o.value = format(form.value, form.i.valueAsNumber, values)
+          $('f').value = values[$('i').valueAsNumber]
+          $('o').value = format($('f').value, $('i').valueAsNumber, values)
         }
 
-        form.b.onclick = () => {
+        $('b').onclick = () => {
           if (running()) return stop()
-          direction = alternate && form.i.valueAsNumber === values.length - 1 ? -1 : 1
-          form.i.valueAsNumber = (form.i.valueAsNumber + direction) % values.length
-          form.i.dispatchEvent(new CustomEvent('input', { bubbles: true }))
+          direction = alternate && $('i').valueAsNumber === values.length - 1 ? -1 : 1
+          $('i').valueAsNumber = ($('i').valueAsNumber + direction) % values.length
+          $('i').dispatchEvent(new CustomEvent('input', { bubbles: true }))
           start()
         }
 
-        form.i.oninput()
+        $('i').oninput()
 
         if (autoplay) start()
         else stop()
 
-        Inputs.disposal(form).then(stop)
-        return form
+        Inputs.disposal($('f')).then(stop)
+        return $('f')
       }
     }
 
@@ -398,7 +395,7 @@
 
     function define(runtime, observer) {
       const main = runtime.module()
-      main.variable(observer('Scrubber')).define('Scrubber', ['html', 'Inputs'], _Scrubber)
+      main.variable(observer('Scrubber')).define('Scrubber', [ 'Inputs'], _Scrubber)
       main.variable(observer('viewof frame')).define('viewof frame', ['Scrubber'], _frame)
       main.variable(observer('frame')).define('frame', ['Generators', 'viewof frame'], (G, _) => G.input(_))
       main.variable(observer('chart')).define('chart', [], _chart)
@@ -411,4 +408,13 @@
     const runtime = new Runtime()
     const main = runtime.module(define, Inspector.into(document.body))
   </script>
+
+  <form id="f" style="font: 12px var(--sans-serif); font-variant-numeric: tabular-nums; display: flex; height: 33px; align-items: center">
+    <button id="b" type="button" style="margin-right: 0.4em; width: 5em"></button>
+    <label style="display: flex; align-items: center">
+      <input id="i" type="range" min="0" max="0" value="0" step="1" style="width: 180px" />
+      <output id="o" style="margin-left: 0.4em"></output>
+    </label>
+  </form>
+
 </body>
