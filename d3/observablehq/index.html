@@ -455,11 +455,15 @@
     import { Runtime, Inspector } from './runtime.js'
 
     function _chart() {
-      return chart()
+      let chart_ = chart()
+      console.log('chart_:', chart_)
+      return chart_
     }
 
     function _frame() {
-      return Ln.input(_)
+      let frame_ = Ln.input(_)
+      console.log('frame_:', frame_)
+      return frame_
     }
 
     function _bind(chart, frame) {
@@ -470,9 +474,9 @@
 
     const main = new Runtime().module((runtime, observer) => {
       const main = runtime.module()
-      main.variable(observer()).define('chart', [], _chart)
-      main.variable(observer()).define('frame', [], _frame)
-      main.variable(observer()).define(['chart', 'frame'], _bind)
+      main.variable(observer()).define('chart_', [], _chart)
+      main.variable(observer()).define('frame_', [], _frame)
+      main.variable(observer()).define(['chart_', 'frame_'], _bind)
       return main
     }, Inspector.into(document.body))
 
