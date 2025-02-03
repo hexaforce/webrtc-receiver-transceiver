@@ -254,6 +254,8 @@
       const i = bisectTs(data, ts, 1)
       const a = data[i - 1],
         b = data[i]
+      if (!a.ts) return b
+      if (!b.ts) return a
       return ts - a.ts > b.ts - ts ? b : a
     }
 
