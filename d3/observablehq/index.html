@@ -302,85 +302,87 @@
       }
     }
 
+    function Scrubber({ direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
+      const $ = (id) => document.getElementById(id)
+
+      let frame = null
+      let timer = null
+      let interval = null
+
+      var values = Array.from(d3.range(1, frameCount, 1))
+      $('i').max = values.length - 1
+
+      const format = (value) => value
+
+      function start() {
+        $('b').textContent = 'Pause'
+        if (delay === null) frame = requestAnimationFrame(tick)
+        else interval = setInterval(tick, delay)
+      }
+
+      function stop() {
+        $('b').textContent = 'Play'
+        if (frame !== null) cancelAnimationFrame(frame), (frame = null)
+        if (timer !== null) clearTimeout(timer), (timer = null)
+        if (interval !== null) clearInterval(interval), (interval = null)
+      }
+
+      function running() {
+        return frame !== null || timer !== null || interval !== null
+      }
+
+      function tick() {
+        if ($('i').valueAsNumber === (direction > 0 ? values.length - 1 : direction < 0 ? 0 : NaN)) {
+          if (!loop) return stop()
+          if (alternate) direction = -direction
+          if (loopDelay !== null) {
+            if (frame !== null) cancelAnimationFrame(frame), (frame = null)
+            if (interval !== null) clearInterval(interval), (interval = null)
+            timer = setTimeout(() => (step(), start()), loopDelay)
+            return
+          }
+        }
+        if (delay === null) frame = requestAnimationFrame(tick)
+        step()
+      }
+
+      function step() {
+        $('i').valueAsNumber = ($('i').valueAsNumber + direction + values.length) % values.length
+        $('i').dispatchEvent(new CustomEvent('input', { bubbles: true }))
+      }
+
+      $('i').oninput = (event) => {
+        if (event && event.isTrusted && running()) stop()
+        $('f').value = values[$('i').valueAsNumber]
+        $('o').value = format($('f').value, $('i').valueAsNumber, values)
+      }
+
+      $('b').onclick = () => {
+        if (running()) return stop()
+        direction = alternate && $('i').valueAsNumber === values.length - 1 ? -1 : 1
+        $('i').valueAsNumber = ($('i').valueAsNumber + direction) % values.length
+        $('i').dispatchEvent(new CustomEvent('input', { bubbles: true }))
+        start()
+      }
+
+      $('i').oninput()
+
+      if (autoplay) start()
+      else stop()
+
+      return $('f')
+    }
+
+    function _Scrubber() {
+      return Scrubber
+    }
+
     function _frame(Scrubber) {
       return Scrubber({
         loop: false,
         autoplay: false,
         delay,
       })
-    }
-
-    const $ = (id) => document.getElementById(id)
-
-    function _Scrubber() {
-      return function Scrubber({ direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
-        let frame = null
-        let timer = null
-        let interval = null
-
-        var values = Array.from(d3.range(1, frameCount, 1))
-        $('i').max = values.length - 1
-
-        const format = (value) => value
-
-        function start() {
-          $('b').textContent = 'Pause'
-          if (delay === null) frame = requestAnimationFrame(tick)
-          else interval = setInterval(tick, delay)
-        }
-
-        function stop() {
-          $('b').textContent = 'Play'
-          if (frame !== null) cancelAnimationFrame(frame), (frame = null)
-          if (timer !== null) clearTimeout(timer), (timer = null)
-          if (interval !== null) clearInterval(interval), (interval = null)
-        }
-
-        function running() {
-          return frame !== null || timer !== null || interval !== null
-        }
-
-        function tick() {
-          if ($('i').valueAsNumber === (direction > 0 ? values.length - 1 : direction < 0 ? 0 : NaN)) {
-            if (!loop) return stop()
-            if (alternate) direction = -direction
-            if (loopDelay !== null) {
-              if (frame !== null) cancelAnimationFrame(frame), (frame = null)
-              if (interval !== null) clearInterval(interval), (interval = null)
-              timer = setTimeout(() => (step(), start()), loopDelay)
-              return
-            }
-          }
-          if (delay === null) frame = requestAnimationFrame(tick)
-          step()
-        }
-
-        function step() {
-          $('i').valueAsNumber = ($('i').valueAsNumber + direction + values.length) % values.length
-          $('i').dispatchEvent(new CustomEvent('input', { bubbles: true }))
-        }
-
-        $('i').oninput = (event) => {
-          if (event && event.isTrusted && running()) stop()
-          $('f').value = values[$('i').valueAsNumber]
-          $('o').value = format($('f').value, $('i').valueAsNumber, values)
-        }
-
-        $('b').onclick = () => {
-          if (running()) return stop()
-          direction = alternate && $('i').valueAsNumber === values.length - 1 ? -1 : 1
-          $('i').valueAsNumber = ($('i').valueAsNumber + direction) % values.length
-          $('i').dispatchEvent(new CustomEvent('input', { bubbles: true }))
-          start()
-        }
-
-        $('i').oninput()
-
-        if (autoplay) start()
-        else stop()
-
-        return $('f')
-      }
     }
 
     function _chart() {
