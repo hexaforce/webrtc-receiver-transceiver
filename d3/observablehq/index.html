@@ -304,7 +304,6 @@
 
     function Scrubber({ direction = 1, delay = null, autoplay = true, loop = true, loopDelay = null, alternate = false } = {}) {
       const $ = (id) => document.getElementById(id)
-      console.log('===Scrubber')
 
       let frame = null
       let timer = null
@@ -476,11 +475,26 @@
       return chart.update(frame)
     }
 
+    // var chart_
+    // var frame_
+    // function _bind() {
+    //   if (!chart_) {
+    //     chart_ = chart()
+    //     console.log('chart_:', chart_)
+    //   }
+    //   if (!frame_) {
+    //     frame_ = Ln.input(_)
+    //     console.log('frame_:', frame_)
+    //   }
+    //   return chart_.update(frame_)
+    // }
+  
     const main = new Runtime().module((runtime, observer) => {
       const main = runtime.module()
       main.variable(observer()).define('chart_', [], _chart)
       main.variable(observer()).define('frame_', [], _frame)
       main.variable(observer()).define(['chart_', 'frame_'], _bind)
+      // main.variable(observer()).define([], _bind)
       return main
     }, Inspector.into(document.body))
 
