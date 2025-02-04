@@ -1,99 +1,76 @@
-<!doctype html>
-<head>
-  <title>Threebox animated soldier</title>
-  <script src="threebox.js" type="text/javascript"></script>
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet" />
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
-  <style>
-    #map {
-      width: 100%;
-      height: 100%;
-    }
-  </style>
-</head>
-<body>
-  <div id="map" class="map"></div>
-  <script type="module">
-    mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
-    var origin = [-122.47920912, 37.716351775]
-    var destination, line
-    var soldier
-    var map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/outdoors-v11',
-      center: origin,
-      zoom: 18,
-      pitch: 60,
-      antialias: true,
-      bearing: 0,
-    })
-    map.addControl(new mapboxgl.NavigationControl())
-    let stats
-    import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
-    function animate() {
-      requestAnimationFrame(animate)
-      stats.update()
-    }
-    map.on('style.load', function () {
-      stats = new Stats()
-      map.getContainer().appendChild(stats.dom)
-      animate()
-      map.addLayer({
-        id: 'custom_layer',
-        type: 'custom',
-        renderingMode: '3d',
-        onAdd: function (map, mbxContext) {
-          window.tb = new Threebox(map, mbxContext, {
-            defaultLights: true,
-            enableSelectingFeatures: true,
-            enableSelectingObjects: true,
-            enableDraggingObjects: true,
-            enableRotatingObjects: true,
-            enableTooltips: false,
-          })
-          var options = {
-            obj: 'Soldier.glb',
-            type: 'gltf',
-            scale: 5,
-            units: 'meters',
-            rotation: { x: 90, y: 0, z: 0 },
-            anchor: 'center',
+<html>
+  <head>
+    <link href="style.css" rel="stylesheet" />
+    <script src="script.js"></script>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      const PROTOCOL = 'receiver'
+      window.onload = () => {
+        var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
+        var conn
+        ws.onmessage = async ({ data }) => {
+          if (!conn) {
+            conn = new RTCPeerConnection()
+            conn.onicecandidate = ({ candidate }) => candidate && ws.send(JSON.stringify(candidate))
+            conn.ondatachannel = ({ channel }) => dataChannelHandler(channel)
+            dataChannelHandler(conn.createDataChannel(PROTOCOL))
+            conn.ontrack = ({ streams }) => ($('stream').srcObject = streams[0])
           }
-          tb.loadObj(options, function (model) {
-            soldier = model.setCoords(origin)
-            soldier.addEventListener(
-              'Wireframed',
-              function onWireframed(e) {
-                console.log('onWireframed: ' + e)
-                tb.update()
-                map.repaint = true
-              },
-              false,
-            )
-            soldier.addEventListener(
-              'IsPlayingChanged',
-              function onIsPlayingChanged(e) {
-                console.log('IsPlayingChanged: ', e)
-                var options = {
-                  animation: 1,
-                  duration: 1000,
-                }
-                soldier.playAnimation(options)
-              },
-              false,
-            )
-            var options = {
-              animation: 1,
-              duration: 1000,
+          const msg = JSON.parse(data)
+          if (msg.type) {
+            const answer = await conn.createAnswer()
+            await conn.setLocalDescription(answer)
+            const [audioTransceiver, videoTransceiver] = conn.getTransceivers()
+            if (videoTransceiver) {
+              videoTransceiver.setCodecPreferences(preferredVideoCodecs())
             }
-            soldier.playAnimation(options)
-            tb.add(soldier)
+            ws.send(JSON.stringify(answer))
+          } else {
+            await conn.addIceCandidate(msg)
+          }
+        }
+        $('fullscreen-btn').onclick = () => {
+          if (d.requestFullscreen) {
+            d.requestFullscreen()
+          } else if (d.webkitRequestFullscreen) {
+            d.webkitRequestFullscreen()
+          }
+        }
+      }
+    </script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+      #map {
+        width: 320px;
+        height: 270px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <video id="stream" autoplay playsinline muted>Your browser does not support video</video>
+      <div class="overlay">xxx</div>
+      <div class="footer"><button id="fullscreen-btn">Go Fullscreen</button></div>
+      <div class="overlay-gps">
+        <div id="map"></div>
+        <script>
+          mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
+          const map = new mapboxgl.Map({
+            container: 'map', // divのID
+            style: 'mapbox://styles/mapbox/streets-v12', // 使用するマップのスタイル
+            center: [139.6917, 35.6895], // [経度, 緯度]（例: 東京）
+            zoom: 16, // ズームレベル
           })
-        },
-        render: function (gl, matrix) {
-          tb.update()
-        },
-      })
-    })
-  </script>
-</body>
+        </script>
+      </div>
+      <div class="compass">
+        <div class="compass-scale"><span>W</span><span>NW</span><span>N</span><span>NE</span><span>E</span><span>SE</span><span>S</span><span>SW</span><span>W</span></div>
+        <div class="indicator">▲</div>
+      </div>
+      <div class="hud">
+        <div class="crosshair"></div>
+      </div>
+    </div>
+  </body>
+</html>
