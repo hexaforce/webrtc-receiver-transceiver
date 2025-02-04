@@ -163,7 +163,21 @@
       speed = 0.0,
       ds = 0.01
 
-    let keys
+    let keys = {
+      a: false,
+      s: false,
+      d: false,
+      w: false,
+    }
+    document.body.addEventListener('keydown', function (e) {
+      const key = e.code.replace('Key', '').toLowerCase()
+      if (keys[key] !== undefined) keys[key] = true
+    })
+    document.body.addEventListener('keyup', function (e) {
+      const key = e.code.replace('Key', '').toLowerCase()
+      if (keys[key] !== undefined) keys[key] = false
+    })
+
     map.on('style.load', function () {
       map.addLayer(createCustomLayer())
       if (api.buildings) {
@@ -188,20 +202,7 @@
       // stats
       stats = new Stats()
       map.getContainer().appendChild(stats.dom)
-      keys = {
-        a: false,
-        s: false,
-        d: false,
-        w: false,
-      }
-      document.body.addEventListener('keydown', function (e) {
-        const key = e.code.replace('Key', '').toLowerCase()
-        if (keys[key] !== undefined) keys[key] = true
-      })
-      document.body.addEventListener('keyup', function (e) {
-        const key = e.code.replace('Key', '').toLowerCase()
-        if (keys[key] !== undefined) keys[key] = false
-      })
+
       animate()
       // gui
       gui = new GUI()
