@@ -18,28 +18,6 @@
       width: 100%;
       height: 100%;
     }
-    .helpDiv {
-      width: auto;
-      left: 50%;
-      top: 0px;
-      z-index: 2;
-      position: absolute;
-    }
-    .help {
-      background: rgba(0, 0, 0, 0.5);
-      color: #fff;
-      position: relative;
-      text-align: center;
-      top: 10px;
-      left: -50%;
-      padding: 5px 10px;
-      margin: 0;
-      font-size: 11px;
-      line-height: 18px;
-      border-radius: 3px;
-      z-index: 1;
-      display: block;
-    }
   </style>
 </head>
 <body>
@@ -104,7 +82,7 @@
           tb.loadObj(options, function (model) {
             truck = model.setCoords([position[0], position[1], 10])
             truck.setRotation({ x: 0, y: 0, z: -38 }) //turn it to the initial street way
-            truck.addTooltip('Drive with WASD keys', true, truck.anchor, true, 2)
+            // truck.addTooltip('Drive with WASD keys', true, truck.anchor, true, 2)
             truck.castShadow = true
             truck.selected = true
             truck.addEventListener(
