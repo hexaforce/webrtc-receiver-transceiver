@@ -77,11 +77,10 @@
 
     // parameters to ensure the model is georeferenced correctly on the map
     let truck
-
     function createCustomLayer() {
       let model
       //create the layer
-      let customLayer3D = {
+      return {
         id: '3d-model',
         type: 'custom',
         renderingMode: '3d',
@@ -130,7 +129,6 @@
           tb.update()
         },
       }
-      return customLayer3D
     }
 
     function createCompositeLayer() {
