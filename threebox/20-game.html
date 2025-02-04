@@ -89,7 +89,7 @@
   }
 
     const position = await getPosition()
-
+console.log(position)
     let mapConfig = {
       map: { center: [position.longitude, position.latitude], zoom: 20, pitch: 60, bearing: 38 },
       truck: { origin: [position.longitude, position.latitude, 15], type: 'glb', model: './models/plane/plane.glb', rotation: { x: 90, y: -90, z: 0 }, scale: 5, startRotation: { x: 0, y: 0, z: -38 }, date: new Date(2020, 6, 19, 23) },
