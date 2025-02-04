@@ -92,7 +92,7 @@
 
     let mapConfig = {
       map: { center: [position.longitude, position.latitude], zoom: 20, pitch: 60, bearing: 38 },
-      truck: { origin: [position.longitude, position.latitude, 10], type: 'glb', model: './models/vehicles/car', rotation: { x: 90, y: -90, z: 0 }, scale: 5, startRotation: { x: 0, y: 0, z: -38 }, date: new Date(2020, 6, 19, 23) },
+      truck: { origin: [position.longitude, position.latitude, 15], type: 'glb', model: './models/plane/plane.glb', rotation: { x: 90, y: -90, z: 0 }, scale: 5, startRotation: { x: 0, y: 0, z: -38 }, date: new Date(2020, 6, 19, 23) },
       names: {
         compositeSource: 'composite',
         compositeSourceLayer: 'building',
@@ -178,8 +178,7 @@
         minzoom: minZoom,
         paint: {
           'fill-extrusion-color': ['case', ['boolean', ['feature-state', 'select'], false], 'red', ['boolean', ['feature-state', 'hover'], false], 'lightblue', '#aaa'],
-          // use an 'interpolate' expression to add a smooth transition effect to the
-          // buildings as the user zooms in
+          // use an 'interpolate' expression to add a smooth transition effect to the buildings as the user zooms in
           'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], minZoom, 0, minZoom + 0.05, ['get', 'height']],
           'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], minZoom, 0, minZoom + 0.05, ['get', 'min_height']],
           'fill-extrusion-opacity': 0.9,

@@ -20,3 +20,6 @@ fmt:
 
 server:
 	COMPOSE_PROJECT_NAME=x docker compose up --build
+
+down:
+	COMPOSE_PROJECT_NAME=x docker compose down
