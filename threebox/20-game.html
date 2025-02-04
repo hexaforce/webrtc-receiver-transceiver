@@ -1,10 +1,9 @@
-<!doctype html>
 <head>
   <title>Threebox WASD driving game</title>
   <!-- <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.css" rel="stylesheet" />
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.js"></script> -->
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js"></script>
-  <link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.7/dist/threebox.min.js" type="text/javascript"></script>
   <link href="https://cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.7/dist/threebox.css" rel="stylesheet" />
   <!-- <script src="dist/threebox.js" type="text/javascript"></script>
@@ -56,43 +55,21 @@
     mapboxgl.accessToken = config.accessToken
     let minZoom = 12
 
-   const getPosition = async (timeout) => {
-    if (!window.navigator || !window.navigator.geolocation)
-      throw new Error("Geolocation is not supported by this browser.");
-    return new Promise((resolve, reject) => {
-      window.navigator.geolocation.getCurrentPosition(
-        ({ coords, timestamp }) => {
-          const {
-            accuracy,
-            altitude,
-            altitudeAccuracy,
-            heading,
-            latitude,
-            longitude,
-            speed,
-          } = coords;
-          resolve({
-            accuracy,
-            altitude,
-            altitudeAccuracy,
-            heading,
-            latitude,
-            longitude,
-            speed,
-            timestamp,
-          });
-        },
-        (err) => reject(err),
-        timeout ? { enableHighAccuracy: true, timeout: timeout, maximumAge: 0 } : null
-      );
-    });
-  }
+    const getPosition = async (timeout) => {
+      return new Promise((resolve, reject) => {
+        window.navigator.geolocation.getCurrentPosition(
+          ({ coords, timestamp }) => resolve([coords.longitude, coords.latitude]),
+          (err) => reject(err),
+          timeout ? { enableHighAccuracy: true, timeout: timeout, maximumAge: 0 } : null,
+        )
+      })
+    }
 
     const position = await getPosition()
-console.log(position)
+
     let mapConfig = {
-      map: { center: [position.longitude, position.latitude], zoom: 20, pitch: 60, bearing: 38 },
-      truck: { origin: [position.longitude, position.latitude, 15], type: 'glb', model: './models/plane/plane.glb', rotation: { x: 90, y: -90, z: 0 }, scale: 5, startRotation: { x: 0, y: 0, z: -38 }, date: new Date(2020, 6, 19, 23) },
+      map: { center: position, zoom: 20, pitch: 60, bearing: 38 },
+      truck: { origin: [position[0], position[1], 15], type: 'glb', model: './models/vehicles/car', rotation: { x: 90, y: -90, z: 0 }, scale: 5, startRotation: { x: 0, y: 0, z: -38 }, date: new Date(2020, 6, 19, 23) },
       names: {
         compositeSource: 'composite',
         compositeSourceLayer: 'building',
