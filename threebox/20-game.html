@@ -26,6 +26,21 @@
     if (!config) console.error("Config not set! Make a copy of 'config_template.js', add in your access token, and save the file as 'config.js'.")
     mapboxgl.accessToken = config.accessToken
 
+    let keys = {
+      a: false,
+      s: false,
+      d: false,
+      w: false,
+    }
+    document.body.addEventListener('keydown', function (e) {
+      const key = e.code.replace('Key', '').toLowerCase()
+      if (keys[key] !== undefined) keys[key] = true
+    })
+    document.body.addEventListener('keyup', function (e) {
+      const key = e.code.replace('Key', '').toLowerCase()
+      if (keys[key] !== undefined) keys[key] = false
+    })
+
     const getPosition = async (timeout) => {
       return new Promise((resolve, reject) => {
         window.navigator.geolocation.getCurrentPosition(
@@ -119,7 +134,7 @@
     }
 
     function createCompositeLayer() {
-      let layer = {
+      return {
         id: layerId,
         source: 'composite',
         'source-layer': 'building',
@@ -134,27 +149,7 @@
           'fill-extrusion-opacity': 0.9,
         },
       }
-      return layer
     }
-
-    let velocity = 0.0,
-      speed = 0.0,
-      ds = 0.01
-
-    let keys = {
-      a: false,
-      s: false,
-      d: false,
-      w: false,
-    }
-    document.body.addEventListener('keydown', function (e) {
-      const key = e.code.replace('Key', '').toLowerCase()
-      if (keys[key] !== undefined) keys[key] = true
-    })
-    document.body.addEventListener('keyup', function (e) {
-      const key = e.code.replace('Key', '').toLowerCase()
-      if (keys[key] !== undefined) keys[key] = false
-    })
 
     map.on('style.load', function () {
       map.addLayer(createCustomLayer())
@@ -203,6 +198,10 @@
       gui.add(api, 'acceleration', 1, 10).step(0.5)
       gui.add(api, 'inertia', 1, 5).step(0.5)
     }
+
+    let velocity = 0.0
+    let speed = 0.0
+    let ds = 0.01
 
     function animate() {
       requestAnimationFrame(animate)
