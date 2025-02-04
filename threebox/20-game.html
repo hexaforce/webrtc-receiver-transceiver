@@ -91,11 +91,11 @@
     tb.setSunlight(new Date(2020, 6, 19, 23), map.getCenter())
     // parameters to ensure the model is georeferenced correctly on the map
     let truck
-    function createCustomLayer(layerName) {
+    function createCustomLayer() {
       let model
       //create the layer
       let customLayer3D = {
-        id: layerName,
+        id: '3d-model',
         type: 'custom',
         renderingMode: '3d',
         onAdd: function (map, gl) {
@@ -132,7 +132,7 @@
       ds = 0.01
     let keys
     map.on('style.load', function () {
-      map.addLayer(createCustomLayer('3d-model'))
+      map.addLayer(createCustomLayer())
       let l = mapConfig.names.compositeLayer
       if (api.buildings) {
         if (!map.getLayer(l)) {
