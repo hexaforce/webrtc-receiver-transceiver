@@ -45,11 +45,7 @@
   </style>
 </head>
 <body>
-  <div id="map" class="map">
-    <!-- <div class="mapboxgl-ctrl helpDiv">
-      <div id="help" class="help">Press "W", "A", "S", "D" keys to drive the truck</div>
-    </div> -->
-  </div>
+  <div id="map" class="map"></div>
   <script type="module">
     if (!config) console.error("Config not set! Make a copy of 'config_template.js', add in your access token, and save the file as 'config.js'.")
     mapboxgl.accessToken = config.accessToken
@@ -66,10 +62,7 @@
     }
 
     const position = await getPosition()
-
-    let mapConfig = {
-      names: { compositeLayer: '3d-buildings'},
-    }
+    const layerId = '3d-buildings'
 
     let map = new mapboxgl.Map({
       container: 'map',
@@ -80,6 +73,7 @@
       bearing: 38,
       antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
     })
+
     window.tb = new Threebox(map, map.getCanvas().getContext('webgl'), {
       realSunlight: true,
       enableSelectingObjects: true,
@@ -87,6 +81,7 @@
       enableRotatingObjects: true,
       enableTooltips: true,
     })
+
     tb.setSunlight(new Date(2020, 6, 19, 23), map.getCenter())
     // parameters to ensure the model is georeferenced correctly on the map
     let truck
@@ -123,24 +118,27 @@
       }
       return customLayer3D
     }
+
     function easing(t) {
       return t * (2 - t)
     }
+
     let velocity = 0.0,
       speed = 0.0,
       ds = 0.01
+
     let keys
     map.on('style.load', function () {
       map.addLayer(createCustomLayer())
-      let l = mapConfig.names.compositeLayer
       if (api.buildings) {
-        if (!map.getLayer(l)) {
-          map.addLayer(createCompositeLayer(l))
+        if (!map.getLayer(layerId)) {
+          map.addLayer(createCompositeLayer())
         }
       }
       map.getCanvas().focus()
     })
-    function createCompositeLayer(layerId) {
+
+    function createCompositeLayer() {
       let layer = {
         id: layerId,
         source: 'composite',
@@ -158,6 +156,7 @@
       }
       return layer
     }
+
     import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js'
     import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
     let stats, gui
@@ -167,6 +166,7 @@
       acceleration: 5,
       inertia: 3,
     }
+
     function init() {
       // stats
       stats = new Stats()
@@ -193,11 +193,11 @@
       gui.add(api, 'acceleration', 1, 10).step(0.5)
       gui.add(api, 'inertia', 1, 5).step(0.5)
     }
+
     function changeGui() {
-      let l = mapConfig.names.compositeLayer
       if (api.buildings) {
-        if (!map.getLayer(l)) {
-          map.addLayer(createCompositeLayer(l))
+        if (!map.getLayer(layerId)) {
+          map.addLayer(createCompositeLayer())
         }
       } else {
         if (map.getLayer(l)) {
@@ -206,6 +206,7 @@
       }
       tb.map.repaint = true
     }
+
     function animate() {
       requestAnimationFrame(animate)
       stats.update()
@@ -251,17 +252,19 @@
       map.jumpTo(options)
       tb.map.update = true
     }
+
     function onObjectChanged(e) {
       let model = e.detail.object //here's the object already modified
       if (api.buildings) {
         let c = model.coordinates
         let point = map.project(c)
-        let features = map.queryRenderedFeatures(point, { layers: [mapConfig.names.compositeLayer] })
+        let features = map.queryRenderedFeatures(point, { layers: [layerId] })
         if (features.length > 0) {
           light(features[0]) // crash!
         }
       }
     }
+
     function light(feature) {
       fHover = feature
       map.setFeatureState(
