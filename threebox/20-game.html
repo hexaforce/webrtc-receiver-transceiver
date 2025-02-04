@@ -107,7 +107,28 @@
             truck.addTooltip('Drive with WASD keys', true, truck.anchor, true, 2)
             truck.castShadow = true
             truck.selected = true
-            truck.addEventListener('ObjectChanged', onObjectChanged, false)
+            truck.addEventListener(
+              'ObjectChanged',
+              (e) => {
+                let model = e.detail.object //here's the object already modified
+                if (api.buildings) {
+                  let c = model.coordinates
+                  let point = map.project(c)
+                  let features = map.queryRenderedFeatures(point, { layers: [layerId] })
+                  if (features.length > 0) {
+                    map.setFeatureState(
+                      {
+                        source: features[0].source,
+                        sourceLayer: features[0].sourceLayer,
+                        id: features[0].id,
+                      },
+                      { select: true },
+                    )
+                  }
+                }
+              },
+              false,
+            )
             tb.add(truck)
             init()
           })
@@ -136,10 +157,6 @@
         },
       }
       return layer
-    }
-
-    function easing(t) {
-      return t * (2 - t)
     }
 
     let velocity = 0.0,
@@ -189,22 +206,23 @@
       // gui
       gui = new GUI()
       // this will define if there's a fixed zoom level for the model
-      gui.add(api, 'buildings').name('buildings').onChange(changeGui)
+      gui
+        .add(api, 'buildings')
+        .name('buildings')
+        .onChange(() => {
+          if (api.buildings) {
+            if (!map.getLayer(layerId)) {
+              map.addLayer(createCompositeLayer())
+            }
+          } else {
+            if (map.getLayer(l)) {
+              map.removeLayer(l)
+            }
+          }
+          tb.map.repaint = true
+        })
       gui.add(api, 'acceleration', 1, 10).step(0.5)
       gui.add(api, 'inertia', 1, 5).step(0.5)
-    }
-
-    function changeGui() {
-      if (api.buildings) {
-        if (!map.getLayer(layerId)) {
-          map.addLayer(createCompositeLayer())
-        }
-      } else {
-        if (map.getLayer(l)) {
-          map.removeLayer(l)
-        }
-      }
-      tb.map.repaint = true
     }
 
     function animate() {
@@ -233,7 +251,9 @@
       let options = {
         center: truck.coordinates,
         bearing: map.getBearing(),
-        easing: easing,
+        easing: function easing(t) {
+          return t * (2 - t)
+        },
       }
       function toDeg(rad) {
         return (rad / Math.PI) * 180
@@ -251,30 +271,6 @@
       }
       map.jumpTo(options)
       tb.map.update = true
-    }
-
-    function onObjectChanged(e) {
-      let model = e.detail.object //here's the object already modified
-      if (api.buildings) {
-        let c = model.coordinates
-        let point = map.project(c)
-        let features = map.queryRenderedFeatures(point, { layers: [layerId] })
-        if (features.length > 0) {
-          light(features[0]) // crash!
-        }
-      }
-    }
-
-    function light(feature) {
-      fHover = feature
-      map.setFeatureState(
-        {
-          source: fHover.source,
-          sourceLayer: fHover.sourceLayer,
-          id: fHover.id,
-        },
-        { select: true },
-      )
     }
   </script>
 </body>
