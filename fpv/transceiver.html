@@ -1,14 +1,7 @@
 <html>
   <head>
+    <script src="transceiver.js"></script>
     <script type="text/javascript">
-      const PROTOCOL = 'transceiver'
-
-      const dataChannel = {}
-      const dataChannelHandler = (channel) => {
-        channel.onopen = ({ target }) => (dataChannel[target.label] = target)
-        channel.onmessage = ({ data }) => console.log(channel.label + '.OnMessage', data)
-      }
-
       window.onload = async () => {
         var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
         var conn = new RTCPeerConnection()

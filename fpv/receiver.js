@@ -1,16 +1,35 @@
+const PROTOCOL = 'receiver'
+
+const dataChannel = {}
+const dataChannelHandler = (channel) => {
+  channel.onopen = ({ target }) => (dataChannel[target.label] = target)
+  channel.onmessage = receiveData
+}
+
+const sendData = (data) => {
+  dataChannel[PROTOCOL].send(data)
+}
+
+const receiveData = ({ data }) => {
+  console.log(data)
+}
+
+
+
+
 const $ = (id) => document.getElementById(id)
 const d = document.documentElement
 
-const dataChannel = {}
+// const dataChannel = {}
 
 // setInterval(async () => {
 //   dataChannel[PROTOCOL].send(PROTOCOL)
 // }, 1000)
 
-function dataChannelHandler(channel) {
-  channel.onopen = ({ target }) => (dataChannel[target.label] = target)
-  channel.onmessage = ({ data }) => console.log(channel.label + '.OnMessage', data)
-}
+// function dataChannelHandler(channel) {
+//   channel.onopen = ({ target }) => (dataChannel[target.label] = target)
+//   channel.onmessage = ({ data }) => console.log(channel.label + '.OnMessage', data)
+// }
 
 function preferredVideoCodecs() {
   const supportedCodecs = RTCRtpReceiver.getCapabilities('video').codecs
