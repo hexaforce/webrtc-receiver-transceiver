@@ -35,9 +35,11 @@ wss.on('connection', (ws, req) => {
   ws.on('close', () => {
     if (ws === receiver) {
       receiver = null
+      if (transceiver) transceiver.close()
       console.log('Receiver disconnected')
     } else if (ws === transceiver) {
       transceiver = null
+      if (receiver) receiver.close()
       console.log('Transceiver disconnected')
     }
   })
