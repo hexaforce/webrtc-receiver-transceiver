@@ -23,13 +23,11 @@
           transceiver.direction = 'sendonly'
         })
         const offer = await conn.createOffer()
-        console.log('===== LocalDescription:', offer.sdp)
         await conn.setLocalDescription(offer)
         ws.send(JSON.stringify(offer))
         ws.onmessage = async ({ data }) => {
           const msg = JSON.parse(data)
           if (msg.type) {
-            console.log('===== RemoteDescription:', msg.sdp)
             await conn.setRemoteDescription(msg)
           } else {
             await conn.addIceCandidate(msg)

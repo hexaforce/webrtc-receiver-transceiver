@@ -3,6 +3,10 @@ const d = document.documentElement
 
 const dataChannel = {}
 
+// setInterval(async () => {
+//   dataChannel[PROTOCOL].send(PROTOCOL)
+// }, 1000)
+
 function dataChannelHandler(channel) {
   channel.onopen = ({ target }) => (dataChannel[target.label] = target)
   channel.onmessage = ({ data }) => console.log(channel.label + '.OnMessage', data)
