@@ -20,17 +20,6 @@ const receiveData = ({ data }) => {
 const $ = (id) => document.getElementById(id)
 const d = document.documentElement
 
-// const dataChannel = {}
-
-// setInterval(async () => {
-//   dataChannel[PROTOCOL].send(PROTOCOL)
-// }, 1000)
-
-// function dataChannelHandler(channel) {
-//   channel.onopen = ({ target }) => (dataChannel[target.label] = target)
-//   channel.onmessage = ({ data }) => console.log(channel.label + '.OnMessage', data)
-// }
-
 function preferredVideoCodecs() {
   const supportedCodecs = RTCRtpReceiver.getCapabilities('video').codecs
   const preferredOrder = ['video/AV1', 'video/VP9', 'video/H265', 'video/H264', 'video/VP8']

@@ -2,12 +2,17 @@ const PROTOCOL = 'transceiver'
 
 const dataChannel = {}
 const dataChannelHandler = (channel) => {
-  channel.onopen = ({ target }) => (dataChannel[target.label] = target)
+  channel.onopen = ({ target }) => {
+    dataChannel[target.label] = target
+    sendPosition()
+    window.ondeviceorientation = sendOrientation
+    window.ondeviceorientationabsolute = sendOrientation
+  }
   channel.onmessage = receiveData
 }
 
 const sendData = (data) => {
-  dataChannel[PROTOCOL].send(data)
+  dataChannel[PROTOCOL].send(JSON.stringify(data))
 }
 
 const receiveData = ({ data }) => {
@@ -18,7 +23,7 @@ const sendPosition = async (timeout) => {
   window.navigator.geolocation.getCurrentPosition(
     ({ coords, timestamp }) => {
       const { accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed } = coords
-      sendData(JSON.stringify({ accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed, timestamp }))
+      sendData({ accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed, timestamp })
     },
     (err) => console.error(err),
     timeout ? { enableHighAccuracy: true, timeout: timeout, maximumAge: 0 } : null,
