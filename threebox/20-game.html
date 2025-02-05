@@ -32,10 +32,12 @@
       d: false,
       w: false,
     }
+
     document.body.addEventListener('keydown', (e) => {
       const key = e.code.replace('Key', '').toLowerCase()
       if (keys[key] !== undefined) keys[key] = true
     })
+
     document.body.addEventListener('keyup', (e) => {
       const key = e.code.replace('Key', '').toLowerCase()
       if (keys[key] !== undefined) keys[key] = false
@@ -98,7 +100,7 @@
 
     import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js'
     import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
-    let stats, gui
+    let stats
 
     let api = {
       buildings: true,
@@ -155,8 +157,9 @@
             map.getContainer().appendChild(stats.dom)
 
             animate()
+
             // gui
-            gui = new GUI()
+            let gui = new GUI()
             // this will define if there's a fixed zoom level for the model
             gui
               .add(api, 'buildings')
@@ -177,11 +180,13 @@
           tb.update()
         },
       })
+
       if (api.buildings) {
         if (!map.getLayer(layerId)) {
           map.addLayer(createCompositeLayer())
         }
       }
+
       map.getCanvas().focus()
     })
 
