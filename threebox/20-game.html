@@ -96,6 +96,16 @@
     // parameters to ensure the model is georeferenced correctly on the map
     let truck
 
+    import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js'
+    import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
+    let stats, gui
+
+    let api = {
+      buildings: true,
+      acceleration: 5,
+      inertia: 3,
+    }
+
     map.on('style.load', () => {
       //create the layer
       map.addLayer({
@@ -140,7 +150,27 @@
               false,
             )
             tb.add(truck)
-            init()
+            // stats
+            stats = new Stats()
+            map.getContainer().appendChild(stats.dom)
+
+            animate()
+            // gui
+            gui = new GUI()
+            // this will define if there's a fixed zoom level for the model
+            gui
+              .add(api, 'buildings')
+              .name('buildings')
+              .onChange(() => {
+                if (api.buildings) {
+                  if (!map.getLayer(layerId)) map.addLayer(createCompositeLayer())
+                } else {
+                  if (map.getLayer(layerId)) map.removeLayer(layerId)
+                }
+                tb.map.repaint = true
+              })
+            gui.add(api, 'acceleration', 1, 10).step(0.5)
+            gui.add(api, 'inertia', 1, 5).step(0.5)
           })
         },
         render: (gl, matrix) => {
@@ -154,40 +184,6 @@
       }
       map.getCanvas().focus()
     })
-
-    import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js'
-    import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
-    let stats, gui
-
-    let api = {
-      buildings: true,
-      acceleration: 5,
-      inertia: 3,
-    }
-
-    function init() {
-      // stats
-      stats = new Stats()
-      map.getContainer().appendChild(stats.dom)
-
-      animate()
-      // gui
-      gui = new GUI()
-      // this will define if there's a fixed zoom level for the model
-      gui
-        .add(api, 'buildings')
-        .name('buildings')
-        .onChange(() => {
-          if (api.buildings) {
-            if (!map.getLayer(layerId)) map.addLayer(createCompositeLayer())
-          } else {
-            if (map.getLayer(layerId)) map.removeLayer(layerId)
-          }
-          tb.map.repaint = true
-        })
-      gui.add(api, 'acceleration', 1, 10).step(0.5)
-      gui.add(api, 'inertia', 1, 5).step(0.5)
-    }
 
     let velocity = 0.0
     let speed = 0.0
