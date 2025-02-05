@@ -14,9 +14,6 @@ const receiveData = ({ data }) => {
   console.log(data)
 }
 
-
-
-
 const $ = (id) => document.getElementById(id)
 const d = document.documentElement
 
