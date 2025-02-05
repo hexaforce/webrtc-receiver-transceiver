@@ -75,12 +75,30 @@
 
     tb.setSunlight(new Date(2020, 6, 19, 23), map.getCenter())
 
+    function createCompositeLayer() {
+      return {
+        id: layerId,
+        source: 'composite',
+        'source-layer': 'building',
+        filter: ['==', 'extrude', 'true'],
+        type: 'fill-extrusion',
+        minzoom: minZoom,
+        paint: {
+          'fill-extrusion-color': ['case', ['boolean', ['feature-state', 'select'], false], 'red', ['boolean', ['feature-state', 'hover'], false], 'lightblue', '#aaa'],
+          // use an 'interpolate' expression to add a smooth transition effect to the buildings as the user zooms in
+          'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], minZoom, 0, minZoom + 0.05, ['get', 'height']],
+          'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], minZoom, 0, minZoom + 0.05, ['get', 'min_height']],
+          'fill-extrusion-opacity': 0.9,
+        },
+      }
+    }
+
     // parameters to ensure the model is georeferenced correctly on the map
     let truck
-    function createCustomLayer() {
-      let model
+
+    map.on('style.load', function () {
       //create the layer
-      return {
+      map.addLayer({
         id: '3d-model',
         type: 'custom',
         renderingMode: '3d',
@@ -128,29 +146,7 @@
         render: function (gl, matrix) {
           tb.update()
         },
-      }
-    }
-
-    function createCompositeLayer() {
-      return {
-        id: layerId,
-        source: 'composite',
-        'source-layer': 'building',
-        filter: ['==', 'extrude', 'true'],
-        type: 'fill-extrusion',
-        minzoom: minZoom,
-        paint: {
-          'fill-extrusion-color': ['case', ['boolean', ['feature-state', 'select'], false], 'red', ['boolean', ['feature-state', 'hover'], false], 'lightblue', '#aaa'],
-          // use an 'interpolate' expression to add a smooth transition effect to the buildings as the user zooms in
-          'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], minZoom, 0, minZoom + 0.05, ['get', 'height']],
-          'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], minZoom, 0, minZoom + 0.05, ['get', 'min_height']],
-          'fill-extrusion-opacity': 0.9,
-        },
-      }
-    }
-
-    map.on('style.load', function () {
-      map.addLayer(createCustomLayer())
+      })
       if (api.buildings) {
         if (!map.getLayer(layerId)) {
           map.addLayer(createCompositeLayer())
@@ -183,13 +179,9 @@
         .name('buildings')
         .onChange(() => {
           if (api.buildings) {
-            if (!map.getLayer(layerId)) {
-              map.addLayer(createCompositeLayer())
-            }
+            if (!map.getLayer(layerId)) map.addLayer(createCompositeLayer())
           } else {
-            if (map.getLayer(l)) {
-              map.removeLayer(l)
-            }
+            if (map.getLayer(layerId)) map.removeLayer(layerId)
           }
           tb.map.repaint = true
         })
