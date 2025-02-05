@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <link href="style.css" rel="stylesheet" />
+    <script src="script.js"></script>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      const PROTOCOL = 'receiver'
+
+      // setInterval(async () => {
+      //   dataChannel[PROTOCOL].send(PROTOCOL)
+      // }, 1000)
+
+      window.onload = () => {
+        var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
+        var conn
+        ws.onmessage = async ({ data }) => {
+          console.log("data:",data)
+          if (!conn) {
+            conn = new RTCPeerConnection()
+            conn.onicecandidate = ({ candidate }) => candidate && ws.send(JSON.stringify(candidate))
+            conn.ondatachannel = ({ channel }) => dataChannelHandler(channel)
+            dataChannelHandler(conn.createDataChannel(PROTOCOL))
+            conn.ontrack = ({ streams }) => ($('stream').srcObject = streams[0])
+          }
+          const msg = JSON.parse(data)
+          if (msg.type) {
+            console.log('===== RemoteDescription:', msg.sdp)
+            await conn.setRemoteDescription(msg)
+            const answer = await conn.createAnswer()
+            console.log('===== LocalDescription:', answer.sdp)
+            await conn.setLocalDescription(answer)
+            const [audioTransceiver, videoTransceiver] = conn.getTransceivers()
+            if (videoTransceiver) {
+              videoTransceiver.setCodecPreferences(preferredVideoCodecs())
+            }
+            ws.send(JSON.stringify(answer))
+          } else {
+            await conn.addIceCandidate(msg)
+          }
+        }
+        $('fullscreen-btn').onclick = () => {
+          if (d.requestFullscreen) {
+            d.requestFullscreen()
+          } else if (d.webkitRequestFullscreen) {
+            d.webkitRequestFullscreen()
+          }
+        }
+      }
+    </script>
+        <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+        <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+        <style>
+            #map {
+                width: 320px;
+                height: 270px;
+            }
+        </style>
+  </head>
+
+  <body>
+    <div class="container">
+
+      <video id="stream" autoplay playsinline muted>Your browser does not support video</video>
+      <div class="overlay">xxx</div>
+      <div class="footer"><button id="fullscreen-btn">Go Fullscreen</button></div>
+      <div class="overlay-gps">      <div id="map"></div>
+
+      <script>
+      mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
+            
+          const map = new mapboxgl.Map({
+              container: 'map', // divのID
+              style: 'mapbox://styles/mapbox/streets-v12', // 使用するマップのスタイル
+              center: [139.6917, 35.6895], // [経度, 緯度]（例: 東京）
+              zoom: 16 // ズームレベル
+          });
+      </script></div>
+      <div class="compass">
+        <div class="compass-scale"><span>W</span><span>NW</span><span>N</span><span>NE</span><span>E</span><span>SE</span><span>S</span><span>SW</span><span>W</span></div>
+        <div class="indicator">▲</div>
+      </div>
+      <div class="hud">
+        <div class="crosshair"></div>
+      </div>
+    </div>
+  </body>
+</html>
