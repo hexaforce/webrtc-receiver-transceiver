@@ -115,15 +115,14 @@
         type: 'custom',
         renderingMode: '3d',
         onAdd: (map, gl) => {
-          let options = {
+          tb.loadObj({
             type: 'glb', //model type
             obj: './models/vehicles/car.glb',
             units: 'meters', // in meters
             scale: 5, //x3 times is real size for this model
             rotation: { x: 90, y: -90, z: 0 }, //default rotation
             anchor: 'top',
-          }
-          tb.loadObj(options, (model) => {
+          }, (model) => {
             truck = model.setCoords([position[0], position[1], 10])
             truck.setRotation({ x: 0, y: 0, z: -38 }) //turn it to the initial street way
             // truck.addTooltip('Drive with WASD keys', true, truck.anchor, true, 2)
@@ -220,7 +219,7 @@
       let options = {
         center: truck.coordinates,
         bearing: map.getBearing(),
-        easing: function easing(t) {
+        easing: (t) => {
           return t * (2 - t)
         },
       }
