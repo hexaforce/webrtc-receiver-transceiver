@@ -10,7 +10,6 @@
         var conn
 
         ws.onmessage = async ({ data }) => {
-          console.log('data:', data)
           if (!conn) {
             conn = new RTCPeerConnection()
             conn.onicecandidate = ({ candidate }) => candidate && ws.send(JSON.stringify(candidate))
@@ -20,9 +19,11 @@
           }
           const msg = JSON.parse(data)
           if (msg.type) {
+            // console.log('offer:', msg.sdp)
             await conn.setRemoteDescription(msg)
             const answer = await conn.createAnswer()
             await conn.setLocalDescription(answer)
+            // console.log('answer:', msg.sdp)
             const [audioTransceiver, videoTransceiver] = conn.getTransceivers()
             if (videoTransceiver) {
               videoTransceiver.setCodecPreferences(preferredVideoCodecs())

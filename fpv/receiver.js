@@ -42,18 +42,3 @@ function preferredVideoCodecs() {
     return orderA - orderB
   })
 }
-
-function ongeolocation({ coords, timestamp }) {
-  const { accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed } = coords
-  const position = { accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed, timestamp }
-  console.log(position)
-}
-
-function onorientation({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type }) {
-  const orientation = { isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type }
-  console.log(orientation)
-}
-
-// if (window.navigator) window.navigator.geolocation.getCurrentPosition(ongeolocation, (err) => console.error(err), { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 })
-//   window.ondeviceorientation = onorientation
-//   window.ondeviceorientationabsolute = onorientation

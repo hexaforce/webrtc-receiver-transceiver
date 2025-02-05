@@ -3,12 +3,19 @@
 <head>
   <script src="transceiver.js"></script>
   <script type="text/javascript">
+
     window.onload = async () => {
+
       var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
       var conn = new RTCPeerConnection()
       conn.onicecandidate = ({ candidate }) => candidate && ws.send(JSON.stringify(candidate))
+
       conn.ondatachannel = ({ channel }) => dataChannelHandler(channel)
       dataChannelHandler(conn.createDataChannel(PROTOCOL))
+      sendPosition()
+      // window.ondeviceorientation = sendOrientation
+      // window.ondeviceorientationabsolute = sendOrientation
+
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       stream.getTracks().forEach((track) => {
         conn.addTrack(track, stream)
