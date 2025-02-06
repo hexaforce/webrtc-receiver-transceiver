@@ -21,7 +21,7 @@
           conn = new RTCPeerConnection()
           iceCandidateHandler(conn, ws)
           dataChannelHandler(conn, PROTOCOL)
-          setMediaReceiver('stream', conn, ws)
+          setMediaReceiver($('stream'), conn, ws)
         }
         const msg = JSON.parse(data)
         if (msg.type) {

@@ -51,10 +51,10 @@ const setMediaTransceiver = async (conn, ws) => {
   })
 }
 
-const setMediaReceiver = async (id, conn, ws) => {
-  conn.ontrack = ({ streams }) => ($(id).srcObject = streams[0])
+const setMediaReceiver = async (video, conn, ws) => {
+  conn.ontrack = ({ streams }) => (video.srcObject = streams[0])
   ws.onclose = () =>
-    $(id)
+    video
       .srcObject.getTracks()
       .forEach((track) => track.stop())
   conn.getTransceivers().forEach((transceiver) => {
