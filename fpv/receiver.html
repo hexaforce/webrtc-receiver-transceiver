@@ -14,34 +14,27 @@
       const PROTOCOL = 'receiver'
       window.onload = async () => {
         var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
-        var conn
-
-        const OfferOptions = {
-          offerToReceiveAudio: true,
-          offerToReceiveVideo: true,
-        }
-
-        ws.onopen = async () => {
-          ws.send(JSON.stringify({ OfferOptions }))
-        }
+        var pc
+        const OfferOptions = { offerToReceiveAudio: true, offerToReceiveVideo: true }
+        ws.onopen = async () => ws.send(JSON.stringify({ OfferOptions }))
         ws.onmessage = async ({ data }) => {
           const msg = JSON.parse(data)
           if (msg.active) {
-            conn = new RTCPeerConnection({ bundlePolicy: "max-bundle" })
-            iceCandidateHandler(conn, ws)
-            dataChannelHandler(conn, PROTOCOL)
-            setMediaReceiver($('stream'), conn, ws)
-            const offer = await conn.createOffer(OfferOptions)
+            pc = new RTCPeerConnection({ bundlePolicy: 'max-bundle' })
+            iceCandidateHandler(pc, ws)
+            dataChannelHandler(pc, PROTOCOL)
+            setMediaReceiver($('stream'), pc, ws)
+            const offer = await pc.createOffer(OfferOptions)
             console.log('offer:', offer.sdp)
-            await conn.setLocalDescription(offer)
+            await pc.setLocalDescription(offer)
             ws.send(JSON.stringify(offer))
           } else {
             if (msg.type) {
               console.log('answer:', msg.sdp)
-              await conn.setRemoteDescription(msg)
+              await pc.setRemoteDescription(msg)
             } else {
               console.log('ice:', msg)
-              await conn.addIceCandidate(msg)
+              await pc.addIceCandidate(msg)
             }
           }
         }
