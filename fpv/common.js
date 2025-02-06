@@ -36,7 +36,7 @@ function preferredVideoCodecs() {
     })
   }
   
-const mediaCaptureConfig = async (conn, ws) => {
+const setMediaTransceiver = async (conn, ws) => {
   const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
   stream.getTracks().forEach((track) => {
     conn.addTrack(track, stream)
@@ -47,7 +47,7 @@ const mediaCaptureConfig = async (conn, ws) => {
   })
 }
 
-const mediaPlayConfig = async (id, conn, ws) => {
+const setMediaReceiver = async (id, conn, ws) => {
   conn.ontrack = ({ streams }) => ($(id).srcObject = streams[0])
   ws.onclose = () => $(id).srcObject.getTracks().forEach((track) => track.stop())
   conn.getTransceivers().forEach((transceiver) => {

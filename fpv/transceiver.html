@@ -7,15 +7,20 @@
     const PROTOCOL = 'transceiver'
     window.onload = async () => {
       var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
-      var conn = new RTCPeerConnection()
-      iceCandidateHandler(conn, ws)
-      dataChannelHandler(conn, PROTOCOL)
-      await mediaCaptureConfig(conn, ws)
+      var conn
 
-      const offer = await conn.createOffer()
-      console.log('offer:', offer.sdp)
-      await conn.setLocalDescription(offer)
-      ws.send(JSON.stringify(offer))
+      ws.onopen = async () => {
+        conn = new RTCPeerConnection()
+        iceCandidateHandler(conn, ws)
+        dataChannelHandler(conn, PROTOCOL)
+        await setMediaTransceiver(conn, ws)
+
+        const offer = await conn.createOffer()
+        console.log('offer:', offer.sdp)
+        await conn.setLocalDescription(offer)
+        ws.send(JSON.stringify(offer))
+      }
+
       ws.onmessage = async ({ data }) => {
         const msg = JSON.parse(data)
         if (msg.type) {
