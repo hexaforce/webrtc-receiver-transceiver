@@ -3,7 +3,10 @@ const $ = (id) => document.getElementById(id)
 const dataChannel = {}
 
 const iceCandidateHandler = (conn, ws) => {
-  conn.onicecandidate = ({ candidate }) => candidate && ws.send(JSON.stringify(candidate))
+  conn.onicecandidate = ({ candidate }) => {
+    console.log('ice answer:',candidate)
+    candidate && ws.send(JSON.stringify(candidate))
+  }
 }
 
 const dataChannelHandler = (conn, PROTOCOL) => {
@@ -40,24 +43,27 @@ const setReceiverAnswerCodec = async (conn) => {
   }
 }
 
-const setMediaTransceiver = async (conn, ws) => {
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+const setMediaTransceiver = async (stream, conn, ws) => {
   stream.getTracks().forEach((track) => {
     conn.addTrack(track, stream)
+    console.log('addTrack:',stream)
   })
   ws.onclose = () => stream.getTracks().forEach((track) => track.stop())
-  conn.getTransceivers().forEach((transceiver) => {
-    transceiver.direction = 'sendonly'
-  })
+  // conn.getTransceivers().forEach((transceiver) => {
+  //   transceiver.direction = 'sendonly'
+  // })
 }
 
 const setMediaReceiver = async (video, conn, ws) => {
-  conn.ontrack = ({ streams }) => (video.srcObject = streams[0])
+  conn.ontrack = ({ streams }) => {
+    video.srcObject = streams[0]
+    console.log('ontrack:',video.srcObject)
+  }
   ws.onclose = () =>
     video
       .srcObject.getTracks()
       .forEach((track) => track.stop())
-  conn.getTransceivers().forEach((transceiver) => {
-    transceiver.direction = 'recvonly'
-  })
+  // conn.getTransceivers().forEach((transceiver) => {
+  //   transceiver.direction = 'recvonly'
+  // })
 }

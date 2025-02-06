@@ -4,33 +4,37 @@
   <script src="common.js"></script>
   <!-- <script src="transceiver.js"></script> -->
   <script type="text/javascript">
-    const PROTOCOL = 'transceiver'
+    const PROTOCOL = 'transceiver';
     window.onload = async () => {
-      var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
-      var conn
 
-      ws.onopen = async () => {
-        conn = new RTCPeerConnection()
-        iceCandidateHandler(conn, ws)
-        dataChannelHandler(conn, PROTOCOL)
-        await setMediaTransceiver(conn, ws)
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
 
-        const offer = await conn.createOffer()
-        console.log('offer:', offer.sdp)
-        await conn.setLocalDescription(offer)
-        ws.send(JSON.stringify(offer))
-      }
+      var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL);
+      var conn;
 
       ws.onmessage = async ({ data }) => {
-        const msg = JSON.parse(data)
-        if (msg.type) {
-          console.log('answer:', msg.sdp)
-          await conn.setRemoteDescription(msg)
-        } else {
-          await conn.addIceCandidate(msg)
+        if (!conn) {
+          conn = new RTCPeerConnection();
+          setMediaTransceiver(stream, conn, ws);
+          iceCandidateHandler(conn, ws);
+          dataChannelHandler(conn, PROTOCOL);
         }
-      }
-    }
+
+        const msg = JSON.parse(data);
+        if (msg.type) {
+          console.log('offer received:', msg.sdp);
+          await conn.setRemoteDescription(msg);
+          const answer = await conn.createAnswer();
+          console.log('answer:', answer.sdp);
+          await conn.setLocalDescription(answer);
+          ws.send(JSON.stringify(answer));
+        } else {
+          console.log('ice:', msg);
+          await conn.addIceCandidate(msg);
+        }
+      };
+    };
+
   </script>
 </head>
 

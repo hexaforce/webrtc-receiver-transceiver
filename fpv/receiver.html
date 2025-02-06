@@ -11,39 +11,38 @@
   <link href="receiver.css" rel="stylesheet" />
   <!-- <script src="receiver.js"></script> -->
   <script src="common.js"></script>
-  <script type="text/javascript">
-    const PROTOCOL = 'receiver'
-    window.onload = () => {
-      var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
-      var conn
+  <script type="text/javascript">const PROTOCOL = 'receiver';
+    window.onload = async () => {
+      var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL);
+      var conn;
+
+      ws.onopen = async () => {
+        conn = new RTCPeerConnection();
+        iceCandidateHandler(conn, ws);
+        dataChannelHandler(conn, PROTOCOL);
+        setMediaReceiver($('stream'), conn, ws);
+
+        const offer = await conn.createOffer({
+          offerToReceiveAudio: true,
+          offerToReceiveVideo: true
+        })
+        console.log('offer:', offer.sdp);
+        await conn.setLocalDescription(offer);
+        ws.send(JSON.stringify(offer));
+      };
+
       ws.onmessage = async ({ data }) => {
-        if (!conn) {
-          conn = new RTCPeerConnection()
-          iceCandidateHandler(conn, ws)
-          dataChannelHandler(conn, PROTOCOL)
-          setMediaReceiver($('stream'), conn, ws)
-        }
-        const msg = JSON.parse(data)
+        const msg = JSON.parse(data);
         if (msg.type) {
-          console.log('offer:', msg.sdp)
-          await conn.setRemoteDescription(msg)
-          setReceiverAnswerCodec(conn)
-          const answer = await conn.createAnswer()
-          await conn.setLocalDescription(answer)
-          console.log('answer:', msg.sdp)
-          ws.send(JSON.stringify(answer))
+          console.log('answer:', msg.sdp);
+          await conn.setRemoteDescription(msg);
         } else {
-          await conn.addIceCandidate(msg)
+          console.log('ice:', msg);
+          await conn.addIceCandidate(msg);
         }
-      }
-      // $('fullscreen-btn').onclick = () => {
-      //   if (d.requestFullscreen) {
-      //     d.requestFullscreen()
-      //   } else if (d.webkitRequestFullscreen) {
-      //     d.webkitRequestFullscreen()
-      //   }
-      // }
-    }
+      };
+    };
+
   </script>
   <!-- <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet" />
