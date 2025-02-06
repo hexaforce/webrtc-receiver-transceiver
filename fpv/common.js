@@ -15,11 +15,11 @@ const dataChannelHandler = (pc, PROTOCOL) => {
     channel.onopen = ({ target }) => (dataChannel[target.label] = target)
     channel.onmessage = ({ data }) => {
       const msg = JSON.parse(data)
+      console.log("incoming:",msg)
       if (msg.longitude && msg.latitude) {
-        // [msg.longitude, msg.latitude]
+        renderMap([msg.longitude, msg.latitude])
       }
       
-      console.log("1:",data)
       // {"accuracy":13.396,"altitude":null,"altitudeAccuracy":null,"heading":null,"latitude":35.6935188,"longitude":139.5820828,"speed":null,"timestamp":1738844377615}
     }
   }
@@ -84,6 +84,19 @@ const sendPosition = async (timeout) => {
   )
 }
 
-function sendOrientation({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type }) {
+const sendOrientation = ({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type }) => {
   sendData({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type })
+}
+
+const renderMap = (position) =>{
+  // mapboxgl.accessToken = "pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw"
+  // const map = new mapboxgl.Map({
+  //   container: 'map',
+  //   style: 'mapbox://styles/relics9/cm6ppb5z7000501ra6nwl5wl2',
+  //   zoom: 18,
+  //   center: position,
+  //   pitch: 60,
+  //   bearing: 38,
+  //   antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
+  // })
 }
