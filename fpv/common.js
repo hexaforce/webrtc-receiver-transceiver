@@ -4,7 +4,7 @@ const dataChannel = {}
 
 const iceCandidateHandler = (conn, ws) => {
   conn.onicecandidate = ({ candidate }) => {
-    console.log('ice answer:',candidate)
+    console.log('ice answer:', candidate)
     candidate && ws.send(JSON.stringify(candidate))
   }
 }
@@ -46,7 +46,7 @@ const setReceiverAnswerCodec = async (conn) => {
 const setMediaTransceiver = async (stream, conn, ws) => {
   stream.getTracks().forEach((track) => {
     conn.addTrack(track, stream)
-    console.log('addTrack:',stream)
+    console.log('addTrack:', stream)
   })
   ws.onclose = () => stream.getTracks().forEach((track) => track.stop())
   // conn.getTransceivers().forEach((transceiver) => {
@@ -57,12 +57,9 @@ const setMediaTransceiver = async (stream, conn, ws) => {
 const setMediaReceiver = async (video, conn, ws) => {
   conn.ontrack = ({ streams }) => {
     video.srcObject = streams[0]
-    console.log('ontrack:',video.srcObject)
+    console.log('ontrack:', video.srcObject)
   }
-  ws.onclose = () =>
-    video
-      .srcObject.getTracks()
-      .forEach((track) => track.stop())
+  ws.onclose = () => video.srcObject.getTracks().forEach((track) => track.stop())
   // conn.getTransceivers().forEach((transceiver) => {
   //   transceiver.direction = 'recvonly'
   // })

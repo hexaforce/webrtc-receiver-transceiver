@@ -1,58 +1,53 @@
 <html>
+  <head>
+    <!-- <link href="//api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.css" rel="stylesheet" /> -->
+    <!-- <script src="//api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.js"></script> -->
+    <link href="//api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="//api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js"></script>
+    <link href="//cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.7/dist/threebox.css" rel="stylesheet" />
+    <script src="//cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.7/dist/threebox.min.js" type="text/javascript"></script>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <link href="receiver.css" rel="stylesheet" />
+    <!-- <script src="receiver.js"></script> -->
+    <script src="common.js"></script>
+    <script type="text/javascript">
+      const PROTOCOL = 'receiver'
+      window.onload = async () => {
+        var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
+        var conn
 
-<head>
-  <!-- <link href="//api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.css" rel="stylesheet" /> -->
-  <!-- <script src="//api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.js"></script> -->
-  <link href="//api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet" />
-  <script src="//api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js"></script>
-  <link href="//cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.7/dist/threebox.css" rel="stylesheet" />
-  <script src="//cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.7/dist/threebox.min.js" type="text/javascript"></script>
-  <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <link href="receiver.css" rel="stylesheet" />
-  <!-- <script src="receiver.js"></script> -->
-  <script src="common.js"></script>
-  <script type="text/javascript">
-    const PROTOCOL = 'receiver';
-    window.onload = async () => {
-      var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL);
-      var conn;
+        const OfferOptions = {
+          offerToReceiveAudio: true,
+          offerToReceiveVideo: true,
+        }
 
-      const OfferOptions ={
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: true
-          }
-
-      ws.onopen = async () => {
-        ws.send(JSON.stringify({ OfferOptions }));
-      }
-      ws.onmessage = async ({ data }) => {
-        const msg = JSON.parse(data);
-        if (msg.active) {
-          conn = new RTCPeerConnection();
-          iceCandidateHandler(conn, ws);
-          dataChannelHandler(conn, PROTOCOL);
-          setMediaReceiver($('stream'), conn, ws);
-          const offer = await conn.createOffer({
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: true
-          })
-          console.log('offer:', offer.sdp);
-          await conn.setLocalDescription(offer);
-          ws.send(JSON.stringify(offer));
-        } else {
-          if (msg.type) {
-            console.log('answer:', msg.sdp);
-            await conn.setRemoteDescription(msg);
+        ws.onopen = async () => {
+          ws.send(JSON.stringify({ OfferOptions }))
+        }
+        ws.onmessage = async ({ data }) => {
+          const msg = JSON.parse(data)
+          if (msg.active) {
+            conn = new RTCPeerConnection()
+            iceCandidateHandler(conn, ws)
+            dataChannelHandler(conn, PROTOCOL)
+            setMediaReceiver($('stream'), conn, ws)
+            const offer = await conn.createOffer(OfferOptions)
+            console.log('offer:', offer.sdp)
+            await conn.setLocalDescription(offer)
+            ws.send(JSON.stringify(offer))
           } else {
-            console.log('ice:', msg);
-            await conn.addIceCandidate(msg);
+            if (msg.type) {
+              console.log('answer:', msg.sdp)
+              await conn.setRemoteDescription(msg)
+            } else {
+              console.log('ice:', msg)
+              await conn.addIceCandidate(msg)
+            }
           }
         }
-      };
-    };
-
-  </script>
-  <!-- <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+      }
+    </script>
+    <!-- <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet" />
     <style>
       #map {
@@ -60,16 +55,16 @@
         height: 270px;
       }
     </style> -->
-</head>
+  </head>
 
-<body>
-  <div class="container">
-    <video id="stream" autoplay playsinline muted>Your browser does not support video</video>
-    <div class="overlay">xxx</div>
-    <div class="footer"><button id="fullscreen-btn">Go Fullscreen</button></div>
-    <div class="overlay-gps">
-      <div id="map"></div>
-      <!-- <script>
+  <body>
+    <div class="container">
+      <video id="stream" autoplay playsinline muted>Your browser does not support video</video>
+      <div class="overlay">xxx</div>
+      <div class="footer"><button id="fullscreen-btn">Go Fullscreen</button></div>
+      <div class="overlay-gps">
+        <div id="map"></div>
+        <!-- <script>
           mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
           const map = new mapboxgl.Map({
             container: 'map',
@@ -78,17 +73,14 @@
             zoom: 16,
           })
         </script> -->
-    </div>
-    <div class="compass">
-      <div class="compass-scale">
-        <span>W</span><span>NW</span><span>N</span><span>NE</span><span>E</span><span>SE</span><span>S</span><span>SW</span><span>W</span>
       </div>
-      <div class="indicator">▲</div>
+      <div class="compass">
+        <div class="compass-scale"><span>W</span><span>NW</span><span>N</span><span>NE</span><span>E</span><span>SE</span><span>S</span><span>SW</span><span>W</span></div>
+        <div class="indicator">▲</div>
+      </div>
+      <div class="hud">
+        <div class="crosshair"></div>
+      </div>
     </div>
-    <div class="hud">
-      <div class="crosshair"></div>
-    </div>
-  </div>
-</body>
-
+  </body>
 </html>
