@@ -7,7 +7,7 @@
         var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
         var pc
         ws.onopen = async () => {
-          console.log("opne ws")
+          console.log('opne ws')
         }
         ws.onmessage = async ({ data }) => {
           const msg = JSON.parse(data)

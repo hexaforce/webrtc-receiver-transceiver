@@ -15,18 +15,18 @@ const dataChannelHandler = (pc, PROTOCOL) => {
     channel.onopen = ({ target }) => (dataChannel[target.label] = target)
     channel.onmessage = ({ data }) => {
       const msg = JSON.parse(data)
-      console.log("incoming:",msg)
+      console.log('incoming:', msg)
       if (msg.longitude && msg.latitude) {
         renderMap([msg.longitude, msg.latitude])
       }
-      
+
       // {"accuracy":13.396,"altitude":null,"altitudeAccuracy":null,"heading":null,"latitude":35.6935188,"longitude":139.5820828,"speed":null,"timestamp":1738844377615}
     }
   }
   const channel = pc.createDataChannel(PROTOCOL)
   channel.onopen = ({ target }) => (dataChannel[target.label] = target)
   channel.onmessage = ({ data }) => {
-    console.log("2:",data)
+    console.log('2:', data)
   }
 }
 
@@ -74,11 +74,11 @@ const setMediaReceiver = async (video, pc, ws) => {
 }
 
 const sendPosition = async (timeout) => {
-  console.log("sendPosition1:",timeout)
+  console.log('sendPosition1:', timeout)
   window.navigator.geolocation.getCurrentPosition(
     ({ coords, timestamp }) => {
       const { accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed } = coords
-  console.log("sendPosition2:",coords)
+      console.log('sendPosition2:', coords)
       sendData({ accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed, timestamp })
     },
     (err) => console.error(err),
@@ -90,8 +90,8 @@ const sendOrientation = ({ isTrusted, absolute, alpha, beta, bubbles, cancelBubb
   sendData({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type })
 }
 
-const renderMap = (position) =>{
-  mapboxgl.accessToken = "pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw"
+const renderMap = (position) => {
+  mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
   const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/relics9/cm6ppb5z7000501ra6nwl5wl2',

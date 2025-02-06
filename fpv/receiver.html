@@ -14,7 +14,7 @@
         var pc
         const OfferOptions = { offerToReceiveAudio: true, offerToReceiveVideo: true }
         ws.onopen = async () => {
-          console.log("opne ws")
+          console.log('opne ws')
           ws.send(JSON.stringify({ OfferOptions }))
         }
         ws.onmessage = async ({ data }) => {
