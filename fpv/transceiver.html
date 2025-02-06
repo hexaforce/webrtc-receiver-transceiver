@@ -11,7 +11,7 @@
           const msg = JSON.parse(data)
           if (msg.OfferOptions) {
             const { offerToReceiveVideo, offerToReceiveAudio } = msg.OfferOptions
-            var stream = await navigator.mediaDevices.getUserMedia({ video: offerToReceiveVideo, audio: offerToReceiveAudio })
+            const stream = await navigator.mediaDevices.getUserMedia({ video: offerToReceiveVideo, audio: offerToReceiveAudio })
             pc = new RTCPeerConnection({ bundlePolicy: 'max-bundle' })
             setMediaTransceiver(stream, pc, ws)
             iceCandidateHandler(pc, ws)
