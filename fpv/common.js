@@ -5,7 +5,7 @@ const dataChannel = {}
 
 const iceCandidateHandler = (pc, ws) => {
   pc.onicecandidate = ({ candidate }) => {
-    console.log('ice answer:', candidate)
+    // console.log('ice answer:', candidate)
     candidate && ws.send(JSON.stringify(candidate))
   }
 }
@@ -14,19 +14,26 @@ const dataChannelHandler = (pc, PROTOCOL) => {
   pc.ondatachannel = ({ channel }) => {
     channel.onopen = ({ target }) => (dataChannel[target.label] = target)
     channel.onmessage = ({ data }) => {
-      console.log(data)
+      const msg = JSON.parse(data)
+      if (msg.longitude && msg.latitude) {
+        // [msg.longitude, msg.latitude]
+      }
+      
+      console.log("1:",data)
+      // {"accuracy":13.396,"altitude":null,"altitudeAccuracy":null,"heading":null,"latitude":35.6935188,"longitude":139.5820828,"speed":null,"timestamp":1738844377615}
     }
   }
   const channel = pc.createDataChannel(PROTOCOL)
   channel.onopen = ({ target }) => (dataChannel[target.label] = target)
   channel.onmessage = ({ data }) => {
-    console.log(data)
+    console.log("2:",data)
   }
 }
 
-// const sendData = (data) => {
-//   dataChannel[PROTOCOL].send(data)
-// }
+const sendData = (data) => {
+  console.log('sendData:', data)
+  dataChannel[PROTOCOL].send(JSON.stringify(data))
+}
 
 const setReceiverAnswerCodec = async (pc) => {
   const supportedCodecs = RTCRtpReceiver.getCapabilities('video').codecs
@@ -48,7 +55,7 @@ const setReceiverAnswerCodec = async (pc) => {
 const setMediaTransceiver = async (stream, pc, ws) => {
   stream.getTracks().forEach((track) => {
     pc.addTrack(track, stream)
-    console.log('addTrack:', stream)
+    // console.log('addTrack:', stream)
   })
   ws.onclose = () => stream.getTracks().forEach((track) => track.stop())
   pc.getTransceivers().forEach((transceiver) => {

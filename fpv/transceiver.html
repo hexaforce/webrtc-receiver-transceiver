@@ -16,17 +16,18 @@
             iceCandidateHandler(pc, ws)
             dataChannelHandler(pc, PROTOCOL)
             ws.send(JSON.stringify({ active: stream.active }))
+            sendPosition()
           } else {
             if (msg.type) {
-              console.log('offer received:', msg.sdp)
+              // console.log('offer received:', msg.sdp)
               await pc.setRemoteDescription(msg)
               setReceiverAnswerCodec(pc)
               const answer = await pc.createAnswer()
-              console.log('answer:', answer.sdp)
+              // console.log('answer:', answer.sdp)
               await pc.setLocalDescription(answer)
               ws.send(JSON.stringify(answer))
             } else {
-              console.log('ice:', msg)
+              // console.log('ice:', msg)
               await pc.addIceCandidate(msg)
             }
           }

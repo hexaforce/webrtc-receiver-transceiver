@@ -22,15 +22,15 @@
             dataChannelHandler(pc, PROTOCOL)
             setMediaReceiver($('stream'), pc, ws)
             const offer = await pc.createOffer(OfferOptions)
-            console.log('offer:', offer.sdp)
+            // console.log('offer:', offer.sdp)
             await pc.setLocalDescription(offer)
             ws.send(JSON.stringify(offer))
           } else {
             if (msg.type) {
-              console.log('answer:', msg.sdp)
+              // console.log('answer:', msg.sdp)
               await pc.setRemoteDescription(msg)
             } else {
-              console.log('ice:', msg)
+              // console.log('ice:', msg)
               await pc.addIceCandidate(msg)
             }
           }
