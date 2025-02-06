@@ -10,4 +10,23 @@ const getPosition = async (timeout) => {
   });
 };
 
-export { getPosition }
+let keys = {
+  a: false,
+  s: false,
+  d: false,
+  w: false,
+};
+
+const onload = () => {
+  document.body.addEventListener("keydown", (e) => {
+    const key = e.code.replace("Key", "").toLowerCase();
+    if (keys[key] !== undefined) keys[key] = true;
+  });
+
+  document.body.addEventListener("keyup", (e) => {
+    const key = e.code.replace("Key", "").toLowerCase();
+    if (keys[key] !== undefined) keys[key] = false;
+  });
+};
+
+export { onload, getPosition, keys };
