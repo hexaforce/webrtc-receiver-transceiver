@@ -27,13 +27,10 @@
         if (msg.type) {
           console.log('offer:', msg.sdp)
           await conn.setRemoteDescription(msg)
+          setReceiverAnswerCodec(conn)
           const answer = await conn.createAnswer()
           await conn.setLocalDescription(answer)
           console.log('answer:', msg.sdp)
-          const [audioTransceiver, videoTransceiver] = conn.getTransceivers()
-          if (videoTransceiver) {
-            videoTransceiver.setCodecPreferences(preferredVideoCodecs())
-          }
           ws.send(JSON.stringify(answer))
         } else {
           await conn.addIceCandidate(msg)

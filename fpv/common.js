@@ -24,18 +24,22 @@ const dataChannelHandler = (conn, PROTOCOL) => {
 //   dataChannel[PROTOCOL].send(data)
 // }
 
-function preferredVideoCodecs() {
-    const supportedCodecs = RTCRtpReceiver.getCapabilities('video').codecs
-    const preferredOrder = ['video/AV1', 'video/VP9', 'video/H265', 'video/H264', 'video/VP8']
-    return supportedCodecs.sort((a, b) => {
-      const indexA = preferredOrder.indexOf(a.mimeType)
-      const indexB = preferredOrder.indexOf(b.mimeType)
-      const orderA = indexA >= 0 ? indexA : Number.MAX_VALUE
-      const orderB = indexB >= 0 ? indexB : Number.MAX_VALUE
-      return orderA - orderB
-    })
+const setReceiverAnswerCodec = async (conn) => {
+  const supportedCodecs = RTCRtpReceiver.getCapabilities('video').codecs
+  const preferredOrder = ['video/AV1', 'video/VP9', 'video/H265', 'video/H264', 'video/VP8']
+  supportedCodecs = supportedCodecs.sort((a, b) => {
+    const indexA = preferredOrder.indexOf(a.mimeType)
+    const indexB = preferredOrder.indexOf(b.mimeType)
+    const orderA = indexA >= 0 ? indexA : Number.MAX_VALUE
+    const orderB = indexB >= 0 ? indexB : Number.MAX_VALUE
+    return orderA - orderB
+  })
+  const [audioTransceiver, videoTransceiver] = conn.getTransceivers()
+  if (videoTransceiver) {
+    videoTransceiver.setCodecPreferences(supportedCodecs)
   }
-  
+}
+
 const setMediaTransceiver = async (conn, ws) => {
   const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
   stream.getTracks().forEach((track) => {
@@ -49,7 +53,10 @@ const setMediaTransceiver = async (conn, ws) => {
 
 const setMediaReceiver = async (id, conn, ws) => {
   conn.ontrack = ({ streams }) => ($(id).srcObject = streams[0])
-  ws.onclose = () => $(id).srcObject.getTracks().forEach((track) => track.stop())
+  ws.onclose = () =>
+    $(id)
+      .srcObject.getTracks()
+      .forEach((track) => track.stop())
   conn.getTransceivers().forEach((transceiver) => {
     transceiver.direction = 'recvonly'
   })
