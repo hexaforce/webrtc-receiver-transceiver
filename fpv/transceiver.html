@@ -6,35 +6,33 @@
   <script type="text/javascript">
     const PROTOCOL = 'transceiver';
     window.onload = async () => {
-
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-
       var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL);
       var conn;
-
       ws.onmessage = async ({ data }) => {
-        if (!conn) {
+        const msg = JSON.parse(data);
+        if (msg.OfferOptions) {
+          const { offerToReceiveVideo, offerToReceiveAudio } = msg.OfferOptions
+          var stream = await navigator.mediaDevices.getUserMedia({ video: offerToReceiveVideo, audio: offerToReceiveAudio })
           conn = new RTCPeerConnection();
           setMediaTransceiver(stream, conn, ws);
           iceCandidateHandler(conn, ws);
           dataChannelHandler(conn, PROTOCOL);
-        }
-
-        const msg = JSON.parse(data);
-        if (msg.type) {
-          console.log('offer received:', msg.sdp);
-          await conn.setRemoteDescription(msg);
-          const answer = await conn.createAnswer();
-          console.log('answer:', answer.sdp);
-          await conn.setLocalDescription(answer);
-          ws.send(JSON.stringify(answer));
+          ws.send(JSON.stringify({ active: stream.active }));
         } else {
-          console.log('ice:', msg);
-          await conn.addIceCandidate(msg);
+          if (msg.type) {
+            console.log('offer received:', msg.sdp);
+            await conn.setRemoteDescription(msg);
+            const answer = await conn.createAnswer();
+            console.log('answer:', answer.sdp);
+            await conn.setLocalDescription(answer);
+            ws.send(JSON.stringify(answer));
+          } else {
+            console.log('ice:', msg);
+            await conn.addIceCandidate(msg);
+          }
         }
       };
     };
-
   </script>
 </head>
 

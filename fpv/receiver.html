@@ -11,34 +11,42 @@
   <link href="receiver.css" rel="stylesheet" />
   <!-- <script src="receiver.js"></script> -->
   <script src="common.js"></script>
-  <script type="text/javascript">const PROTOCOL = 'receiver';
+  <script type="text/javascript">
+    const PROTOCOL = 'receiver';
     window.onload = async () => {
       var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL);
       var conn;
 
+      const OfferOptions ={
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true
+          }
+
       ws.onopen = async () => {
-        conn = new RTCPeerConnection();
-        iceCandidateHandler(conn, ws);
-        dataChannelHandler(conn, PROTOCOL);
-        setMediaReceiver($('stream'), conn, ws);
-
-        const offer = await conn.createOffer({
-          offerToReceiveAudio: true,
-          offerToReceiveVideo: true
-        })
-        console.log('offer:', offer.sdp);
-        await conn.setLocalDescription(offer);
-        ws.send(JSON.stringify(offer));
-      };
-
+        ws.send(JSON.stringify({ OfferOptions }));
+      }
       ws.onmessage = async ({ data }) => {
         const msg = JSON.parse(data);
-        if (msg.type) {
-          console.log('answer:', msg.sdp);
-          await conn.setRemoteDescription(msg);
+        if (msg.active) {
+          conn = new RTCPeerConnection();
+          iceCandidateHandler(conn, ws);
+          dataChannelHandler(conn, PROTOCOL);
+          setMediaReceiver($('stream'), conn, ws);
+          const offer = await conn.createOffer({
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true
+          })
+          console.log('offer:', offer.sdp);
+          await conn.setLocalDescription(offer);
+          ws.send(JSON.stringify(offer));
         } else {
-          console.log('ice:', msg);
-          await conn.addIceCandidate(msg);
+          if (msg.type) {
+            console.log('answer:', msg.sdp);
+            await conn.setRemoteDescription(msg);
+          } else {
+            console.log('ice:', msg);
+            await conn.addIceCandidate(msg);
+          }
         }
       };
     };
