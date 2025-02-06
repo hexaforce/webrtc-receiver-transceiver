@@ -6,6 +6,9 @@
       window.onload = async () => {
         var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
         var pc
+        ws.onopen = async () => {
+          console.log("opne ws")
+        }
         ws.onmessage = async ({ data }) => {
           const msg = JSON.parse(data)
           if (msg.OfferOptions) {
@@ -16,7 +19,7 @@
             iceCandidateHandler(pc, ws)
             dataChannelHandler(pc, PROTOCOL)
             ws.send(JSON.stringify({ active: stream.active }))
-            sendPosition()
+            sendPosition(10000)
           } else {
             if (msg.type) {
               // console.log('offer received:', msg.sdp)

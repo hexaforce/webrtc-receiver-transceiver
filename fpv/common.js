@@ -74,9 +74,11 @@ const setMediaReceiver = async (video, pc, ws) => {
 }
 
 const sendPosition = async (timeout) => {
+  console.log("sendPosition1:",timeout)
   window.navigator.geolocation.getCurrentPosition(
     ({ coords, timestamp }) => {
       const { accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed } = coords
+  console.log("sendPosition2:",coords)
       sendData({ accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed, timestamp })
     },
     (err) => console.error(err),
@@ -89,14 +91,14 @@ const sendOrientation = ({ isTrusted, absolute, alpha, beta, bubbles, cancelBubb
 }
 
 const renderMap = (position) =>{
-  // mapboxgl.accessToken = "pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw"
-  // const map = new mapboxgl.Map({
-  //   container: 'map',
-  //   style: 'mapbox://styles/relics9/cm6ppb5z7000501ra6nwl5wl2',
-  //   zoom: 18,
-  //   center: position,
-  //   pitch: 60,
-  //   bearing: 38,
-  //   antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
-  // })
+  mapboxgl.accessToken = "pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw"
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/relics9/cm6ppb5z7000501ra6nwl5wl2',
+    zoom: 18,
+    center: position,
+    pitch: 60,
+    bearing: 38,
+    antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
+  })
 }
