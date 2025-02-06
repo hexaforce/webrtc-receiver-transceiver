@@ -1,4 +1,5 @@
 const $ = (id) => document.getElementById(id)
+const d = document.documentElement
 
 const dataChannel = {}
 
@@ -63,4 +64,19 @@ const setMediaReceiver = async (video, pc, ws) => {
   pc.getTransceivers().forEach((transceiver) => {
     transceiver.direction = 'recvonly'
   })
+}
+
+const sendPosition = async (timeout) => {
+  window.navigator.geolocation.getCurrentPosition(
+    ({ coords, timestamp }) => {
+      const { accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed } = coords
+      sendData({ accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed, timestamp })
+    },
+    (err) => console.error(err),
+    timeout ? { enableHighAccuracy: true, timeout: timeout, maximumAge: 0 } : null,
+  )
+}
+
+function sendOrientation({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type }) {
+  sendData({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type })
 }
