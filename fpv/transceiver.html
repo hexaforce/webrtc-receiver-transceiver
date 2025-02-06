@@ -12,7 +12,7 @@
           if (msg.OfferOptions) {
             const { offerToReceiveVideo, offerToReceiveAudio } = msg.OfferOptions
             var stream = await navigator.mediaDevices.getUserMedia({ video: offerToReceiveVideo, audio: offerToReceiveAudio })
-            conn = new RTCPeerConnection()
+            conn = new RTCPeerConnection({ bundlePolicy: "max-bundle" })
             setMediaTransceiver(stream, conn, ws)
             iceCandidateHandler(conn, ws)
             dataChannelHandler(conn, PROTOCOL)
@@ -21,6 +21,7 @@
             if (msg.type) {
               console.log('offer received:', msg.sdp)
               await conn.setRemoteDescription(msg)
+              setReceiverAnswerCodec(conn)
               const answer = await conn.createAnswer()
               console.log('answer:', answer.sdp)
               await conn.setLocalDescription(answer)

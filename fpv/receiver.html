@@ -27,7 +27,7 @@
         ws.onmessage = async ({ data }) => {
           const msg = JSON.parse(data)
           if (msg.active) {
-            conn = new RTCPeerConnection()
+            conn = new RTCPeerConnection({ bundlePolicy: "max-bundle" })
             iceCandidateHandler(conn, ws)
             dataChannelHandler(conn, PROTOCOL)
             setMediaReceiver($('stream'), conn, ws)
