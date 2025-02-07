@@ -382,15 +382,13 @@
       },
     })
     import { Runtime, Inspector } from './runtime.js'
-    // let chart_ = chart()
-    // console.log('chart_:', chart_)
+
     function _chart() {
       let chart_ = chart()
       console.log('chart_:', chart_)
       return chart_
     }
-    // let frame_ = Ln.input(_)
-    // console.log('frame_:', frame_)
+
     function _frame() {
       let frame_ = Ln.input(_)
       console.log('frame_:', frame_)
@@ -402,28 +400,14 @@
       return chart.update(frame)
     }
   
-    // function _bind() {
-    //   console.log('chart:', chart_)
-    //   console.log('frame:', frame_)
-    //   return chart_.update(frame_)
-    // }
-  
     const main = new Runtime().module((runtime, observer) => {
       const main = runtime.module()
       main.variable(observer()).define('chart_', [], _chart)
       main.variable(observer()).define('frame_', [], _frame)
       main.variable(observer()).define(['chart_', 'frame_'], _bind)
-      // main.variable(observer()).define([], _bind)
       return main
     }, Inspector.into(document.body))
     
-    // window.onload = () => {
-    //   const chart2 = chart()
-    //   const frame2 = Ln.input(_)
-    //   console.log('chart2:', chart2)
-    //   console.log('frame2:', frame2)
-    //   chart2.update(frame2)
-    // }
   </script>
   <form id="f" style="font: 12px var(--sans-serif); font-variant-numeric: tabular-nums; display: flex; height: 33px; align-items: center">
     <button id="b" type="button" style="margin-right: 0.4em; width: 5em"></button>

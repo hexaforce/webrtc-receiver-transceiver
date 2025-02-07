@@ -1,11 +1,17 @@
 services:
-
-  threebox:
-    build: ./threebox
+  d3:
+    build: ./d3
     ports:
       - 80:80
     volumes:
-      - ./threebox:/usr/share/nginx/html
+      - ./d3:/usr/share/nginx/html
+
+  # threebox:
+  #   build: ./threebox
+  #   ports:
+  #     - 80:80
+  #   volumes:
+  #     - ./threebox:/usr/share/nginx/html
 
   # webrtc:
   #   build: ./webrtc
@@ -14,9 +20,4 @@ services:
   #   volumes:
   #     - ./webrtc:/usr/share/nginx/html
 
-  # d3:
-  #   build: ./d3
-  #   ports:
-  #     - 80:80
-  #   volumes:
-  #     - ./d3:/usr/share/nginx/html
+

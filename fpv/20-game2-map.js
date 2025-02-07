@@ -1,5 +1,9 @@
-
+import 'https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js'
+import 'https://cdn.jsdelivr.net/npm/threebox-plugin@2.2.7/dist/threebox.min.js'
+import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
+import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js'
 import { onload, getPosition, keys, glb, layerId, createBuildingLayer } from './20-game2.js'
+
 window.onload = onload
 
 const position = await getPosition()
@@ -45,8 +49,6 @@ const onChanged = (e) => {
   }
 }
 
-import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js'
-import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
 let stats
 
 const cb = (model) => {
