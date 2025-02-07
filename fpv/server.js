@@ -64,4 +64,5 @@ app.use((req, res) => {
 server.listen(PORT, () => {
   console.log(`WebRTC receiver page link: http://127.0.0.1:${PORT}/receiver.html`)
   console.log(`WebRTC transceiver page link: http://127.0.0.1:${PORT}/transceiver.html`)
+  console.log(`WebRTC transceiver page link: http://127.0.0.1:${PORT}/20-game2.html`)
 })

@@ -19,8 +19,6 @@ const dataChannelHandler = (pc, PROTOCOL) => {
       if (msg.longitude && msg.latitude) {
         renderMap([msg.longitude, msg.latitude])
       }
-
-      // {"accuracy":13.396,"altitude":null,"altitudeAccuracy":null,"heading":null,"latitude":35.6935188,"longitude":139.5820828,"speed":null,"timestamp":1738844377615}
     }
   }
   const channel = pc.createDataChannel(PROTOCOL)

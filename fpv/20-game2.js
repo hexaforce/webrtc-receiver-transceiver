@@ -1,3 +1,5 @@
+const $ = (id) => document.getElementById(id)
+
 const getPosition = async (timeout) => {
   return new Promise((resolve, reject) => {
     window.navigator.geolocation.getCurrentPosition(
