@@ -13,7 +13,7 @@
       <div id="gui"></div>
     </div>
     <script type="module">
-      import { onload, getPosition, keys } from './20-game2.js'
+      import { onload, getPosition, keys, glb, layerId, createBuildingLayer } from './20-game2.js'
       window.onload = onload
 
       const position = await getPosition()
@@ -40,29 +40,9 @@
 
       // tb.setSunlight(new Date(2020, 6, 19, 23), map.getCenter())
 
-      const layerId = '3d-buildings'
-      const minZoom = 12
-      function createBuildingLayer() {
-        return {
-          id: layerId,
-          source: 'composite',
-          'source-layer': 'building',
-          filter: ['==', 'extrude', 'true'],
-          type: 'fill-extrusion',
-          minzoom: minZoom,
-          paint: {
-            'fill-extrusion-color': ['case', ['boolean', ['feature-state', 'select'], false], 'red', ['boolean', ['feature-state', 'hover'], false], 'lightblue', '#aaa'],
-            // use an 'interpolate' expression to add a smooth transition effect to the buildings as the user zooms in
-            'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], minZoom, 0, minZoom + 0.05, ['get', 'height']],
-            'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], minZoom, 0, minZoom + 0.05, ['get', 'min_height']],
-            'fill-extrusion-opacity': 0.8,
-          },
-        }
-      }
-
       let api = {
         buildings: true,
-        acceleration: 3,
+        acceleration: 2,
         inertia: 3,
       }
 
@@ -119,15 +99,6 @@
         gui.close()
       }
 
-      const glb = {
-        type: 'glb', //model type
-        obj: './vehicles/car.glb',
-        units: 'meters', // in meters
-        scale: 5, //x3 times is real size for this model
-        rotation: { x: 90, y: -90, z: 0 }, //default rotation
-        anchor: 'top',
-      }
-
       map.on('style.load', () => {
         //create the layer
         map.addLayer({
@@ -154,7 +125,12 @@
       let velocity = 0.0
       let speed = 0.0
       let ds = 0.01
-
+      function toDeg(rad) {
+        return (rad / Math.PI) * 180
+      }
+      function toRad(deg) {
+        return (deg * Math.PI) / 180
+      }
       function animate() {
         requestAnimationFrame(animate)
         stats.update()
@@ -187,12 +163,6 @@
           easing: (t) => {
             return t * (2 - t)
           },
-        }
-        function toDeg(rad) {
-          return (rad / Math.PI) * 180
-        }
-        function toRad(deg) {
-          return (deg * Math.PI) / 180
         }
         let deg = 1
         let rad = toRad(deg)
