@@ -113,9 +113,7 @@
                   path.transition().attr('d', line)
                 })
                 .transition()
-                .each('start', function () {
-                  tick(path, line, data)
-                })
+                .each('start', () => tick(path, line, data))
             }
             chart('#chart1', [0, n - 1], 'linear', tick)
           })()
@@ -140,10 +138,7 @@
                   // pop the old data point off the front
                   data.shift()
                 })
-                .transition()
-                .each('start', function () {
-                  tick(path, line, data, x)
-                })
+                .transition().each('start', () => tick(path, line, data, x))
             }
             chart('#chart2', [0, n - 1], 'linear', tick)
           })()
@@ -168,10 +163,7 @@
                   // pop the old data point off the front
                   data.shift()
                 })
-                .transition()
-                .each('start', function () {
-                  tick(path, line, data, x)
-                })
+                .transition().each('start', () => tick(path, line, data,x))
             }
             chart('#chart3', [1, n - 2], 'basis', tick)
           })()
