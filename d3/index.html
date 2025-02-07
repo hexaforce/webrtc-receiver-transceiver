@@ -103,15 +103,16 @@
           ;(function () {
             var transition = d3.select({}).transition().duration(750).ease('linear')
             function tick(path, line, data) {
+              function each() {
+                // push a new data point onto the back
+                data.push(random())
+                // pop the old data point off the front
+                data.shift()
+                // transition the line
+                path.transition().attr('d', line)
+              }
               transition = transition
-                .each(function () {
-                  // push a new data point onto the back
-                  data.push(random())
-                  // pop the old data point off the front
-                  data.shift()
-                  // transition the line
-                  path.transition().attr('d', line)
-                })
+                .each(each)
                 .transition()
                 .each('start', () => tick(path, line, data))
             }
@@ -125,20 +126,22 @@
           ;(function () {
             var transition = d3.select({}).transition().duration(750).ease('linear')
             function tick(path, line, data, x) {
+              function each() {
+                // push a new data point onto the back
+                data.push(random())
+                // redraw the line, and then slide it to the left
+                path
+                  .attr('d', line)
+                  .attr('transform', null)
+                  .transition()
+                  .attr('transform', 'translate(' + x(-1) + ')')
+                // pop the old data point off the front
+                data.shift()
+              }
               transition = transition
-                .each(function () {
-                  // push a new data point onto the back
-                  data.push(random())
-                  // redraw the line, and then slide it to the left
-                  path
-                    .attr('d', line)
-                    .attr('transform', null)
-                    .transition()
-                    .attr('transform', 'translate(' + x(-1) + ')')
-                  // pop the old data point off the front
-                  data.shift()
-                })
-                .transition().each('start', () => tick(path, line, data, x))
+                .each(each)
+                .transition()
+                .each('start', () => tick(path, line, data, x))
             }
             chart('#chart2', [0, n - 1], 'linear', tick)
           })()
@@ -150,20 +153,22 @@
           ;(function () {
             var transition = d3.select({}).transition().duration(750).ease('linear')
             function tick(path, line, data, x) {
+              function each() {
+                // push a new data point onto the back
+                data.push(random())
+                // redraw the line, and then slide it to the left, and repeat indefinitely
+                path
+                  .attr('d', line)
+                  .attr('transform', null)
+                  .transition()
+                  .attr('transform', 'translate(' + x(0) + ')')
+                // pop the old data point off the front
+                data.shift()
+              }
               transition = transition
-                .each(function () {
-                  // push a new data point onto the back
-                  data.push(random())
-                  // redraw the line, and then slide it to the left, and repeat indefinitely
-                  path
-                    .attr('d', line)
-                    .attr('transform', null)
-                    .transition()
-                    .attr('transform', 'translate(' + x(0) + ')')
-                  // pop the old data point off the front
-                  data.shift()
-                })
-                .transition().each('start', () => tick(path, line, data,x))
+                .each(each)
+                .transition()
+                .each('start', () => tick(path, line, data, x))
             }
             chart('#chart3', [1, n - 2], 'basis', tick)
           })()
@@ -217,7 +222,6 @@
             d3.select(window).on('scroll', function () {
               ++count
             })
-            
             ;(function tick() {
               transition = transition
                 .each(function () {
