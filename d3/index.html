@@ -102,7 +102,7 @@
         <script>
           ;(function () {
             var transition = d3.select({}).transition().duration(750).ease('linear')
-            chart('#chart1', [0, n - 1], 'linear', function tick(path, line, data) {
+            function tick(path, line, data) {
               transition = transition
                 .each(function () {
                   // push a new data point onto the back
@@ -116,7 +116,8 @@
                 .each('start', function () {
                   tick(path, line, data)
                 })
-            })
+            }
+            chart('#chart1', [0, n - 1], 'linear', tick)
           })()
         </script>
       </div>
@@ -125,7 +126,7 @@
         <script>
           ;(function () {
             var transition = d3.select({}).transition().duration(750).ease('linear')
-            chart('#chart2', [0, n - 1], 'linear', function tick(path, line, data, x) {
+            function tick(path, line, data, x) {
               transition = transition
                 .each(function () {
                   // push a new data point onto the back
@@ -143,7 +144,8 @@
                 .each('start', function () {
                   tick(path, line, data, x)
                 })
-            })
+            }
+            chart('#chart2', [0, n - 1], 'linear', tick)
           })()
         </script>
       </div>
@@ -152,7 +154,7 @@
         <script>
           ;(function () {
             var transition = d3.select({}).transition().duration(750).ease('linear')
-            chart('#chart3', [1, n - 2], 'basis', function tick(path, line, data, x) {
+            function tick(path, line, data, x) {
               transition = transition
                 .each(function () {
                   // push a new data point onto the back
@@ -170,7 +172,8 @@
                 .each('start', function () {
                   tick(path, line, data, x)
                 })
-            })
+            }
+            chart('#chart3', [1, n - 2], 'basis', tick)
           })()
         </script>
       </div>
