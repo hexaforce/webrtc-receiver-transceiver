@@ -99,74 +99,74 @@
     }
 
     function Chart1() {
-            var transition = d3.select({}).transition().duration(750).ease('linear')
+      var transition = d3.select({}).transition().duration(750).ease('linear')
 
-            function tick(path, line, data) {
-              function each() {
-                // push a new data point onto the back
-                data.push(random())
-                // pop the old data point off the front
-                data.shift()
-                // transition the line
-                path.transition().attr('d', line)
-              }
+      function tick(path, line, data) {
+        function each() {
+          // push a new data point onto the back
+          data.push(random())
+          // pop the old data point off the front
+          data.shift()
+          // transition the line
+          path.transition().attr('d', line)
+        }
 
-              transition = transition
-                .each(each)
-                .transition()
-                .each('start', () => tick(path, line, data))
-            }
-            chart('#chart1', [0, n - 1], 'linear', tick)
-          }
+        transition = transition
+          .each(each)
+          .transition()
+          .each('start', () => tick(path, line, data))
+      }
+      chart('#chart1', [0, n - 1], 'linear', tick)
+    }
 
-          function Chart2() {
-            var transition = d3.select({}).transition().duration(750).ease('linear')
+    function Chart2() {
+      var transition = d3.select({}).transition().duration(750).ease('linear')
 
-            function tick(path, line, data, x) {
-              function each() {
-                // push a new data point onto the back
-                data.push(random())
-                // redraw the line, and then slide it to the left
-                path
-                  .attr('d', line)
-                  .attr('transform', null)
-                  .transition()
-                  .attr('transform', 'translate(' + x(-1) + ')')
-                // pop the old data point off the front
-                data.shift()
-              }
+      function tick(path, line, data, x) {
+        function each() {
+          // push a new data point onto the back
+          data.push(random())
+          // redraw the line, and then slide it to the left
+          path
+            .attr('d', line)
+            .attr('transform', null)
+            .transition()
+            .attr('transform', 'translate(' + x(-1) + ')')
+          // pop the old data point off the front
+          data.shift()
+        }
 
-              transition = transition
-                .each(each)
-                .transition()
-                .each('start', () => tick(path, line, data, x))
-            }
-            chart('#chart2', [0, n - 1], 'linear', tick)
-          }
+        transition = transition
+          .each(each)
+          .transition()
+          .each('start', () => tick(path, line, data, x))
+      }
+      chart('#chart2', [0, n - 1], 'linear', tick)
+    }
 
-          function Chart3() {
-            var transition = d3.select({}).transition().duration(750).ease('linear')
+    function Chart3() {
+      var transition = d3.select({}).transition().duration(750).ease('linear')
 
-            function tick(path, line, data, x) {
-              function each() {
-                // push a new data point onto the back
-                data.push(random())
-                // redraw the line, and then slide it to the left, and repeat indefinitely
-                path
-                  .attr('d', line)
-                  .attr('transform', null)
-                  .transition()
-                  .attr('transform', 'translate(' + x(0) + ')')
-                // pop the old data point off the front
-                data.shift()
-              }
-              transition = transition
-                .each(each)
-                .transition()
-                .each('start', () => tick(path, line, data, x))
-            }
-            chart('#chart3', [1, n - 2], 'basis', tick)
-          }
+      function tick(path, line, data, x) {
+        function each() {
+          // push a new data point onto the back
+          data.push(random())
+          // redraw the line, and then slide it to the left, and repeat indefinitely
+          path
+            .attr('d', line)
+            .attr('transform', null)
+            .transition()
+            .attr('transform', 'translate(' + x(0) + ')')
+          // pop the old data point off the front
+          data.shift()
+        }
+        transition = transition
+          .each(each)
+          .transition()
+          .each('start', () => tick(path, line, data, x))
+      }
+      chart('#chart3', [1, n - 2], 'basis', tick)
+    }
   </script>
   <header>
     <aside>January 19, 2012</aside>
@@ -181,19 +181,19 @@
       <div id="chart1">
         Chart1
         <script>
-          Chart1() 
+          Chart1()
         </script>
       </div>
       <div id="chart2">
         Chart2
         <script>
-          Chart2() 
+          Chart2()
         </script>
       </div>
       <div id="chart3">
         Chart3
         <script>
-          Chart3() 
+          Chart3()
         </script>
       </div>
       <div id="chart4">
