@@ -236,7 +236,8 @@
             d3.select(window).on('scroll', () => {
               ++count
             })
-            ;(function tick() {
+
+            function tick() {
               function each() {
                 // update the domains
                 now = new Date()
@@ -255,7 +256,9 @@
                 data.shift()
               }
               transition = transition.each(each).transition().each('start', tick)
-            })()
+            }
+
+            tick()
           })()
         </script>
       </div>
