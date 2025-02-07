@@ -81,26 +81,22 @@
 
       // parameters to ensure the model is georeferenced correctly on the map
       let drone
-
+      const onChanged = (e) => {
+        if (api.buildings) {
+          let point = map.project(e.detail.object.coordinates) //here's the object already modified
+          let features = map.queryRenderedFeatures(point, { layers: [layerId] })
+          if (features.length > 0) {
+            map.setFeatureState({ source: features[0].source, sourceLayer: features[0].sourceLayer, id: features[0].id }, { select: true })
+          }
+        }
+      }
       const cb = (model) => {
         drone = model.setCoords([position[0], position[1], 10])
         drone.setRotation({ x: 0, y: 0, z: -38 }) //turn it to the initial street way
         // drone.addTooltip('Drive with WASD keys', true, drone.anchor, true, 2)
         drone.castShadow = true
         drone.selected = true
-        drone.addEventListener(
-          'ObjectChanged',
-          (e) => {
-            if (api.buildings) {
-              let point = map.project(e.detail.object.coordinates) //here's the object already modified
-              let features = map.queryRenderedFeatures(point, { layers: [layerId] })
-              if (features.length > 0) {
-                map.setFeatureState({ source: features[0].source, sourceLayer: features[0].sourceLayer, id: features[0].id }, { select: true })
-              }
-            }
-          },
-          false,
-        )
+        drone.addEventListener('ObjectChanged', onChanged, false)
         tb.add(drone)
         // stats
         stats = new Stats()
@@ -111,22 +107,20 @@
         animate()
 
         const gui = new GUI({ container: document.getElementById('gui'), width: '100%' })
-        // this will define if there's a fixed zoom level for the model
-        gui
-          .add(api, 'buildings')
-          .name('buildings')
-          .onChange(() => {
-            if (api.buildings) {
-              if (!map.getLayer(layerId)) {
-                map.addLayer(createBuildingLayer())
-              }
-            } else {
-              if (map.getLayer(layerId)) {
-                map.removeLayer(layerId)
-              }
+        const onChangedGUI = () => {
+          if (api.buildings) {
+            if (!map.getLayer(layerId)) {
+              map.addLayer(createBuildingLayer())
             }
-            tb.map.repaint = true
-          })
+          } else {
+            if (map.getLayer(layerId)) {
+              map.removeLayer(layerId)
+            }
+          }
+          tb.map.repaint = true
+        }
+        // this will define if there's a fixed zoom level for the model
+        gui.add(api, 'buildings').name('buildings').onChange(onChangedGUI)
         gui.add(api, 'acceleration', 1, 10).step(0.5)
         gui.add(api, 'inertia', 1, 5).step(0.5)
         gui.close()
