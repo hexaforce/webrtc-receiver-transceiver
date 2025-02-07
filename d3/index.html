@@ -183,12 +183,8 @@
       var line = d3.svg
         .line()
         .interpolate('basis')
-        .x((d, i) => {
-          return x(now - (n - 1 - i) * duration)
-        })
-        .y((d, i) => {
-          return y(d)
-        })
+        .x((d, i) => x(now - (n - 1 - i) * duration))
+        .y((d, i) => y(d))
       var svg = d3
         .select('#chart4')
         .append('p')
