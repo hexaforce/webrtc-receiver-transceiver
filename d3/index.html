@@ -182,7 +182,7 @@
               duration = 750,
               now = new Date(Date.now() - duration),
               count = 0,
-              data = d3.range(n).map(function () {
+              data = d3.range(n).map(() => {
                 return 0
               })
             var margin = { top: 6, right: 0, bottom: 20, left: 20 },
@@ -196,10 +196,10 @@
             var line = d3.svg
               .line()
               .interpolate('basis')
-              .x(function (d, i) {
+              .x((d, i) => {
                 return x(now - (n - 1 - i) * duration)
               })
-              .y(function (d, i) {
+              .y((d, i) => {
                 return y(d)
               })
             var svg = d3
@@ -219,30 +219,28 @@
               .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
             var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line')
             var transition = d3.select({}).transition().duration(750).ease('linear')
-            d3.select(window).on('scroll', function () {
+            d3.select(window).on('scroll', () => {
               ++count
             })
             ;(function tick() {
-              transition = transition
-                .each(function () {
-                  // update the domains
-                  now = new Date()
-                  x.domain([now - (n - 2) * duration, now - duration])
-                  y.domain([0, d3.max(data)])
-                  // push the accumulated count onto the back, and reset the count
-                  data.push(Math.min(30, count))
-                  count = 0
-                  // redraw the line
-                  svg.select('.line').attr('d', line).attr('transform', null)
-                  // slide the x-axis left
-                  axis.call(x.axis)
-                  // slide the line left
-                  path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
-                  // pop the old data point off the front
-                  data.shift()
-                })
-                .transition()
-                .each('start', tick)
+              function each() {
+                // update the domains
+                now = new Date()
+                x.domain([now - (n - 2) * duration, now - duration])
+                y.domain([0, d3.max(data)])
+                // push the accumulated count onto the back, and reset the count
+                data.push(Math.min(30, count))
+                count = 0
+                // redraw the line
+                svg.select('.line').attr('d', line).attr('transform', null)
+                // slide the x-axis left
+                axis.call(x.axis)
+                // slide the line left
+                path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
+                // pop the old data point off the front
+                data.shift()
+              }
+              transition = transition.each(each).transition().each('start', tick)
             })()
           })()
         </script>
