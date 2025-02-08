@@ -83,9 +83,7 @@
     // --- Chart4 --------------------------
     function Chart4() {
       var now = new Date(Date.now() - duration)
-      var data = d3.range(n).map(() => {
-        return 0
-      })
+      var data = d3.range(n).map(() => 0)
 
       var x = d3.time
         .scale()
@@ -117,14 +115,15 @@
 
       function tick() {
         function each() {
-          data.push(random() + 0.4)
+          data.push(random() + 1)
 
           now = new Date()
           x.domain([now - (n - 2) * duration, now - duration])
+          axis.call(x.axis)
           y.domain([0, d3.max(data)])
           svg.select('.y.axis').transition().duration(duration).call(d3.svg.axis().scale(y).ticks(5).orient('left'))
+
           svg.select('.line').attr('d', line).attr('transform', null)
-          axis.call(x.axis)
           path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
 
           data.shift()
@@ -138,9 +137,7 @@
     // --- Chart5 --------------------------
     function Chart5() {
       var now = new Date(Date.now() - duration)
-      var data = d3.range(n).map(() => {
-        return 0
-      })
+      var data = d3.range(n).map(() => 0)
 
       var x = d3.time
         .scale()
@@ -172,14 +169,15 @@
 
       function tick() {
         function each() {
-          data.push(random() + 0.4)
+          data.push(random() + 1)
 
           now = new Date()
           x.domain([now - (n - 2) * duration, now - duration])
+          axis.call(x.axis)
           y.domain([0, d3.max(data)])
           svg.select('.y.axis').transition().duration(duration).call(d3.svg.axis().scale(y).ticks(5).orient('left'))
+
           svg.select('.line').attr('d', line).attr('transform', null)
-          axis.call(x.axis)
           path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
 
           data.shift()
