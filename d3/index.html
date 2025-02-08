@@ -104,15 +104,7 @@
         .interpolate('basis')
         .x((d, i) => x(now - (n - 1 - i) * duration))
         .y((d, i) => y(d))
-      var svg = d3
-        .select('#chart4')
-        .append('p')
-        .append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        /* .style('margin-left', -margin.left + 'px') */
-        .append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+      var svg = createSvg('#chart4', margin, width, height)
       svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
       var axis = svg
         .append('g')
