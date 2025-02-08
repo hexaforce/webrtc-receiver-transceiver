@@ -199,6 +199,20 @@
         .y((d, i) => y(d))
       var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line')
 
+      // var bars = svg
+      //   .append('g')
+      //   .attr('class', 'bars')
+      //   .selectAll('.bar')
+      //   .data(data)
+      //   .enter()
+      //   .append('rect')
+      //   .attr('class', 'bar')
+      //   .attr('x', (d, i) => x(now - (n - 1 - i) * duration))
+      //   .attr('y', (d) => y(d))
+      //   .attr('width', width / n - 1)
+      //   .attr('height', (d) => height - y(d))
+      //   .attr('fill', 'steelblue')
+
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
       function tick() {
@@ -214,6 +228,21 @@
           svg.select('.line').attr('d', line).attr('transform', null)
           path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
 
+          // bars = bars.data(data)
+          // bars
+          //   .enter()
+          //   .append('rect')
+          //   .attr('class', 'bar')
+          //   .attr('x', (d, i) =>  x(now - (n - 1 - i) * duration))
+          //   .attr('y', (d) => y(d))
+          //   .attr('width', width / n - 1)
+          //   .attr('height', (d) => height - y(d))
+          //   .attr('fill', 'steelblue')
+          // bars
+          //   .transition()
+          //   .duration(duration)
+          //   .attr('x', (d, i) =>  x(now - (n - 1 - i) * duration))
+
           data.shift()
         }
         transition = transition.each(each).transition().each('start', tick)
@@ -221,7 +250,6 @@
 
       tick()
     }
-
   </script>
   <header>
     <aside>January 19, 2012</aside>
