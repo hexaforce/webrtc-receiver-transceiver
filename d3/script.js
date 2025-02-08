@@ -51,6 +51,7 @@ function barChart(id, xDomain, yDomain, tick) {
   var bars = svg
     .append('g')
     .attr('class', 'bars')
+    .attr('clip-path', 'url(#clip)')
     .selectAll('.bar')
     .data(data)
     .enter()

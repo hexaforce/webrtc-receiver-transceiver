@@ -120,7 +120,11 @@
           x.domain([now - (n - 2) * duration, now - duration])
           axis.call(x.axis)
           y.domain([0, d3.max(data)])
-          svg.select('.y.axis').transition().duration(duration).call(d3.svg.axis().scale(y).ticks(5).orient('left'))
+          svg
+            .select('.y.axis')
+            .transition()
+            .duration(duration)
+            .call((y.axis = d3.svg.axis().scale(y).ticks(5).orient('left')))
 
           svg.select('.line').attr('d', line).attr('transform', null)
           path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
@@ -168,78 +172,6 @@
 
       barChart('#chart5', [0, n - 1], [-1, 1], tick)
     }
-
-    // --- Chart6 --------------------------
-    function Chart6() {
-      var now = new Date(Date.now() - duration)
-      var data = d3.range(n).map(() => 0)
-
-      var x = d3.time
-        .scale()
-        .domain([now - (n - 2) * duration, now - duration])
-        .range([0, width])
-      var y = d3.scale
-        .linear()
-        .domain([0, d3.max(data)])
-        .range([height, 0])
-
-      var svg = createSvg('#chart6')
-      svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
-
-      var axis = svg
-        .append('g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
-
-      var line = d3.svg
-        .line()
-        .interpolate('basis')
-        .x((d, i) => x(now - (n - 1 - i) * duration))
-        .y((d, i) => y(d))
-      var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line')
-
-      // var bars = svg.append('g').attr('class', 'bars').selectAll('.bar').data(data)
-
-      var transition = d3.select({}).transition().duration(duration).ease('linear')
-
-      function tick() {
-        function each() {
-          data.push(random() + 1)
-
-          now = new Date()
-          x.domain([now - (n - 2) * duration, now - duration])
-          axis.call(x.axis)
-          y.domain([0, d3.max(data)])
-          svg.select('.y.axis').transition().duration(duration).call(d3.svg.axis().scale(y).ticks(5).orient('left'))
-
-          svg.select('.line').attr('d', line).attr('transform', null)
-          path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
-
-          // bars = bars.data(data)
-          // bars
-          //   .enter()
-          //   .append('rect')
-          //   .attr('class', 'bar')
-          //   .attr('x', (d, i) => x(now - (n - 1 - i) * duration))
-          //   .attr('y', (d) => y(d))
-          //   .attr('width', width / n - 1)
-          //   .attr('height', (d) => height - y(d))
-          //   .attr('fill', 'steelblue')
-          // bars
-          //   .transition()
-          //   .duration(duration)
-          //   .attr('x', (d, i) => x(now - (n - 1 - i) * duration))
-          //   .attr('y', (d) => y(d))
-          //   .attr('height', (d) => height - y(d))
-
-          data.shift()
-        }
-        transition = transition.each(each).transition().each('start', tick)
-      }
-
-      tick()
-    }
   </script>
   <header>
     <aside>January 19, 2012</aside>
@@ -281,12 +213,6 @@
         Chart5
         <script>
           Chart5()
-        </script>
-      </div>
-      <div id="chart6">
-        Chart6
-        <script>
-          Chart6()
         </script>
       </div>
     </div>
