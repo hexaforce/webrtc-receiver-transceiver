@@ -26,16 +26,10 @@ function chart(id, xDomain, yDomain, interpolation, tick) {
   var x = d3.scale.linear().domain(xDomain).range([0, width])
   var y = d3.scale.linear().domain(yDomain).range([height, 0])
 
-  var line = d3.svg
-    .line()
-    .interpolate(interpolation)
-    .x((d, i) => x(i))
-    .y((d) => y(d))
-
   var svg = createSvg(id)
-
   svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
 
+  var line = d3.svg.line().interpolate(interpolation).x((d, i) => x(i)).y((d) => y(d))
   var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line').attr('d', line)
 
   tick(path, line, data, x)
