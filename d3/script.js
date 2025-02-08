@@ -1,15 +1,15 @@
 function createSvg(id, margin, width, height) {
-  return (
-    d3
-      .select(id)
-      .append('p')
-      .append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      /* .style('margin-left', -margin.left + 'px') */
-      .append('g')
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-  )
+  var svg = d3
+    .select(id)
+    .append('p')
+    .append('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+    /* .style('margin-left', -margin.left + 'px') */
+    .append('g')
+    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+  svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
+  return svg
 }
 
 function chart(id, domain, interpolation, tick) {
@@ -28,8 +28,6 @@ function chart(id, domain, interpolation, tick) {
     .y((d) => y(d))
 
   var svg = createSvg(id, margin, width, height)
-
-  svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
 
   svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
 

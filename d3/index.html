@@ -105,7 +105,7 @@
         .x((d, i) => x(now - (n - 1 - i) * duration))
         .y((d, i) => y(d))
       var svg = createSvg('#chart4', margin, width, height)
-      svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
+
       var axis = svg
         .append('g')
         .attr('class', 'x axis')
