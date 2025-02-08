@@ -20,13 +20,17 @@ function createSvg(id) {
   return svg
 }
 
-function chart(id, domain, interpolation, tick) {
+function chart(id, xDomain, yDomain, interpolation, tick) {
   var data = d3.range(n).map(random)
 
-  var x = d3.scale.linear().domain(domain).range([0, width])
-  var y = d3.scale.linear().domain([-1, 1]).range([height, 0])
+  var x = d3.scale.linear().domain(xDomain).range([0, width])
+  var y = d3.scale.linear().domain(yDomain).range([height, 0])
 
-  var line = d3.svg.line().interpolate(interpolation).x((d, i) => x(i)).y((d) => y(d))
+  var line = d3.svg
+    .line()
+    .interpolate(interpolation)
+    .x((d, i) => x(i))
+    .y((d) => y(d))
 
   var svg = createSvg(id)
 
