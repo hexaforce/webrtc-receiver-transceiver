@@ -86,9 +86,7 @@
       var data = d3.range(n).map(() => {
         return 0
       })
-      var margin = { top: 6, right: 0, bottom: 20, left: 20 }
-      var width = 720 - margin.right
-      var height = 120 - margin.top - margin.bottom
+
       var x = d3.time
         .scale()
         .domain([now - (n - 2) * duration, now - duration])
