@@ -1,0 +1,59 @@
+
+body {
+    margin: 1em auto 4em auto;
+    position: relative;
+    width: 960px;
+  }
+
+  svg {
+    font: 10px sans-serif;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .x.axis line {
+    shape-rendering: auto;
+  }
+
+  .line {
+    fill: none;
+    stroke: #000;
+    stroke-width: 1.5px;
+  }
+
+  #container {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  #container > div {
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  #container > div:first-child {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  #container > div:last-child {
+    flex: 3;
+  }
+
+  #chart-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  div > p {
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+  }
