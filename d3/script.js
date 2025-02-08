@@ -40,7 +40,6 @@ function lineChart(id, xDomain, yDomain, interpolation, tick) {
 }
 
 function barChart(id, xDomain, yDomain, tick) {
-  // var data = d3.range(n).map(random)
   var data = d3.range(n).map(() => 0)
 
   var now = new Date(Date.now() - duration)
@@ -50,7 +49,6 @@ function barChart(id, xDomain, yDomain, tick) {
     .domain([now - (n - 2) * duration, now - duration])
     .range([0, width])
 
-  // var y = d3.scale.linear().domain(yDomain).range([height, 0])
   var y = d3.scale
     .linear()
     .domain([d3.min(data), d3.max(data)])
