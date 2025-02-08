@@ -83,7 +83,7 @@
     // --- Chart4 --------------------------
     function Chart4() {
       var now = new Date(Date.now() - duration)
-      var count = 0
+      // var count = 0
       var data = d3.range(n).map(() => {
         return 0
       })
@@ -110,9 +110,9 @@
         .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
       var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line')
       var transition = d3.select({}).transition().duration(duration).ease('linear')
-      d3.select(window).on('scroll', () => {
-        ++count
-      })
+      // d3.select(window).on('scroll', () => {
+      //   ++count
+      // })
 
       function tick() {
         function each() {
@@ -121,8 +121,9 @@
           x.domain([now - (n - 2) * duration, now - duration])
           y.domain([0, d3.max(data)])
           // push the accumulated count onto the back, and reset the count
-          data.push(Math.min(30, count))
-          count = 0
+          // data.push(Math.min(30, count))
+          // count = 0
+          data.push(random() + 0.3)
           // redraw the line
           svg.select('.line').attr('d', line).attr('transform', null)
           // slide the x-axis left
