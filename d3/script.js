@@ -1,4 +1,4 @@
-const n = 60
+const n = 10
 const duration = 750
 const random = d3.random.normal(0, 0.2)
 
