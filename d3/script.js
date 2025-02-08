@@ -80,5 +80,5 @@ function barChart(id, xDomain, yDomain, tick) {
     .attr('height', (d) => height - y(d))
     .attr('fill', 'steelblue')
 
-  tick(bars, data, x, x2, y, svg)
+  tick(bars, data, x, x2, axis, y, svg)
 }
