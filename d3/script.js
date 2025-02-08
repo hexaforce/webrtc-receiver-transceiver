@@ -40,10 +40,15 @@ function lineChart(id, xDomain, yDomain, interpolation, tick) {
 }
 
 function barChart(id, xDomain, yDomain, tick) {
-  var data = d3.range(n).map(random)
-
+  // var data = d3.range(n).map(random)
+  var data = d3.range(n).map(() => 0)
+  
   var x = d3.scale.linear().domain(xDomain).range([0, width])
-  var y = d3.scale.linear().domain(yDomain).range([height, 0])
+  // var y = d3.scale.linear().domain(yDomain).range([height, 0])
+  var y = d3.scale
+  .linear()
+  .domain([d3.min(data), d3.max(data)])
+  .range([height, 0])
 
   var svg = createSvg(id)
   svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
@@ -63,5 +68,5 @@ function barChart(id, xDomain, yDomain, tick) {
     .attr('height', (d) => height - y(d))
     .attr('fill', 'steelblue')
 
-  tick(bars, data, x, y)
+  tick(bars, data, x, y, svg)
 }
