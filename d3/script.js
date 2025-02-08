@@ -28,6 +28,11 @@ function lineChart(id, xDomain, yDomain, interpolation, tick) {
 
   var svg = createSvg(id)
   svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
+  var axis = svg
+    .append('g')
+    .attr('class', 'x axis')
+    .attr('transform', 'translate(0,' + height + ')')
+    .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
 
   var line = d3.svg
     .line()
@@ -55,7 +60,7 @@ function barChart(id, xDomain, yDomain, tick) {
     .range([height, 0])
 
   var svg = createSvg(id)
-  svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
+  svg.append('g').attr('class', 'y axis').call(y.axis = d3.svg.axis().scale(y).ticks(5).orient('left'))
 
   var axis = svg
     .append('g')
