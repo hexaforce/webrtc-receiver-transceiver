@@ -85,30 +85,15 @@
       var now = new Date(Date.now() - duration)
       var data = d3.range(n).map(() => 0)
 
-      var x = d3.time
-        .scale()
-        .domain([now - (n - 2) * duration, now - duration])
-        .range([0, width])
-      var y = d3.scale
-        .linear()
-        .domain([0, d3.max(data)])
-        .range([height, 0])
-
-      var line = d3.svg
-        .line()
-        .interpolate('basis')
-        .x((d, i) => x(now - (n - 1 - i) * duration))
-        .y((d, i) => y(d))
+      var x = d3.time.scale().domain([now - (n - 2) * duration, now - duration]).range([0, width])
+      var y = d3.scale.linear().domain([0, d3.max(data)]).range([height, 0])
 
       var svg = createSvg('#chart4')
-
       svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
 
-      var axis = svg
-        .append('g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
+      var axis = svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
+
+      var line = d3.svg.line().interpolate('basis').x((d, i) => x(now - (n - 1 - i) * duration)).y((d, i) => y(d))
       var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line')
 
       var transition = d3.select({}).transition().duration(duration).ease('linear')
@@ -139,30 +124,15 @@
       var now = new Date(Date.now() - duration)
       var data = d3.range(n).map(() => 0)
 
-      var x = d3.time
-        .scale()
-        .domain([now - (n - 2) * duration, now - duration])
-        .range([0, width])
-      var y = d3.scale
-        .linear()
-        .domain([0, d3.max(data)])
-        .range([height, 0])
-
-      var line = d3.svg
-        .line()
-        .interpolate('basis')
-        .x((d, i) => x(now - (n - 1 - i) * duration))
-        .y((d, i) => y(d))
+      var x = d3.time.scale().domain([now - (n - 2) * duration, now - duration]).range([0, width])
+      var y = d3.scale.linear().domain([0, d3.max(data)]).range([height, 0])
 
       var svg = createSvg('#chart5')
-
       svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
 
-      var axis = svg
-        .append('g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
+      var axis = svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
+
+      var line = d3.svg.line().interpolate('basis').x((d, i) => x(now - (n - 1 - i) * duration)).y((d, i) => y(d))
       var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line')
 
       var transition = d3.select({}).transition().duration(duration).ease('linear')
