@@ -91,7 +91,10 @@
         .scale()
         .domain([now - (n - 2) * duration, now - duration])
         .range([0, width])
-      var y = d3.scale.linear().range([height, 0])
+      var y = d3.scale
+        .linear()
+        .domain([0, d3.max(data)])
+        .range([height, 0])
 
       var line = d3.svg
         .line()
@@ -102,7 +105,7 @@
       var svg = createSvg('#chart4')
 
       svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
-      
+
       var axis = svg
         .append('g')
         .attr('class', 'x axis')
@@ -119,6 +122,7 @@
           now = new Date()
           x.domain([now - (n - 2) * duration, now - duration])
           y.domain([0, d3.max(data)])
+          svg.select('.y.axis').transition().duration(duration).call(d3.svg.axis().scale(y).ticks(5).orient('left'))
           svg.select('.line').attr('d', line).attr('transform', null)
           axis.call(x.axis)
           path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
