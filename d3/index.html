@@ -64,8 +64,9 @@
   </style>
   <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script>
-    var n = 60
-    var random = d3.random.normal(0, 0.2)
+    const n = 60
+    const duration = 750
+    const random = d3.random.normal(0, 0.2)
 
     function chart(id, domain, interpolation, tick) {
       var data = d3.range(n).map(random)
@@ -100,7 +101,7 @@
 
     // --- Chart1 --------------------------
     function Chart1() {
-      var transition = d3.select({}).transition().duration(750).ease('linear')
+      var transition = d3.select({}).transition().duration(duration).ease('linear')
 
       function tick(path, line, data) {
         function each() {
@@ -122,7 +123,7 @@
 
     // --- Chart2 --------------------------
     function Chart2() {
-      var transition = d3.select({}).transition().duration(750).ease('linear')
+      var transition = d3.select({}).transition().duration(duration).ease('linear')
 
       function tick(path, line, data, x) {
         function each() {
@@ -148,7 +149,7 @@
 
     // --- Chart3 --------------------------
     function Chart3() {
-      var transition = d3.select({}).transition().duration(750).ease('linear')
+      var transition = d3.select({}).transition().duration(duration).ease('linear')
 
       function tick(path, line, data, x) {
         function each() {
@@ -174,8 +175,6 @@
 
     // --- Chart4 --------------------------
     function Chart4() {
-      var n = 60
-      var duration = 750
       var now = new Date(Date.now() - duration)
       var count = 0
       var data = d3.range(n).map(() => {
@@ -210,7 +209,7 @@
         .attr('transform', 'translate(0,' + height + ')')
         .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
       var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line')
-      var transition = d3.select({}).transition().duration(750).ease('linear')
+      var transition = d3.select({}).transition().duration(duration).ease('linear')
       d3.select(window).on('scroll', () => {
         ++count
       })
