@@ -75,13 +75,21 @@
 
       var x = d3.scale.linear().domain(domain).range([0, width])
       var y = d3.scale.linear().domain([-1, 1]).range([height, 0])
-      var line = d3.svg.line().interpolate(interpolation).x((d, i) => x(i)).y((d) => y(d))
+      var line = d3.svg
+        .line()
+        .interpolate(interpolation)
+        .x((d, i) => x(i))
+        .y((d) => y(d))
 
-      var svg = d3.select(id).append('p').append('svg')
+      var svg = d3
+        .select(id)
+        .append('p')
+        .append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         // .style('margin-left', -margin.left + 'px')
-        .append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
       svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
       svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
 
@@ -103,7 +111,10 @@
           // transition the line
           path.transition().attr('d', line)
         }
-        transition = transition.each(each).transition().each('start', () => tick(path, line, data))
+        transition = transition
+          .each(each)
+          .transition()
+          .each('start', () => tick(path, line, data))
       }
 
       chart('#chart1', [0, n - 1], 'linear', tick)
@@ -118,11 +129,18 @@
           // push a new data point onto the back
           data.push(random())
           // redraw the line, and then slide it to the left
-          path.attr('d', line).attr('transform', null).transition().attr('transform', 'translate(' + x(-1) + ')')
+          path
+            .attr('d', line)
+            .attr('transform', null)
+            .transition()
+            .attr('transform', 'translate(' + x(-1) + ')')
           // pop the old data point off the front
           data.shift()
         }
-        transition = transition.each(each).transition().each('start', () => tick(path, line, data, x))
+        transition = transition
+          .each(each)
+          .transition()
+          .each('start', () => tick(path, line, data, x))
       }
 
       chart('#chart2', [0, n - 1], 'linear', tick)
@@ -137,11 +155,18 @@
           // push a new data point onto the back
           data.push(random())
           // redraw the line, and then slide it to the left, and repeat indefinitely
-          path.attr('d', line).attr('transform', null).transition().attr('transform', 'translate(' + x(0) + ')')
+          path
+            .attr('d', line)
+            .attr('transform', null)
+            .transition()
+            .attr('transform', 'translate(' + x(0) + ')')
           // pop the old data point off the front
           data.shift()
         }
-        transition = transition.each(each).transition().each('start', () => tick(path, line, data, x))
+        transition = transition
+          .each(each)
+          .transition()
+          .each('start', () => tick(path, line, data, x))
       }
 
       chart('#chart3', [1, n - 2], 'basis', tick)
@@ -159,7 +184,10 @@
       var margin = { top: 6, right: 0, bottom: 20, left: 20 }
       var width = 720 - margin.right
       var height = 120 - margin.top - margin.bottom
-      var x = d3.time.scale().domain([now - (n - 2) * duration, now - duration]).range([0, width])
+      var x = d3.time
+        .scale()
+        .domain([now - (n - 2) * duration, now - duration])
+        .range([0, width])
       var y = d3.scale.linear().range([height, 0])
       var line = d3.svg
         .line()

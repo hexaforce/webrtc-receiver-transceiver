@@ -399,7 +399,7 @@
       console.log('frame:', frame)
       return chart.update(frame)
     }
-  
+
     const main = new Runtime().module((runtime, observer) => {
       const main = runtime.module()
       main.variable(observer()).define('chart_', [], _chart)
@@ -407,7 +407,6 @@
       main.variable(observer()).define(['chart_', 'frame_'], _bind)
       return main
     }, Inspector.into(document.body))
-    
   </script>
   <form id="f" style="font: 12px var(--sans-serif); font-variant-numeric: tabular-nums; display: flex; height: 33px; align-items: center">
     <button id="b" type="button" style="margin-right: 0.4em; width: 5em"></button>
