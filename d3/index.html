@@ -141,12 +141,13 @@
     function Chart5() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(bars, data, x, y, svg) {
+      function tick(bars, data, x, x2, y, svg) {
         function each() {
           data.push(random())
 
           var xDomain = [x.domain()[0] + 1, x.domain()[1] + 1]
           x.domain(xDomain)
+          
           y.domain([d3.min(data), d3.max(data)])
           svg
             .select('.y.axis')
@@ -173,7 +174,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(bars, data, x, y, svg))
+          .each('start', () => tick(bars, data, x, x2, y, svg))
       }
 
       barChart('#chart5', [0, n - 1], [-1, 1], tick)
