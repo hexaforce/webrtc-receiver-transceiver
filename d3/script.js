@@ -1,4 +1,12 @@
-function createSvg(id, margin, width, height) {
+const n = 60
+const duration = 750
+const random = d3.random.normal(0, 0.2)
+
+const margin = { top: 6, right: 6, bottom: 6, left: 25 }
+const width = 720 - margin.right
+const height = 120 - margin.top - margin.bottom
+
+function createSvg(id) {
   var svg = d3
     .select(id)
     .append('p')
@@ -15,19 +23,16 @@ function createSvg(id, margin, width, height) {
 function chart(id, domain, interpolation, tick) {
   var data = d3.range(n).map(random)
 
-  var margin = { top: 6, right: 10, bottom: 6, left: 25 }
-  var width = 720 - margin.right
-  var height = 120 - margin.top - margin.bottom
-
   var x = d3.scale.linear().domain(domain).range([0, width])
   var y = d3.scale.linear().domain([-1, 1]).range([height, 0])
+
   var line = d3.svg
     .line()
     .interpolate(interpolation)
     .x((d, i) => x(i))
     .y((d) => y(d))
 
-  var svg = createSvg(id, margin, width, height)
+  var svg = createSvg(id)
 
   svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
 

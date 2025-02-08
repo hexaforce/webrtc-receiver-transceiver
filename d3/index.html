@@ -3,12 +3,9 @@
   <meta charset="utf-8" />
   <title>Path Transitions</title>
   <link href="style.css" rel="stylesheet" />
-  <script src="script.js"></script>
   <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="script.js"></script>
   <script>
-    const n = 60
-    const duration = 750
-    const random = d3.random.normal(0, 0.2)
 
     // --- Chart1 --------------------------
     function Chart1() {
@@ -104,7 +101,8 @@
         .interpolate('basis')
         .x((d, i) => x(now - (n - 1 - i) * duration))
         .y((d, i) => y(d))
-      var svg = createSvg('#chart4', margin, width, height)
+
+      var svg = createSvg('#chart4')
 
       var axis = svg
         .append('g')
