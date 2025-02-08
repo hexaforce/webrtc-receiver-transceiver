@@ -63,7 +63,7 @@ function barChart(id, xDomain, yDomain, tick) {
     .append('g')
     .attr('class', 'x axis')
     .attr('transform', 'translate(0,' + height + ')')
-    .call((x2.axis = d3.svg.axis().scale(x).orient('bottom')))
+    .call((x2.axis = d3.svg.axis().scale(x2).orient('bottom')))
 
   var bars = svg
     .append('g')

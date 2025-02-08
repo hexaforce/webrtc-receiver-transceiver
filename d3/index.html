@@ -145,8 +145,7 @@
         function each() {
           data.push(random())
 
-          var xDomain = [x.domain()[0] + 1, x.domain()[1] + 1]
-          x.domain(xDomain)
+          x.domain([x.domain()[0] + 1, x.domain()[1] + 1])
 
           now = new Date()
           x2.domain([now - (n - 2) * duration, now - duration])
