@@ -87,44 +87,27 @@
         return 0
       })
 
-      var x = d3.time
-        .scale()
-        .domain([now - (n - 2) * duration, now - duration])
-        .range([0, width])
+      var x = d3.time.scale().domain([now - (n - 2) * duration, now - duration]).range([0, width])
       var y = d3.scale.linear().range([height, 0])
-      var line = d3.svg
-        .line()
-        .interpolate('basis')
-        .x((d, i) => x(now - (n - 1 - i) * duration))
-        .y((d, i) => y(d))
+
+      var line = d3.svg.line().interpolate('basis').x((d, i) => x(now - (n - 1 - i) * duration)).y((d, i) => y(d))
 
       var svg = createSvg('#chart4')
 
-      var axis = svg
-        .append('g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
+      var axis = svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
       var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line')
+
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
       function tick() {
         function each() {
-          // update the domains
           now = new Date()
           x.domain([now - (n - 2) * duration, now - duration])
           y.domain([0, d3.max(data)])
-          // push the accumulated count onto the back, and reset the count
-          // data.push(Math.min(30, count))
-          // count = 0
           data.push(random() + 0.4)
-          // redraw the line
           svg.select('.line').attr('d', line).attr('transform', null)
-          // slide the x-axis left
           axis.call(x.axis)
-          // slide the line left
           path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
-          // pop the old data point off the front
           data.shift()
         }
         transition = transition.each(each).transition().each('start', tick)

@@ -26,11 +26,7 @@ function chart(id, domain, interpolation, tick) {
   var x = d3.scale.linear().domain(domain).range([0, width])
   var y = d3.scale.linear().domain([-1, 1]).range([height, 0])
 
-  var line = d3.svg
-    .line()
-    .interpolate(interpolation)
-    .x((d, i) => x(i))
-    .y((d) => y(d))
+  var line = d3.svg.line().interpolate(interpolation).x((d, i) => x(i)).y((d) => y(d))
 
   var svg = createSvg(id)
 
