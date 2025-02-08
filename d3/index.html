@@ -85,15 +85,29 @@
       var now = new Date(Date.now() - duration)
       var data = d3.range(n).map(() => 0)
 
-      var x = d3.time.scale().domain([now - (n - 2) * duration, now - duration]).range([0, width])
-      var y = d3.scale.linear().domain([0, d3.max(data)]).range([height, 0])
+      var x = d3.time
+        .scale()
+        .domain([now - (n - 2) * duration, now - duration])
+        .range([0, width])
+      var y = d3.scale
+        .linear()
+        .domain([0, d3.max(data)])
+        .range([height, 0])
 
       var svg = createSvg('#chart4')
       svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
 
-      var axis = svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
+      var axis = svg
+        .append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
 
-      var line = d3.svg.line().interpolate('basis').x((d, i) => x(now - (n - 1 - i) * duration)).y((d, i) => y(d))
+      var line = d3.svg
+        .line()
+        .interpolate('basis')
+        .x((d, i) => x(now - (n - 1 - i) * duration))
+        .y((d, i) => y(d))
       var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line')
 
       var transition = d3.select({}).transition().duration(duration).ease('linear')
@@ -137,14 +151,13 @@
             .attr('class', 'bar')
             .attr('x', (d, i) => x(i))
             .attr('y', (d) => y(d))
-            .attr('width', (width / n)-1)
+            .attr('width', width / n - 1)
             .attr('height', (d) => height - y(d))
             .attr('fill', 'steelblue')
           bars
             .transition()
             .duration(duration)
             .attr('x', (d, i) => x(i))
-            
         }
 
         transition = transition
@@ -155,7 +168,6 @@
 
       barChart('#chart5', [0, n - 1], [-1, 1], tick)
     }
-    
   </script>
   <header>
     <aside>January 19, 2012</aside>
@@ -167,14 +179,13 @@
       <pre id="peer-connection"></pre>
     </div>
     <div id="chart-container">
-<!-- 
+      <!-- 
       <div id="chart1">
         Chart1
         <script>
           Chart1()
         </script>
       </div>
--->
       <div id="chart2">
         Chart2
         <script>
@@ -187,6 +198,7 @@
           Chart3()
         </script>
       </div>
+-->
       <div id="chart4">
         Chart4
         <script>
