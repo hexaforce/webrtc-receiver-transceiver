@@ -101,6 +101,8 @@
 
       var svg = createSvg('#chart4')
 
+      svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
+      
       var axis = svg
         .append('g')
         .attr('class', 'x axis')
