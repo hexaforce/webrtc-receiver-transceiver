@@ -112,13 +112,15 @@
 
       function tick() {
         function each() {
+          data.push(random() + 0.4)
+
           now = new Date()
           x.domain([now - (n - 2) * duration, now - duration])
           y.domain([0, d3.max(data)])
-          data.push(random() + 0.4)
           svg.select('.line').attr('d', line).attr('transform', null)
           axis.call(x.axis)
           path.transition().attr('transform', 'translate(' + x(now - (n - 1) * duration) + ')')
+
           data.shift()
         }
         transition = transition.each(each).transition().each('start', tick)
