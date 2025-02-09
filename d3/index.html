@@ -10,12 +10,13 @@
     function Chart1() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(path, line, data, lastIndex, x, timeseries, axisX, y, axisY, svg) {
+      function tick(path, line, data, svg) {
         function each() {
           // push a new data point onto the back
           data.push(random())
 
-          updateaxis(timeseries, lastIndex, axisX, y, data, axisY)
+          updateaxis(data, svg)
+          const { lastIndex, x, timeseries, axisX, y, axisY } = svg
 
           // redraw the line, and then slide it to the left
           path
@@ -30,7 +31,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(path, line, data, lastIndex, x, timeseries, axisX, y, axisY, svg))
+          .each('start', () => tick(path, line, data, svg))
       }
 
       lineChart('#chart1', [0, n - 1], 'linear', tick)
@@ -40,12 +41,13 @@
     function Chart2() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(path, line, data, lastIndex, x, timeseries, axisX, y, axisY, svg) {
+      function tick(path, line, data, svg) {
         function each() {
           // push a new data point onto the back
           data.push(random())
 
-          updateaxis(timeseries, lastIndex, axisX, y, data, axisY)
+          updateaxis(data, svg)
+          const { lastIndex, x, timeseries, axisX, y, axisY } = svg
 
           // redraw the line, and then slide it to the left, and repeat indefinitely
           path
@@ -60,7 +62,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(path, line, data, lastIndex, x, timeseries, axisX, y, axisY, svg))
+          .each('start', () => tick(path, line, data, svg))
       }
 
       lineChart('#chart2', [1, n - 2], 'basis', tick)
@@ -70,13 +72,14 @@
     function Chart3() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(bars, data, lastIndex, x, timeseries, axisX, y, axisY, svg) {
+      function tick(bars, data, svg) {
         function each() {
           data.push(random())
 
-          x.domain([x.domain()[0] + 1, x.domain()[1] + 1])
+          updateaxis(data, svg)
+          const { lastIndex, x, timeseries, axisX, y, axisY } = svg
 
-          updateaxis(timeseries, lastIndex, axisX, y, data, axisY)
+          x.domain([x.domain()[0] + 1, x.domain()[1] + 1])
 
           bars = bars.data(data)
           bars
@@ -97,7 +100,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(bars, data, lastIndex, x, timeseries, axisX, y, axisY, svg))
+          .each('start', () => tick(bars, data, svg))
       }
 
       barChart('#chart3', [0, n - 1], tick)

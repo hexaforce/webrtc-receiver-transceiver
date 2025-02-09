@@ -6,8 +6,9 @@ const margin = { top: 6, right: 6, bottom: 20, left: 25 }
 const width = 720 - margin.right
 const height = 120 - margin.top - margin.bottom
 
-function updateaxis(timeseries, lastIndex, axisX, y, data, axisY){
-  now = new Date()
+function updateaxis(data, svg) {
+  const { timeseries, lastIndex, axisX, y, axisY } = svg
+  const now = new Date()
   timeseries.domain([now - lastIndex * duration, now - duration])
   axisX.call(timeseries.axis)
 
@@ -57,7 +58,7 @@ function lineChart(id, xDomain, interpolation, tick) {
     .y((d) => y(d))
   var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line').attr('d', line)
 
-  tick(path, line, data, lastIndex, x, timeseries, axisX, y, axisY, svg)
+  tick(path, line, data, { lastIndex, x, timeseries, axisX, y, axisY })
 }
 
 function barChart(id, xDomain, tick) {
@@ -110,5 +111,5 @@ function barChart(id, xDomain, tick) {
     .attr('height', (d) => height - y(d))
     .attr('fill', 'steelblue')
 
-  tick(bars, data, lastIndex, x, timeseries, axisX, y, axisY, svg)
+  tick(bars, data, { lastIndex, x, timeseries, axisX, y, axisY })
 }
