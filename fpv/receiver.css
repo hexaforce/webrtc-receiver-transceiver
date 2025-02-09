@@ -41,9 +41,9 @@ video {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 300px;
-  height: 300px;
-  border: 2px solid rgba(0, 255, 0, 0.2);
+  width: 200px;
+  height: 200px;
+  border: 2px solid rgba(0, 255, 0, 0.5);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -62,7 +62,7 @@ video {
 .crosshair::after {
   content: '';
   position: absolute;
-  background: rgba(0, 255, 0, 0.3);
+  background: rgba(0, 255, 0, 0.5);
 }
 
 .crosshair::before {
@@ -194,4 +194,15 @@ svg {
   /* color: white; */
   text-align: center;
   padding: 0;
+  display: flex;
 }
+
+.footer > div:first-child {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer > div:last-child {
+  flex: 3;
+}
+
