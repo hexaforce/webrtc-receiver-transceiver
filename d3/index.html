@@ -1,11 +1,177 @@
 <!doctype html>
 <html class="ocks-org do-not-copy">
   <meta charset="utf-8" />
-  <title>Path Transitions</title>
-  <link href="style.css" rel="stylesheet" />
+  <title>D3 chart</title>
+  <style>
+    body {
+      margin: 1em auto 4em auto;
+      position: relative;
+      width: 960px;
+    }
+
+    svg {
+      font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .x.axis line {
+      shape-rendering: auto;
+    }
+
+    .line {
+      fill: none;
+      stroke: #000;
+      stroke-width: 1.5px;
+    }
+
+    .bar {
+      fill: steelblue;
+    }
+
+    #container {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    #container > div {
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    #container > div:first-child {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    #container > div:last-child {
+      flex: 3;
+    }
+
+    #chart-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    div > p {
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    div > pre {
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+  </style>
   <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <script src="script.js"></script>
   <script>
+    const n = 60
+    const duration = 750
+    const random = d3.random.normal(0, 0.2)
+
+    const margin = { top: 6, right: 6, bottom: 20, left: 25 }
+    const width = 720 - margin.right
+    const height = 120 - margin.top - margin.bottom
+
+    const $ = (id) => document.getElementById(id)
+
+    // --- Create SVG --------------------------
+    function createSvg(data, id, xDomain) {
+      var x = d3.scale.linear().domain(xDomain).range([0, width])
+      var now = new Date(Date.now() - duration)
+      var lastIndex = xDomain[1]
+
+      var timeseries = d3.time
+        .scale()
+        .domain([now - lastIndex * duration, now - duration])
+        .range([0, width])
+
+      var y = d3.scale
+        .linear()
+        .domain([d3.min(data), d3.max(data)])
+        .range([height, 0])
+
+      var baseSvg = d3
+        .select(id)
+        .append('p')
+        .append('svg')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
+      baseSvg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
+
+      var axisY = baseSvg
+        .append('g')
+        .attr('class', 'y axis')
+        .call((y.axis = d3.svg.axis().scale(y).ticks(5).orient('left')))
+
+      var axisX = baseSvg
+        .append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call((timeseries.axis = d3.svg.axis().scale(timeseries).orient('bottom')))
+
+      return { lastIndex, x, timeseries, axisX, y, axisY, baseSvg }
+    }
+
+    // --- Update Axis --------------------------
+    function updateAxis(data, svg) {
+      const { timeseries, lastIndex, axisX, y, axisY } = svg
+      const now = new Date()
+      timeseries.domain([now - lastIndex * duration, now - duration])
+      axisX.call(timeseries.axis)
+      y.domain([d3.min(data), d3.max(data)])
+      axisY.call(y.axis)
+    }
+
+    // --- Line Chart --------------------------
+    function lineChart(id, xDomain, interpolation, tick) {
+      var data = d3.range(n).map(() => 0)
+      var svg = createSvg(data, id, xDomain)
+
+      var line = d3.svg
+        .line()
+        .interpolate(interpolation)
+        .x((d, i) => svg.x(i))
+        .y((d) => svg.y(d))
+      var path = svg.baseSvg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line').attr('d', line)
+
+      tick(path, line, data, svg)
+    }
+
+    // --- Bar Chart --------------------------
+    function barChart(id, xDomain, tick) {
+      var data = d3.range(n).map(() => 0)
+      var svg = createSvg(data, id, xDomain)
+
+      var bars = svg.baseSvg
+        .append('g')
+        .attr('class', 'bars')
+        .attr('clip-path', 'url(#clip)')
+        .selectAll('.bar')
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar')
+        .attr('x', (d, i) => svg.x(i))
+        .attr('y', (d) => svg.y(d))
+        .attr('width', width / n - 1)
+        .attr('height', (d) => height - svg.y(d))
+
+      tick(bars, data, svg)
+    }
+
     // --- Chart1 --------------------------
     function Chart1() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
@@ -14,6 +180,8 @@
         function each() {
           // push a new data point onto the back
           data.push(random())
+
+          $('chart1-data').innerText = JSON.stringify(data.slice(-8), null, 2)
 
           updateAxis(data, svg)
 
@@ -46,6 +214,8 @@
           // push a new data point onto the back
           data.push(random())
 
+          $('chart2-data').innerText = JSON.stringify(data.slice(-8), null, 2)
+
           updateAxis(data, svg)
 
           const { x } = svg
@@ -75,6 +245,8 @@
       function tick(bars, data, svg) {
         function each() {
           data.push(random())
+
+          $('chart3-data').innerText = JSON.stringify(data.slice(-8), null, 2)
 
           updateAxis(data, svg)
 
@@ -106,14 +278,15 @@
       barChart('#chart3', [0, n - 1], tick)
     }
   </script>
-  <header>
-    <aside>January 19, 2012</aside>
-  </header>
-  <h1>Path Transitions</h1>
+  <h1>D3 Real-time Chart</h1>
   <div id="container">
     <div>
-      Peer Connection
-      <pre id="peer-connection"></pre>
+      Chart1 Data
+      <pre id="chart1-data"></pre>
+      Chart2 Data
+      <pre id="chart2-data"></pre>
+      Chart3 Data
+      <pre id="chart3-data"></pre>
     </div>
     <div id="chart-container">
       <div id="chart1">

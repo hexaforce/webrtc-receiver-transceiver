@@ -6,6 +6,8 @@ const margin = { top: 6, right: 6, bottom: 20, left: 25 }
 const width = 720 - margin.right
 const height = 120 - margin.top - margin.bottom
 
+const $ = (id) => document.getElementById(id)
+
 // --- Create SVG --------------------------
 function createSvg(data, id, xDomain) {
   var x = d3.scale.linear().domain(xDomain).range([0, width])
