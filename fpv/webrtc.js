@@ -16,7 +16,12 @@ const dataChannel = {}
 
 const dataChannelHandler = (pc, PROTOCOL) => {
   pc.ondatachannel = ({ channel }) => {
-    channel.onopen = ({ target }) => (dataChannel[target.label] = target)
+    channel.onopen = ({ target }) => {
+      dataChannel[target.label] = target
+      if (PROTOCOL === 'transceiver' && target.label === 'receiver') {
+        sendPosition(10000)
+      }
+    }
     channel.onmessage = ({ data }) => {
       const msg = JSON.parse(data)
       console.log('incoming:', msg)
@@ -86,7 +91,6 @@ const setupTransceiver = (wsUrl) => {
       iceCandidateHandler(pc, ws)
       dataChannelHandler(pc, PROTOCOL)
       ws.send(JSON.stringify({ active: stream.active }))
-      sendPosition(10000)
     } else {
       if (msg.type) {
         // console.log('offer received:', msg.sdp)
@@ -152,15 +156,13 @@ const setupReceiver = (wsUrl) => {
 // --- GPS Send Position --------------------------
 
 const sendPosition = async (timeout) => {
-  console.log('sendPosition1:', timeout)
   window.navigator.geolocation.getCurrentPosition(
     ({ coords, timestamp }) => {
       const { accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed } = coords
-      console.log('sendPosition2:', coords)
       sendData({ accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed, timestamp })
     },
     (err) => {
-      console.log(err)
+      console.log('Error:', err)
       sendPosition(timeout)
     },
     timeout ? { enableHighAccuracy: true, timeout: timeout, maximumAge: 0 } : null,
