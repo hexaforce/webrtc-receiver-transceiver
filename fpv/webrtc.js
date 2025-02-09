@@ -1,14 +1,17 @@
 const $ = (id) => document.getElementById(id)
 const d = document.documentElement
 
-const dataChannel = {}
-
+// --- ICE Handler --------------------------
 const iceCandidateHandler = (pc, ws) => {
   pc.onicecandidate = ({ candidate }) => {
     // console.log('ice answer:', candidate)
     candidate && ws.send(JSON.stringify(candidate))
   }
 }
+
+// --- Data Channel --------------------------
+
+const dataChannel = {}
 
 const dataChannelHandler = (pc, PROTOCOL) => {
   pc.ondatachannel = ({ channel }) => {
@@ -33,6 +36,8 @@ const sendData = (data) => {
   dataChannel[PROTOCOL].send(JSON.stringify(data))
 }
 
+// --- Media --------------------------
+
 const setReceiverAnswerCodec = async (pc) => {
   const supportedCodecs = RTCRtpReceiver.getCapabilities('video').codecs
   const preferredOrder = ['video/AV1', 'video/VP9', 'video/H265', 'video/H264', 'video/VP8']
@@ -50,6 +55,8 @@ const setReceiverAnswerCodec = async (pc) => {
   }
 }
 
+// --- Media Transceiver --------------------------
+
 const setMediaTransceiver = async (stream, pc, ws) => {
   stream.getTracks().forEach((track) => {
     pc.addTrack(track, stream)
@@ -61,6 +68,9 @@ const setMediaTransceiver = async (stream, pc, ws) => {
   })
 }
 
+
+// --- Media Receiver --------------------------
+
 const setMediaReceiver = async (video, pc, ws) => {
   pc.ontrack = ({ streams }) => {
     video.srcObject = streams[0]
@@ -70,6 +80,9 @@ const setMediaReceiver = async (video, pc, ws) => {
     transceiver.direction = 'recvonly'
   })
 }
+
+
+// --- GPS Send Position --------------------------
 
 const sendPosition = async (timeout) => {
   console.log('sendPosition1:', timeout)
@@ -87,19 +100,19 @@ const sendPosition = async (timeout) => {
   )
 }
 
-const sendOrientation = ({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type }) => {
-  sendData({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type })
-}
+// const sendOrientation = ({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type }) => {
+//   sendData({ isTrusted, absolute, alpha, beta, bubbles, cancelBubble, cancelable, composed, defaultPrevented, eventPhase, gamma, returnValue, timeStamp, type })
+// }
 
 const renderMap = (position) => {
-  mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
-  const map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/relics9/cm6ppb5z7000501ra6nwl5wl2',
-    zoom: 18,
-    center: position,
-    pitch: 60,
-    bearing: 38,
-    antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
-  })
+//   mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
+//   const map = new mapboxgl.Map({
+//     container: 'map',
+//     style: 'mapbox://styles/relics9/cm6ppb5z7000501ra6nwl5wl2',
+//     zoom: 18,
+//     center: position,
+//     pitch: 60,
+//     bearing: 38,
+//     antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
+//   })
 }

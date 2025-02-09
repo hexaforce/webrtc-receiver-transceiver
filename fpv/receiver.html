@@ -1,9 +1,9 @@
 <html>
   <head>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet" />
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet" />
     <link href="receiver.css" rel="stylesheet" />
-    <script src="common.js"></script>
+    <script src="webrtc.js"></script>
     <script type="text/javascript">
       const PROTOCOL = 'receiver'
       window.onload = async () => {
@@ -14,6 +14,7 @@
           console.log('opne ws')
           ws.send(JSON.stringify({ OfferOptions }))
         }
+        ws.onclose = async () => console.log('close ws')
         ws.onmessage = async ({ data }) => {
           const msg = JSON.parse(data)
           if (msg.active) {

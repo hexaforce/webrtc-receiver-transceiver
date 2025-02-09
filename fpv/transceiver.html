@@ -1,14 +1,13 @@
 <html>
   <head>
-    <script src="common.js"></script>
+    <script src="webrtc.js"></script>
     <script type="text/javascript">
       const PROTOCOL = 'transceiver'
       window.onload = async () => {
         var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
         var pc
-        ws.onopen = async () => {
-          console.log('opne ws')
-        }
+        ws.onopen = async () => console.log('opne ws')
+        ws.onclose = async () => console.log('close ws')
         ws.onmessage = async ({ data }) => {
           const msg = JSON.parse(data)
           if (msg.OfferOptions) {
