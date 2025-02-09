@@ -22,7 +22,12 @@ function createSvg(id) {
 function lineChart(id, xDomain, interpolation, tick) {
   var data = d3.range(n).map(() => 0)
 
+  var now = new Date(Date.now() - duration)
   var x = d3.scale.linear().domain(xDomain).range([0, width])
+  var x2 = d3.time
+    .scale()
+    .domain([now - (n - 2) * duration, now - duration])
+    .range([0, width])
   var y = d3.scale
     .linear()
     .domain([d3.min(data), d3.max(data)])
@@ -34,7 +39,7 @@ function lineChart(id, xDomain, interpolation, tick) {
     .append('g')
     .attr('class', 'x axis')
     .attr('transform', 'translate(0,' + height + ')')
-    .call((x.axis = d3.svg.axis().scale(x).orient('bottom')))
+    .call((x2.axis = d3.svg.axis().scale(x2).orient('bottom')))
 
   var line = d3.svg
     .line()
@@ -43,7 +48,7 @@ function lineChart(id, xDomain, interpolation, tick) {
     .y((d) => y(d))
   var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line').attr('d', line)
 
-  tick(path, line, data, x, axis, y, svg)
+  tick(path, line, data, x, x2, axis, y, svg)
 }
 
 function barChart(id, xDomain, tick) {
@@ -63,7 +68,6 @@ function barChart(id, xDomain, tick) {
 
   var svg = createSvg(id)
   svg.append('g').attr('class', 'y axis').call(y.axis = d3.svg.axis().scale(y).ticks(5).orient('left'))
-
   var axis = svg
     .append('g')
     .attr('class', 'x axis')
