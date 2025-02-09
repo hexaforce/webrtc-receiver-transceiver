@@ -11,14 +11,14 @@
     function Chart1() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(path, line, data, xDomain, x, x2, axis, y, svg) {
+      function tick(path, line, data, xDomain, x, timeseries, axis, y, svg) {
         function each() {
           // push a new data point onto the back
           data.push(random())
 
           now = new Date()
-          x2.domain([now - xDomain[1] * duration, now - duration])
-          axis.call(x2.axis)
+          timeseries.domain([now - xDomain[1] * duration, now - duration])
+          axis.call(timeseries.axis)
 
           y.domain([d3.min(data), d3.max(data)])
           svg
@@ -40,7 +40,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(path, line, data, xDomain, x, x2, axis, y, svg))
+          .each('start', () => tick(path, line, data, xDomain, x, timeseries, axis, y, svg))
       }
 
       lineChart('#chart1', [0, n - 1], 'linear', tick)
@@ -50,14 +50,14 @@
     function Chart2() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(path, line, data, xDomain, x, x2, axis, y, svg) {
+      function tick(path, line, data, xDomain, x, timeseries, axis, y, svg) {
         function each() {
           // push a new data point onto the back
           data.push(random())
 
           now = new Date()
-          x2.domain([now - xDomain[1] * duration, now - duration])
-          axis.call(x2.axis)
+          timeseries.domain([now - xDomain[1] * duration, now - duration])
+          axis.call(timeseries.axis)
 
           y.domain([d3.min(data), d3.max(data)])
           svg
@@ -79,7 +79,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(path, line, data, xDomain, x, x2, axis, y, svg))
+          .each('start', () => tick(path, line, data, xDomain, x, timeseries, axis, y, svg))
       }
 
       lineChart('#chart2', [1, n - 2], 'basis', tick)
@@ -89,15 +89,15 @@
     function Chart3() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(bars, data, xDomain, x, x2, axis, y, svg) {
+      function tick(bars, data, xDomain, x, timeseries, axis, y, svg) {
         function each() {
           data.push(random())
 
           x.domain([x.domain()[0] + 1, x.domain()[1] + 1])
 
           now = new Date()
-          x2.domain([now - xDomain[1] * duration, now - duration])
-          axis.call(x2.axis)
+          timeseries.domain([now - xDomain[1] * duration, now - duration])
+          axis.call(timeseries.axis)
 
           y.domain([d3.min(data), d3.max(data)])
           svg
@@ -125,7 +125,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(bars, data, xDomain, x, x2, axis, y, svg))
+          .each('start', () => tick(bars, data, xDomain, x, timeseries, axis, y, svg))
       }
 
       barChart('#chart3', [0, n - 1], tick)

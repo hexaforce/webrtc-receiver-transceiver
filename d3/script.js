@@ -19,15 +19,20 @@ function createSvg(id) {
   return svg
 }
 
+function createTimeseriesData(lastIndex){
+  var now = new Date(Date.now() - duration)
+  return d3.time
+  .scale()
+  .domain([now - lastIndex * duration, now - duration])
+  .range([0, width])
+}
+
 function lineChart(id, xDomain, interpolation, tick) {
   var data = d3.range(n).map(() => 0)
 
-  var now = new Date(Date.now() - duration)
   var x = d3.scale.linear().domain(xDomain).range([0, width])
-  var x2 = d3.time
-    .scale()
-    .domain([now - xDomain[1] * duration, now - duration])
-    .range([0, width])
+  var timeseries = createTimeseriesData(xDomain[1])
+
   var y = d3.scale
     .linear()
     .domain([d3.min(data), d3.max(data)])
@@ -39,7 +44,7 @@ function lineChart(id, xDomain, interpolation, tick) {
     .append('g')
     .attr('class', 'x axis')
     .attr('transform', 'translate(0,' + height + ')')
-    .call((x2.axis = d3.svg.axis().scale(x2).orient('bottom')))
+    .call((timeseries.axis = d3.svg.axis().scale(timeseries).orient('bottom')))
 
   var line = d3.svg
     .line()
@@ -48,19 +53,14 @@ function lineChart(id, xDomain, interpolation, tick) {
     .y((d) => y(d))
   var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line').attr('d', line)
 
-  tick(path, line, data, xDomain, x, x2, axis, y, svg)
+  tick(path, line, data, xDomain, x, timeseries, axis, y, svg)
 }
 
 function barChart(id, xDomain, tick) {
   var data = d3.range(n).map(() => 0)
 
-  var now = new Date(Date.now() - duration)
   var x = d3.scale.linear().domain(xDomain).range([0, width])
-  var x2 = d3.time
-    .scale()
-    .domain([now - xDomain[1] * duration, now - duration])
-    .range([0, width])
-
+  var timeseries = createTimeseriesData(xDomain[1])
   var y = d3.scale
     .linear()
     .domain([d3.min(data), d3.max(data)])
@@ -72,7 +72,7 @@ function barChart(id, xDomain, tick) {
     .append('g')
     .attr('class', 'x axis')
     .attr('transform', 'translate(0,' + height + ')')
-    .call((x2.axis = d3.svg.axis().scale(x2).orient('bottom')))
+    .call((timeseries.axis = d3.svg.axis().scale(timeseries).orient('bottom')))
 
   var bars = svg
     .append('g')
@@ -89,5 +89,5 @@ function barChart(id, xDomain, tick) {
     .attr('height', (d) => height - y(d))
     .attr('fill', 'steelblue')
 
-  tick(bars, data, xDomain, x, x2, axis, y, svg)
+  tick(bars, data, xDomain, x, timeseries, axis, y, svg)
 }
