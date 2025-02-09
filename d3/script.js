@@ -19,27 +19,34 @@ function createSvg(id) {
   return svg
 }
 
-function createTimeseriesData(lastIndex){
-  var now = new Date(Date.now() - duration)
-  return d3.time
-  .scale()
-  .domain([now - lastIndex * duration, now - duration])
-  .range([0, width])
-}
-
 function lineChart(id, xDomain, interpolation, tick) {
   var data = d3.range(n).map(() => 0)
 
   var x = d3.scale.linear().domain(xDomain).range([0, width])
-  var timeseries = createTimeseriesData(xDomain[1])
+  var now = new Date(Date.now() - duration)
+  var timeseries = d3.time
+    .scale()
+    .domain([now - xDomain[1] * duration, now - duration])
+    .range([0, width])
 
   var y = d3.scale
     .linear()
     .domain([d3.min(data), d3.max(data)])
     .range([height, 0])
 
-  var svg = createSvg(id)
-  svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
+  var svg = d3
+    .select(id)
+    .append('p')
+    .append('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+    .append('g')
+    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+  svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
+  svg
+    .append('g')
+    .attr('class', 'y axis')
+    .call((y.axis = d3.svg.axis().scale(y).ticks(5).orient('left')))
   var axis = svg
     .append('g')
     .attr('class', 'x axis')
@@ -60,14 +67,30 @@ function barChart(id, xDomain, tick) {
   var data = d3.range(n).map(() => 0)
 
   var x = d3.scale.linear().domain(xDomain).range([0, width])
-  var timeseries = createTimeseriesData(xDomain[1])
+  var now = new Date(Date.now() - duration)
+  var timeseries = d3.time
+    .scale()
+    .domain([now - xDomain[1] * duration, now - duration])
+    .range([0, width])
+
   var y = d3.scale
     .linear()
     .domain([d3.min(data), d3.max(data)])
     .range([height, 0])
 
-  var svg = createSvg(id)
-  svg.append('g').attr('class', 'y axis').call(y.axis = d3.svg.axis().scale(y).ticks(5).orient('left'))
+  var svg = d3
+    .select(id)
+    .append('p')
+    .append('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+    .append('g')
+    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+  svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
+  svg
+    .append('g')
+    .attr('class', 'y axis')
+    .call((y.axis = d3.svg.axis().scale(y).ticks(5).orient('left')))
   var axis = svg
     .append('g')
     .attr('class', 'x axis')
