@@ -15,7 +15,7 @@
           // push a new data point onto the back
           data.push(random())
 
-          updateaxis(data, svg)
+          updateAxis(data, svg)
           const { lastIndex, x, timeseries, axisX, y, axisY } = svg
 
           // redraw the line, and then slide it to the left
@@ -46,7 +46,7 @@
           // push a new data point onto the back
           data.push(random())
 
-          updateaxis(data, svg)
+          updateAxis(data, svg)
           const { lastIndex, x, timeseries, axisX, y, axisY } = svg
 
           // redraw the line, and then slide it to the left, and repeat indefinitely
@@ -76,7 +76,7 @@
         function each() {
           data.push(random())
 
-          updateaxis(data, svg)
+          updateAxis(data, svg)
           const { lastIndex, x, timeseries, axisX, y, axisY } = svg
 
           x.domain([x.domain()[0] + 1, x.domain()[1] + 1])
