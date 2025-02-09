@@ -25,6 +25,10 @@ svg {
   stroke-width: 1.5px;
 }
 
+.bar {
+  fill: steelblue;
+}
+
 #container {
   display: flex;
   gap: 10px;

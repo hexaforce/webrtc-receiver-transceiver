@@ -6,6 +6,7 @@ const margin = { top: 6, right: 6, bottom: 20, left: 25 }
 const width = 720 - margin.right
 const height = 120 - margin.top - margin.bottom
 
+// --- Create SVG --------------------------
 function createSvg(data, id, xDomain) {
   var x = d3.scale.linear().domain(xDomain).range([0, width])
   var now = new Date(Date.now() - duration)
@@ -46,6 +47,7 @@ function createSvg(data, id, xDomain) {
   return { lastIndex, x, timeseries, axisX, y, axisY, baseSvg }
 }
 
+// --- Update Axis --------------------------
 function updateAxis(data, svg) {
   const { timeseries, lastIndex, axisX, y, axisY } = svg
   const now = new Date()
@@ -55,6 +57,7 @@ function updateAxis(data, svg) {
   axisY.call(y.axis)
 }
 
+// --- Line Chart --------------------------
 function lineChart(id, xDomain, interpolation, tick) {
   var data = d3.range(n).map(() => 0)
   var svg = createSvg(data, id, xDomain)
@@ -69,6 +72,7 @@ function lineChart(id, xDomain, interpolation, tick) {
   tick(path, line, data, svg)
 }
 
+// --- Bar Chart --------------------------
 function barChart(id, xDomain, tick) {
   var data = d3.range(n).map(() => 0)
   var svg = createSvg(data, id, xDomain)
@@ -86,7 +90,6 @@ function barChart(id, xDomain, tick) {
     .attr('y', (d) => svg.y(d))
     .attr('width', width / n - 1)
     .attr('height', (d) => height - svg.y(d))
-    .attr('fill', 'steelblue')
 
   tick(bars, data, svg)
 }
