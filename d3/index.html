@@ -34,6 +34,11 @@
       fill: steelblue;
     }
 
+    .grid-line {
+      stroke: lightgray;
+      stroke-width: 0.5;
+    }
+
     #container {
       display: flex;
       gap: 10px;
@@ -128,11 +133,20 @@
     // --- Update Axis --------------------------
     function updateAxis(data, svg) {
       const { timeseries, lastIndex, axisX, y, axisY } = svg
+
       const now = new Date()
       timeseries.domain([now - lastIndex * duration, now - duration])
       axisX.call(timeseries.axis)
+
       y.domain([d3.min(data), d3.max(data)])
       axisY.call(y.axis)
+
+      const ticks = axisY.selectAll('g.tick')
+      ticks.each(function () {
+        const tick = d3.select(this)
+        tick.selectAll('.grid-line').remove()
+        tick.append('line').attr('class', 'grid-line').attr('x1', 0).attr('x2', width).attr('stroke-dasharray', '3,5')
+      })
     }
 
     // --- Line Chart --------------------------
