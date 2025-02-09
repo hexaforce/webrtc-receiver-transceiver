@@ -10,7 +10,7 @@
     function Chart1() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(path, line, data, x, x2, axis, y, svg) {
+      function tick(path, line, data, xDomain, x, x2, axis, y, svg) {
         function each() {
           // push a new data point onto the back
           data.push(random())
@@ -22,7 +22,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(path, line, data, x, x2, axis, y, svg))
+          .each('start', () => tick(path, line, data, xDomain, x, x2, axis, y, svg))
       }
 
       lineChart('#chart1', [0, n - 1], 'linear', tick)
@@ -32,7 +32,7 @@
     function Chart2() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(path, line, data, x, x2, axis, y, svg) {
+      function tick(path, line, data, xDomain, x, x2, axis, y, svg) {
         function each() {
           // push a new data point onto the back
           data.push(random())
@@ -56,7 +56,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(path, line, data, x, x2, axis, y, svg))
+          .each('start', () => tick(path, line, data, xDomain, x, x2, axis, y, svg))
       }
 
       lineChart('#chart2', [0, n - 1], 'linear', tick)
@@ -66,10 +66,11 @@
     function Chart3() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(path, line, data, x, x2, axis, y, svg) {
+      function tick(path, line, data, xDomain, x, x2, axis, y, svg) {
         function each() {
           // push a new data point onto the back
           data.push(random())
+
           y.domain([d3.min(data), d3.max(data)])
           svg
             .select('.y.axis')
@@ -90,7 +91,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(path, line, data, x, x2, axis, y, svg))
+          .each('start', () => tick(path, line, data, xDomain, x, x2, axis, y, svg))
       }
 
       lineChart('#chart3', [1, n - 2], 'basis', tick)
@@ -157,14 +158,14 @@
     function Chart5() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(bars, data, x, x2, axis, y, svg) {
+      function tick(bars, data, xDomain, x, x2, axis, y, svg) {
         function each() {
           data.push(random())
 
           x.domain([x.domain()[0] + 1, x.domain()[1] + 1])
 
           now = new Date()
-          x2.domain([now - (n - 2) * duration, now - duration])
+          x2.domain([now - xDomain[1] * duration, now - duration])
           axis.call(x2.axis)
 
           y.domain([d3.min(data), d3.max(data)])
@@ -193,7 +194,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(bars, data, x, x2, axis, y, svg))
+          .each('start', () => tick(bars, data, xDomain, x, x2, axis, y, svg))
       }
 
       barChart('#chart5', [0, n - 1], tick)
@@ -216,13 +217,13 @@
           Chart1()
         </script>
       </div>
+      -->
       <div id="chart2">
         Chart2
         <script>
           Chart2()
         </script>
       </div>
-      -->
       <div id="chart3">
         Chart3
         <script>

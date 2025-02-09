@@ -26,7 +26,7 @@ function lineChart(id, xDomain, interpolation, tick) {
   var x = d3.scale.linear().domain(xDomain).range([0, width])
   var x2 = d3.time
     .scale()
-    .domain([now - (n - 2) * duration, now - duration])
+    .domain([now - xDomain[1] * duration, now - duration])
     .range([0, width])
   var y = d3.scale
     .linear()
@@ -48,7 +48,7 @@ function lineChart(id, xDomain, interpolation, tick) {
     .y((d) => y(d))
   var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line').attr('d', line)
 
-  tick(path, line, data, x, x2, axis, y, svg)
+  tick(path, line, data, xDomain, x, x2, axis, y, svg)
 }
 
 function barChart(id, xDomain, tick) {
@@ -58,7 +58,7 @@ function barChart(id, xDomain, tick) {
   var x = d3.scale.linear().domain(xDomain).range([0, width])
   var x2 = d3.time
     .scale()
-    .domain([now - (n - 2) * duration, now - duration])
+    .domain([now - xDomain[1] * duration, now - duration])
     .range([0, width])
 
   var y = d3.scale
@@ -89,5 +89,5 @@ function barChart(id, xDomain, tick) {
     .attr('height', (d) => height - y(d))
     .attr('fill', 'steelblue')
 
-  tick(bars, data, x, x2, axis, y, svg)
+  tick(bars, data, xDomain, x, x2, axis, y, svg)
 }
