@@ -6,6 +6,15 @@ const margin = { top: 6, right: 6, bottom: 20, left: 25 }
 const width = 720 - margin.right
 const height = 120 - margin.top - margin.bottom
 
+function updateaxis(timeseries, lastIndex, axisX, y, data, axisY){
+  now = new Date()
+  timeseries.domain([now - lastIndex * duration, now - duration])
+  axisX.call(timeseries.axis)
+
+  y.domain([d3.min(data), d3.max(data)])
+  axisY.call(y.axis)
+}
+
 function lineChart(id, xDomain, interpolation, tick) {
   var data = d3.range(n).map(() => 0)
 

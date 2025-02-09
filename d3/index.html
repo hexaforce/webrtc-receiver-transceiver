@@ -15,12 +15,7 @@
           // push a new data point onto the back
           data.push(random())
 
-          now = new Date()
-          timeseries.domain([now - lastIndex * duration, now - duration])
-          axisX.call(timeseries.axis)
-
-          y.domain([d3.min(data), d3.max(data)])
-          axisY.call(y.axis)
+          updateaxis(timeseries, lastIndex, axisX, y, data, axisY)
 
           // redraw the line, and then slide it to the left
           path
@@ -50,12 +45,7 @@
           // push a new data point onto the back
           data.push(random())
 
-          now = new Date()
-          timeseries.domain([now - lastIndex * duration, now - duration])
-          axisX.call(timeseries.axis)
-
-          y.domain([d3.min(data), d3.max(data)])
-          axisY.call(y.axis)
+          updateaxis(timeseries, lastIndex, axisX, y, data, axisY)
 
           // redraw the line, and then slide it to the left, and repeat indefinitely
           path
