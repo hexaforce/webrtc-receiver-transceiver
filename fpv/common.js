@@ -79,7 +79,10 @@ const sendPosition = async (timeout) => {
       console.log('sendPosition2:', coords)
       sendData({ accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed, timestamp })
     },
-    (err) => console.error(err),
+    (err) => {
+      console.log(err)
+      sendPosition(timeout)
+    },
     timeout ? { enableHighAccuracy: true, timeout: timeout, maximumAge: 0 } : null,
   )
 }

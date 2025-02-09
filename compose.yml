@@ -1,10 +1,17 @@
 services:
-  d3:
-    build: ./d3
+  web:
+    image: nginx
     ports:
       - 80:80
     volumes:
-      - ./d3:/usr/share/nginx/html
+      - ./web:/usr/share/nginx/html
+
+  # d3:
+  #   build: ./d3
+  #   ports:
+  #     - 80:80
+  #   volumes:
+  #     - ./d3:/usr/share/nginx/html
 
   # threebox:
   #   build: ./threebox
