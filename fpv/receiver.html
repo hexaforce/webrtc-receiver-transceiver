@@ -5,8 +5,10 @@
     <link href="receiver.css" rel="stylesheet" />
     <script type="module" type="text/javascript">
       import { setupReceiver } from './webrtc.js'
+      import { chartBar } from './chart.js'
       window.onload = async () => {
         setupReceiver(`ws://${window.location.hostname}:${window.location.port}/ws`)
+        chartBar('#chart')
       }
     </script>
   </head>
@@ -18,8 +20,14 @@
         <div id="map" class="map"></div>
         <div id="gui"></div>
       </div>
+      <div class="footer">
+        <button id="fullscreen-btn">Go Fullscreen</button>
+        <div id="chart"></div>
+        <script></script>
+      </div>
+
       <!-- <script type="module" src="map.js"></script> -->
-      <!-- 
+      <!-- chartBar
       <div class="overlay">xxx</div>
       <div class="footer"><button id="fullscreen-btn">Go Fullscreen</button></div>
       <div class="overlay-gps">

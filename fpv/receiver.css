@@ -16,6 +16,8 @@ video {
   height: 100vh;
 }
 
+/* --- map -------------------------- */
+
 .map {
   width: 400px;
   height: 280px;
@@ -28,4 +30,49 @@ video {
   right: 0;
   color: white;
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* --- chart -------------------------- */
+
+svg {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  shape-rendering: auto;
+}
+
+.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.grid-line {
+  stroke: lightgray;
+  stroke-width: 0.5;
+}
+
+/* --- footer -------------------------- */
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(51, 51, 51, 0.5);
+  color: white;
+  text-align: center;
+  padding: 10px;
 }
