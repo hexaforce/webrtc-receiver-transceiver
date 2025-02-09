@@ -171,14 +171,16 @@ const sendPosition = async (timeout) => {
 // }
 
 const renderMap = (position) => {
-//   mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
-//   const map = new mapboxgl.Map({
-//     container: 'map',
-//     style: 'mapbox://styles/relics9/cm6ppb5z7000501ra6nwl5wl2',
-//     zoom: 18,
-//     center: position,
-//     pitch: 60,
-//     bearing: 38,
-//     antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
-//   })
+  //   mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWNzOSIsImEiOiJjbHMzNHlwbDIwNDczMmtvM2xhNWR0ZzVtIn0.whCzeh6XW7ju4Ja6DR0imw'
+  //   const map = new mapboxgl.Map({
+  //     container: 'map',
+  //     style: 'mapbox://styles/relics9/cm6ppb5z7000501ra6nwl5wl2',
+  //     zoom: 18,
+  //     center: position,
+  //     pitch: 60,
+  //     bearing: 38,
+  //     antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
+  //   })
 }
+
+export { setupReceiver, setupTransceiver }
