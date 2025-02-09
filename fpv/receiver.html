@@ -9,6 +9,13 @@
       window.onload = async () => {
         setupReceiver(`ws://${window.location.hostname}:${window.location.port}/ws`)
         chartBar('#chart')
+        document.getElementById('fullscreen-btn').onclick = () => {
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen()
+          } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen()
+          }
+        }
       }
     </script>
   </head>
