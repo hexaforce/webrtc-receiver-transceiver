@@ -13,7 +13,6 @@ function createSvg(id) {
     .append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
-    /* .style('margin-left', -margin.left + 'px') */
     .append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
   svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
@@ -21,10 +20,13 @@ function createSvg(id) {
 }
 
 function lineChart(id, xDomain, yDomain, interpolation, tick) {
-  var data = d3.range(n).map(random)
+  var data = d3.range(n).map(() => 0)
 
   var x = d3.scale.linear().domain(xDomain).range([0, width])
-  var y = d3.scale.linear().domain(yDomain).range([height, 0])
+  var y = d3.scale
+    .linear()
+    .domain([d3.min(data), d3.max(data)])
+    .range([height, 0])
 
   var svg = createSvg(id)
   svg.append('g').attr('class', 'y axis').call(d3.svg.axis().scale(y).ticks(5).orient('left'))
@@ -41,7 +43,7 @@ function lineChart(id, xDomain, yDomain, interpolation, tick) {
     .y((d) => y(d))
   var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line').attr('d', line)
 
-  tick(path, line, data, x)
+  tick(path, line, data, x, axis, y, svg)
 }
 
 function barChart(id, xDomain, yDomain, tick) {
