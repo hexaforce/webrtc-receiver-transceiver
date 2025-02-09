@@ -19,7 +19,7 @@ function createSvg(id) {
   return svg
 }
 
-function lineChart(id, xDomain, yDomain, interpolation, tick) {
+function lineChart(id, xDomain, interpolation, tick) {
   var data = d3.range(n).map(() => 0)
 
   var x = d3.scale.linear().domain(xDomain).range([0, width])
@@ -46,7 +46,7 @@ function lineChart(id, xDomain, yDomain, interpolation, tick) {
   tick(path, line, data, x, axis, y, svg)
 }
 
-function barChart(id, xDomain, yDomain, tick) {
+function barChart(id, xDomain, tick) {
   var data = d3.range(n).map(() => 0)
 
   var now = new Date(Date.now() - duration)

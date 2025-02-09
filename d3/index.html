@@ -25,7 +25,7 @@
           .each('start', () => tick(path, line, data))
       }
 
-      lineChart('#chart1', [0, n - 1], [-1, 1], 'linear', tick)
+      lineChart('#chart1', [0, n - 1], 'linear', tick)
     }
 
     // --- Chart2 --------------------------
@@ -51,7 +51,7 @@
           .each('start', () => tick(path, line, data, x))
       }
 
-      lineChart('#chart2', [0, n - 1], [-1, 1], 'linear', tick)
+      lineChart('#chart2', [0, n - 1], 'linear', tick)
     }
 
     // --- Chart3 --------------------------
@@ -85,7 +85,7 @@
           .each('start', () => tick(path, line, data, x, axis, y, svg))
       }
 
-      lineChart('#chart3', [1, n - 2], [-1, 1], 'basis', tick)
+      lineChart('#chart3', [1, n - 2], 'basis', tick)
     }
 
     // --- Chart4 --------------------------
@@ -188,7 +188,7 @@
           .each('start', () => tick(bars, data, x, x2, axis, y, svg))
       }
 
-      barChart('#chart5', [0, n - 1], [-1, 1], tick)
+      barChart('#chart5', [0, n - 1], tick)
     }
   </script>
   <header>
