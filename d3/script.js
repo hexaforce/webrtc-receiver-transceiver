@@ -85,11 +85,11 @@ function barChart(id, xDomain, tick) {
     .append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
   svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
-  svg
+  var axisY = svg
     .append('g')
     .attr('class', 'y axis')
     .call((y.axis = d3.svg.axis().scale(y).ticks(5).orient('left')))
-  var axis = svg
+  var axisX = svg
     .append('g')
     .attr('class', 'x axis')
     .attr('transform', 'translate(0,' + height + ')')
@@ -110,5 +110,5 @@ function barChart(id, xDomain, tick) {
     .attr('height', (d) => height - y(d))
     .attr('fill', 'steelblue')
 
-  tick(bars, data, lastIndex, x, timeseries, axis, y, svg)
+  tick(bars, data, lastIndex, x, timeseries, axisX, y, axisY, svg)
 }
