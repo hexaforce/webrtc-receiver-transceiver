@@ -10,7 +10,7 @@ video {
   object-fit: cover;
 }
 
-.container {
+.overlay {
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -24,7 +24,7 @@ video {
   opacity: 0.7;
 }
 
-.overlay-gps {
+.navigation-map {
   position: absolute;
   top: 0;
   right: 0;
