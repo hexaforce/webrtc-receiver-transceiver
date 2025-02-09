@@ -1,11 +1,6 @@
-<html>
-  <head>
-    <script type="module" type="text/javascript">
-      import { setupTransceiver } from './webrtc.js'
-      window.onload = async () => {
-        setupTransceiver(`ws://${window.location.hostname}:${window.location.port}/ws`)
-      }
-    </script>
-  </head>
-  <body></body>
-</html>
+<script type="module" type="text/javascript">
+  import { setupTransceiver } from './webrtc.js'
+  window.onload = async () => {
+    setupTransceiver(`ws://${window.location.hostname}:${window.location.port}/ws`)
+  }
+</script>

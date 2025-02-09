@@ -4,7 +4,7 @@ const WebSocket = require('ws')
 const fs = require('fs')
 const path = require('path')
 
-const PORT = 57778
+const PORT = 8000
 const app = express()
 const server = http.createServer(app)
 const wss = new WebSocket.Server({ server, path: '/ws' })
