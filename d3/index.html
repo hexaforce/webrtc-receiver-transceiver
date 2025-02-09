@@ -36,6 +36,11 @@
         function each() {
           // push a new data point onto the back
           data.push(random())
+
+          now = new Date()
+          x2.domain([now - xDomain[1] * duration, now - duration])
+          axis.call(x2.axis)
+
           y.domain([d3.min(data), d3.max(data)])
           svg
             .select('.y.axis')
@@ -70,6 +75,10 @@
         function each() {
           // push a new data point onto the back
           data.push(random())
+
+          now = new Date()
+          x2.domain([now - xDomain[1] * duration, now - duration])
+          axis.call(x2.axis)
 
           y.domain([d3.min(data), d3.max(data)])
           svg
