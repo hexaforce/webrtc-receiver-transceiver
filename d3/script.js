@@ -6,27 +6,15 @@ const margin = { top: 6, right: 6, bottom: 20, left: 25 }
 const width = 720 - margin.right
 const height = 120 - margin.top - margin.bottom
 
-function createSvg(id) {
-  var svg = d3
-    .select(id)
-    .append('p')
-    .append('svg')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
-    .append('g')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-  svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('width', width).attr('height', height)
-  return svg
-}
-
 function lineChart(id, xDomain, interpolation, tick) {
   var data = d3.range(n).map(() => 0)
 
   var x = d3.scale.linear().domain(xDomain).range([0, width])
   var now = new Date(Date.now() - duration)
+  var lastIndex = xDomain[1]
   var timeseries = d3.time
     .scale()
-    .domain([now - xDomain[1] * duration, now - duration])
+    .domain([now - lastIndex * duration, now - duration])
     .range([0, width])
 
   var y = d3.scale
@@ -60,7 +48,7 @@ function lineChart(id, xDomain, interpolation, tick) {
     .y((d) => y(d))
   var path = svg.append('g').attr('clip-path', 'url(#clip)').append('path').datum(data).attr('class', 'line').attr('d', line)
 
-  tick(path, line, data, xDomain, x, timeseries, axisX, y, axisY, svg)
+  tick(path, line, data, lastIndex, x, timeseries, axisX, y, axisY, svg)
 }
 
 function barChart(id, xDomain, tick) {
@@ -68,9 +56,10 @@ function barChart(id, xDomain, tick) {
 
   var x = d3.scale.linear().domain(xDomain).range([0, width])
   var now = new Date(Date.now() - duration)
+  var lastIndex = xDomain[1]
   var timeseries = d3.time
     .scale()
-    .domain([now - xDomain[1] * duration, now - duration])
+    .domain([now - lastIndex * duration, now - duration])
     .range([0, width])
 
   var y = d3.scale
@@ -112,5 +101,5 @@ function barChart(id, xDomain, tick) {
     .attr('height', (d) => height - y(d))
     .attr('fill', 'steelblue')
 
-  tick(bars, data, xDomain, x, timeseries, axis, y, svg)
+  tick(bars, data, lastIndex, x, timeseries, axis, y, svg)
 }
