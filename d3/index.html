@@ -10,21 +10,17 @@
     function Chart1() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
-      function tick(path, line, data, xDomain, x, timeseries, axis, y, svg) {
+      function tick(path, line, data, xDomain, x, timeseries, axisX, y, axisY, svg) {
         function each() {
           // push a new data point onto the back
           data.push(random())
 
           now = new Date()
           timeseries.domain([now - xDomain[1] * duration, now - duration])
-          axis.call(timeseries.axis)
+          axisX.call(timeseries.axis)
 
           y.domain([d3.min(data), d3.max(data)])
-          svg
-            .select('.y.axis')
-            .transition()
-            .duration(duration)
-            .call((y.axis = d3.svg.axis().scale(y).ticks(5).orient('left')))
+          axisY.call(y.axis)
 
           // redraw the line, and then slide it to the left
           path
@@ -39,7 +35,7 @@
         transition = transition
           .each(each)
           .transition()
-          .each('start', () => tick(path, line, data, xDomain, x, timeseries, axis, y, svg))
+          .each('start', () => tick(path, line, data, xDomain, x, timeseries, axisX, y, axisY, svg))
       }
 
       lineChart('#chart1', [0, n - 1], 'linear', tick)
@@ -146,6 +142,7 @@
           Chart1()
         </script>
       </div>
+      <!-- 
       <div id="chart2">
         Chart2
         <script>
@@ -158,6 +155,7 @@
           Chart3()
         </script>
       </div>
+-->
     </div>
   </div>
 </html>
