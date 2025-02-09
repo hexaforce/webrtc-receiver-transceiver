@@ -2,38 +2,8 @@
   <head>
     <script src="webrtc.js"></script>
     <script type="text/javascript">
-      const PROTOCOL = 'transceiver'
       window.onload = async () => {
-        var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
-        var pc
-        ws.onopen = async () => console.log('opne ws')
-        ws.onclose = async () => console.log('close ws')
-        ws.onmessage = async ({ data }) => {
-          const msg = JSON.parse(data)
-          if (msg.OfferOptions) {
-            const { offerToReceiveVideo, offerToReceiveAudio } = msg.OfferOptions
-            const stream = await navigator.mediaDevices.getUserMedia({ video: offerToReceiveVideo, audio: offerToReceiveAudio })
-            pc = new RTCPeerConnection({ bundlePolicy: 'max-bundle' })
-            setMediaTransceiver(stream, pc, ws)
-            iceCandidateHandler(pc, ws)
-            dataChannelHandler(pc, PROTOCOL)
-            ws.send(JSON.stringify({ active: stream.active }))
-            sendPosition(10000)
-          } else {
-            if (msg.type) {
-              // console.log('offer received:', msg.sdp)
-              await pc.setRemoteDescription(msg)
-              setReceiverAnswerCodec(pc)
-              const answer = await pc.createAnswer()
-              // console.log('answer:', answer.sdp)
-              await pc.setLocalDescription(answer)
-              ws.send(JSON.stringify(answer))
-            } else {
-              // console.log('ice:', msg)
-              await pc.addIceCandidate(msg)
-            }
-          }
-        }
+        setupTransceiver(`ws://${window.location.hostname}:${window.location.port}/ws`)
       }
     </script>
   </head>

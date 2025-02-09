@@ -37,6 +37,7 @@ const sendData = (data) => {
 }
 
 // --- Media --------------------------
+var PROTOCOL = null
 
 const setReceiverAnswerCodec = async (pc) => {
   const supportedCodecs = RTCRtpReceiver.getCapabilities('video').codecs
@@ -68,6 +69,39 @@ const setMediaTransceiver = async (stream, pc, ws) => {
   })
 }
 
+const setupTransceiver = (wsUrl) => {
+  PROTOCOL = 'transceiver'
+  var ws = new WebSocket(wsUrl, PROTOCOL)
+  var pc
+  ws.onopen = async () => console.log('opne ws')
+  ws.onclose = async () => console.log('close ws')
+  ws.onmessage = async ({ data }) => {
+    const msg = JSON.parse(data)
+    if (msg.OfferOptions) {
+      const { offerToReceiveVideo, offerToReceiveAudio } = msg.OfferOptions
+      const stream = await navigator.mediaDevices.getUserMedia({ video: offerToReceiveVideo, audio: offerToReceiveAudio })
+      pc = new RTCPeerConnection({ bundlePolicy: 'max-bundle' })
+      setMediaTransceiver(stream, pc, ws)
+      iceCandidateHandler(pc, ws)
+      dataChannelHandler(pc, PROTOCOL)
+      ws.send(JSON.stringify({ active: stream.active }))
+      sendPosition(10000)
+    } else {
+      if (msg.type) {
+        // console.log('offer received:', msg.sdp)
+        await pc.setRemoteDescription(msg)
+        setReceiverAnswerCodec(pc)
+        const answer = await pc.createAnswer()
+        // console.log('answer:', answer.sdp)
+        await pc.setLocalDescription(answer)
+        ws.send(JSON.stringify(answer))
+      } else {
+        // console.log('ice:', msg)
+        await pc.addIceCandidate(msg)
+      }
+    }
+  }
+}
 
 // --- Media Receiver --------------------------
 
@@ -81,6 +115,38 @@ const setMediaReceiver = async (video, pc, ws) => {
   })
 }
 
+const setupReceiver = (wsUrl) => {
+  PROTOCOL = 'receiver'
+  var ws = new WebSocket(wsUrl, PROTOCOL)
+  var pc
+  const OfferOptions = { offerToReceiveAudio: true, offerToReceiveVideo: true }
+  ws.onopen = async () => {
+    console.log('opne ws')
+    ws.send(JSON.stringify({ OfferOptions }))
+  }
+  ws.onclose = async () => console.log('close ws')
+  ws.onmessage = async ({ data }) => {
+    const msg = JSON.parse(data)
+    if (msg.active) {
+      pc = new RTCPeerConnection({ bundlePolicy: 'max-bundle' })
+      iceCandidateHandler(pc, ws)
+      dataChannelHandler(pc, PROTOCOL)
+      setMediaReceiver($('stream'), pc, ws)
+      const offer = await pc.createOffer(OfferOptions)
+      // console.log('offer:', offer.sdp)
+      await pc.setLocalDescription(offer)
+      ws.send(JSON.stringify(offer))
+    } else {
+      if (msg.type) {
+        // console.log('answer:', msg.sdp)
+        await pc.setRemoteDescription(msg)
+      } else {
+        // console.log('ice:', msg)
+        await pc.addIceCandidate(msg)
+      }
+    }
+  }
+}
 
 // --- GPS Send Position --------------------------
 

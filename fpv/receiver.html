@@ -5,37 +5,8 @@
     <link href="receiver.css" rel="stylesheet" />
     <script src="webrtc.js"></script>
     <script type="text/javascript">
-      const PROTOCOL = 'receiver'
       window.onload = async () => {
-        var ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`, PROTOCOL)
-        var pc
-        const OfferOptions = { offerToReceiveAudio: true, offerToReceiveVideo: true }
-        ws.onopen = async () => {
-          console.log('opne ws')
-          ws.send(JSON.stringify({ OfferOptions }))
-        }
-        ws.onclose = async () => console.log('close ws')
-        ws.onmessage = async ({ data }) => {
-          const msg = JSON.parse(data)
-          if (msg.active) {
-            pc = new RTCPeerConnection({ bundlePolicy: 'max-bundle' })
-            iceCandidateHandler(pc, ws)
-            dataChannelHandler(pc, PROTOCOL)
-            setMediaReceiver($('stream'), pc, ws)
-            const offer = await pc.createOffer(OfferOptions)
-            // console.log('offer:', offer.sdp)
-            await pc.setLocalDescription(offer)
-            ws.send(JSON.stringify(offer))
-          } else {
-            if (msg.type) {
-              // console.log('answer:', msg.sdp)
-              await pc.setRemoteDescription(msg)
-            } else {
-              // console.log('ice:', msg)
-              await pc.addIceCandidate(msg)
-            }
-          }
-        }
+        setupReceiver(`ws://${window.location.hostname}:${window.location.port}/ws`)
       }
     </script>
   </head>
