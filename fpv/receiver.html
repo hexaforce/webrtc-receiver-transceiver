@@ -1,9 +1,6 @@
 <html>
   <head>
-    <link href="//api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet" />
-    <script src="//api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js"></script>
-    <!-- <link href="//cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.7/dist/threebox.css" rel="stylesheet" />
-    <script src="//cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.7/dist/threebox.min.js" type="text/javascript"></script> -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet" />
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <link href="receiver.css" rel="stylesheet" />
     <script src="common.js"></script>
@@ -45,6 +42,11 @@
   <body>
     <div class="container">
       <video id="stream" autoplay playsinline muted>Your browser does not support video</video>
+      <div class="overlay-gps">
+        <div id="map" class="map"></div>
+        <div id="gui"></div>
+      </div>
+      <script type="module" src="20-game2-map.js"></script>
       <!-- 
       <div class="overlay">xxx</div>
       <div class="footer"><button id="fullscreen-btn">Go Fullscreen</button></div>

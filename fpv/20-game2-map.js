@@ -4,7 +4,7 @@ import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js'
 import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js'
 import { onload, getPosition, keys, glb, layerId, createBuildingLayer } from './20-game2.js'
 
-window.onload = onload
+// window.onload = onload
 
 const position = await getPosition()
 
