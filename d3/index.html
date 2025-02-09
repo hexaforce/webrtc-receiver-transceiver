@@ -7,8 +7,8 @@
   <script src="script.js"></script>
   <script>
 
-    // --- Chart2 --------------------------
-    function Chart2() {
+    // --- Chart1 --------------------------
+    function Chart1() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
       function tick(path, line, data, xDomain, x, x2, axis, y, svg) {
@@ -43,11 +43,11 @@
           .each('start', () => tick(path, line, data, xDomain, x, x2, axis, y, svg))
       }
 
-      lineChart('#chart2', [0, n - 1], 'linear', tick)
+      lineChart('#chart1', [0, n - 1], 'linear', tick)
     }
 
-    // --- Chart3 --------------------------
-    function Chart3() {
+    // --- Chart2 --------------------------
+    function Chart2() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
       function tick(path, line, data, xDomain, x, x2, axis, y, svg) {
@@ -82,11 +82,11 @@
           .each('start', () => tick(path, line, data, xDomain, x, x2, axis, y, svg))
       }
 
-      lineChart('#chart3', [1, n - 2], 'basis', tick)
+      lineChart('#chart2', [1, n - 2], 'basis', tick)
     }
 
-    // --- Chart5 --------------------------
-    function Chart5() {
+    // --- Chart3 --------------------------
+    function Chart3() {
       var transition = d3.select({}).transition().duration(duration).ease('linear')
 
       function tick(bars, data, xDomain, x, x2, axis, y, svg) {
@@ -128,8 +128,9 @@
           .each('start', () => tick(bars, data, xDomain, x, x2, axis, y, svg))
       }
 
-      barChart('#chart5', [0, n - 1], tick)
+      barChart('#chart3', [0, n - 1], tick)
     }
+
   </script>
   <header>
     <aside>January 19, 2012</aside>
@@ -141,6 +142,12 @@
       <pre id="peer-connection"></pre>
     </div>
     <div id="chart-container">
+      <div id="chart1">
+        Chart1
+        <script>
+          Chart1()
+        </script>
+      </div>
       <div id="chart2">
         Chart2
         <script>
@@ -151,12 +158,6 @@
         Chart3
         <script>
           Chart3()
-        </script>
-      </div>
-      <div id="chart5">
-        Chart5
-        <script>
-          Chart5()
         </script>
       </div>
     </div>
