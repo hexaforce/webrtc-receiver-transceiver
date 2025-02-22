@@ -15,16 +15,7 @@ let startToMiddle;
 let startToEnd;
 
 let localStream;
-// eslint-disable-next-line no-unused-vars
 let remoteStream;
-
-// Preferring a certain codec is an expert option without GUI.
-// Use opus by default.
-// eslint-disable-next-line prefer-const
-let preferredAudioCodecMimeType = "audio/opus";
-// Use VP8 by default to limit depacketization issues.
-// eslint-disable-next-line prefer-const
-let preferredVideoCodecMimeType = "video/VP8";
 
 const SupportsSetCodecPreferences =
   window.RTCRtpTransceiver &&
@@ -102,19 +93,19 @@ function setupReceiverTransform(receiver) {
 
 function maybeSetCodecPreferences({ track, transceiver }) {
   if (!SupportsSetCodecPreferences) return;
-  if (track.kind === "audio" && preferredAudioCodecMimeType) {
+  if (track.kind === "audio") {
     const { codecs } = RTCRtpReceiver.getCapabilities("audio");
     const selectedCodecIndex = codecs.findIndex(
-      (c) => c.mimeType === preferredAudioCodecMimeType
+      (c) => c.mimeType === "audio/opus"
     );
     const selectedCodec = codecs[selectedCodecIndex];
     codecs.splice(selectedCodecIndex, 1);
     codecs.unshift(selectedCodec);
     transceiver.setCodecPreferences(codecs);
-  } else if (track.kind === "video" && preferredVideoCodecMimeType) {
+  } else if (track.kind === "video") {
     const { codecs } = RTCRtpReceiver.getCapabilities("video");
     const selectedCodecIndex = codecs.findIndex(
-      (c) => c.mimeType === preferredVideoCodecMimeType
+      (c) => c.mimeType === "video/H264"
     );
     const selectedCodec = codecs[selectedCodecIndex];
     codecs.splice(selectedCodecIndex, 1);
