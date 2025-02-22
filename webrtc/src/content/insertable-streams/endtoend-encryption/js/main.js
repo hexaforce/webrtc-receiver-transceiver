@@ -60,13 +60,6 @@ if (!hasEnoughAPIs) {
   cryptoOffsetBox.disabled = true;
 }
 
-function gotStream(stream) {
-  console.log("Received local stream");
-  video1.srcObject = stream;
-  localStream = stream;
-  callButton.disabled = false;
-}
-
 function gotRemoteStream(stream) {
   console.log("Received remote stream");
   remoteStream = stream;
@@ -79,7 +72,12 @@ startButton.onclick = function start() {
   const options = { audio: true, video: true };
   navigator.mediaDevices
     .getUserMedia(options)
-    .then(gotStream)
+    .then(function gotStream(stream) {
+      console.log("Received local stream");
+      video1.srcObject = stream;
+      localStream = stream;
+      callButton.disabled = false;
+    })
     .catch(function (e) {
       alert("getUserMedia() failed");
       console.log("getUserMedia() error: ", e);
@@ -178,6 +176,7 @@ callButton.onclick = function call() {
     maybeSetCodecPreferences(e);
     gotRemoteStream(e.streams[0]);
   });
+
   startToEnd.pc1.getSenders().forEach(setupSenderTransform);
   startToEnd.negotiate();
 
