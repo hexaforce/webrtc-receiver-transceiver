@@ -17,12 +17,7 @@ let startToEnd;
 let localStream;
 let remoteStream;
 
-const SupportsSetCodecPreferences =
-  window.RTCRtpTransceiver &&
-  "setCodecPreferences" in window.RTCRtpTransceiver.prototype;
-
-let hasEnoughAPIs = !!window.RTCRtpScriptTransform;
-if (!hasEnoughAPIs) {
+if (window.RTCRtpScriptTransform) {
   const stream = new ReadableStream();
   window.postMessage(stream, "*", [stream]);
 }
