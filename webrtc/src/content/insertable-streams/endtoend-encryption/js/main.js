@@ -26,16 +26,12 @@ let preferredAudioCodecMimeType = "audio/opus";
 // eslint-disable-next-line prefer-const
 let preferredVideoCodecMimeType = "video/VP8";
 
-const supportsSetCodecPreferences =
-  window.RTCRtpTransceiver &&
-  "setCodecPreferences" in window.RTCRtpTransceiver.prototype;
+const SupportsSetCodecPreferences = window.RTCRtpTransceiver && "setCodecPreferences" in window.RTCRtpTransceiver.prototype;
 
 let hasEnoughAPIs = !!window.RTCRtpScriptTransform;
 
 if (!hasEnoughAPIs) {
-  const supportsInsertableStreams =
-    !!RTCRtpSender.prototype.createEncodedStreams;
-
+  const SupportsInsertableStreams = !!RTCRtpSender.prototype.createEncodedStreams;
   let supportsTransferableStreams = false;
   try {
     const stream = new ReadableStream();
@@ -44,27 +40,16 @@ if (!hasEnoughAPIs) {
   } catch (e) {
     console.error("Transferable streams are not supported.");
   }
-  hasEnoughAPIs = supportsInsertableStreams && supportsTransferableStreams;
+  hasEnoughAPIs = SupportsInsertableStreams && supportsTransferableStreams;
 }
 
 if (!hasEnoughAPIs) {
-  // banner.innerText =
-  //   "Your browser does not support WebRTC Encoded Transforms. " +
-  //   "This sample will not work.";
-  // if (adapter.browserDetails.browser === "chrome") {
-  //   banner.innerText +=
-  //     " Try with Enable experimental Web Platform features enabled from chrome://flags.";
-  // }
   startButton.disabled = true;
   cryptoKey.disabled = true;
   cryptoOffsetBox.disabled = true;
 }
 
-function gotRemoteStream(stream) {
-  console.log("Received remote stream");
-  remoteStream = stream;
-  video2.srcObject = stream;
-}
+
 
 startButton.onclick = function start() {
   console.log("Requesting local stream");
@@ -115,7 +100,7 @@ function setupReceiverTransform(receiver) {
 }
 
 function maybeSetCodecPreferences(trackEvent) {
-  if (!supportsSetCodecPreferences) return;
+  if (!SupportsSetCodecPreferences) return;
   if (trackEvent.track.kind === "audio" && preferredAudioCodecMimeType) {
     const { codecs } = RTCRtpReceiver.getCapabilities("audio");
     const selectedCodecIndex = codecs.findIndex(
@@ -135,6 +120,12 @@ function maybeSetCodecPreferences(trackEvent) {
     codecs.unshift(selectedCodec);
     trackEvent.transceiver.setCodecPreferences(codecs);
   }
+}
+
+function gotRemoteStream(stream) {
+  console.log("Received remote stream");
+  remoteStream = stream;
+  video2.srcObject = stream;
 }
 
 callButton.onclick = function call() {
