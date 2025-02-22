@@ -1,8 +1,8 @@
 "use strict";
 
-let currentCryptoKey;
-let useCryptoOffset = true;
-let currentKeyIdentifier = 0;
+// let currentCryptoKey;
+// let useCryptoOffset = true;
+// let currentKeyIdentifier = 0;
 
 // If using crypto offset (controlled by a checkbox):
 // Do not encrypt the first couple of bytes of the payload. This allows

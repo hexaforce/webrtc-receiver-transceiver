@@ -11,18 +11,18 @@ const startButton = document.getElementById("startButton");
 const callButton = document.getElementById("callButton");
 const hangupButton = document.getElementById("hangupButton");
 
-const cryptoKey = document.querySelector("#crypto-key");
-const cryptoOffsetBox = document.querySelector("#crypto-offset");
-const banner = document.querySelector("#banner");
-const muteMiddleBox = document.querySelector("#mute-middlebox");
+// const cryptoKey = document.querySelector("#crypto-key");
+// const cryptoOffsetBox = document.querySelector("#crypto-offset");
+// const banner = document.querySelector("#banner");
+// const muteMiddleBox = document.querySelector("#mute-middlebox");
 
 startButton.onclick = start;
 callButton.onclick = call;
 hangupButton.onclick = hangup;
 
-cryptoKey.addEventListener("change", setCryptoKey);
-cryptoOffsetBox.addEventListener("change", setCryptoKey);
-muteMiddleBox.addEventListener("change", toggleMute);
+// cryptoKey.addEventListener("change", setCryptoKey);
+// cryptoOffsetBox.addEventListener("change", setCryptoKey);
+// muteMiddleBox.addEventListener("change", toggleMute);
 
 let startToMiddle;
 let startToEnd;
@@ -61,13 +61,13 @@ if (!hasEnoughAPIs) {
 }
 
 if (!hasEnoughAPIs) {
-  banner.innerText =
-    "Your browser does not support WebRTC Encoded Transforms. " +
-    "This sample will not work.";
-  if (adapter.browserDetails.browser === "chrome") {
-    banner.innerText +=
-      " Try with Enable experimental Web Platform features enabled from chrome://flags.";
-  }
+  // banner.innerText =
+  //   "Your browser does not support WebRTC Encoded Transforms. " +
+  //   "This sample will not work.";
+  // if (adapter.browserDetails.browser === "chrome") {
+  //   banner.innerText +=
+  //     " Try with Enable experimental Web Platform features enabled from chrome://flags.";
+  // }
   startButton.disabled = true;
   cryptoKey.disabled = true;
   cryptoOffsetBox.disabled = true;
@@ -205,21 +205,21 @@ function hangup() {
   callButton.disabled = false;
 }
 
-function setCryptoKey(event) {
-  console.log("Setting crypto key to " + cryptoKey.value);
-  const currentCryptoKey = cryptoKey.value;
-  const useCryptoOffset = !cryptoOffsetBox.checked;
-  if (currentCryptoKey) {
-    banner.innerText = "Encryption is ON";
-  } else {
-    banner.innerText = "Encryption is OFF";
-  }
-  worker.postMessage({
-    operation: "setCryptoKey",
-    currentCryptoKey,
-    useCryptoOffset,
-  });
-}
+// function setCryptoKey(event) {
+//   console.log("Setting crypto key to " + cryptoKey.value);
+//   const currentCryptoKey = cryptoKey.value;
+//   const useCryptoOffset = !cryptoOffsetBox.checked;
+//   if (currentCryptoKey) {
+//     banner.innerText = "Encryption is ON";
+//   } else {
+//     banner.innerText = "Encryption is OFF";
+//   }
+//   worker.postMessage({
+//     operation: "setCryptoKey",
+//     currentCryptoKey,
+//     useCryptoOffset,
+//   });
+// }
 
 function toggleMute(event) {
   video2.muted = muteMiddleBox.checked;
