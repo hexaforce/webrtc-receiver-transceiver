@@ -26,12 +26,15 @@ let preferredAudioCodecMimeType = "audio/opus";
 // eslint-disable-next-line prefer-const
 let preferredVideoCodecMimeType = "video/VP8";
 
-const SupportsSetCodecPreferences = window.RTCRtpTransceiver && "setCodecPreferences" in window.RTCRtpTransceiver.prototype;
+const SupportsSetCodecPreferences =
+  window.RTCRtpTransceiver &&
+  "setCodecPreferences" in window.RTCRtpTransceiver.prototype;
 
 let hasEnoughAPIs = !!window.RTCRtpScriptTransform;
 
 if (!hasEnoughAPIs) {
-  const SupportsInsertableStreams = !!RTCRtpSender.prototype.createEncodedStreams;
+  const SupportsInsertableStreams =
+    !!RTCRtpSender.prototype.createEncodedStreams;
   let supportsTransferableStreams = false;
   try {
     const stream = new ReadableStream();
@@ -48,8 +51,6 @@ if (!hasEnoughAPIs) {
   cryptoKey.disabled = true;
   cryptoOffsetBox.disabled = true;
 }
-
-
 
 startButton.onclick = function start() {
   console.log("Requesting local stream");
@@ -122,12 +123,6 @@ function maybeSetCodecPreferences(trackEvent) {
   }
 }
 
-function gotRemoteStream(stream) {
-  console.log("Received remote stream");
-  remoteStream = stream;
-  video2.srcObject = stream;
-}
-
 callButton.onclick = function call() {
   callButton.disabled = true;
   hangupButton.disabled = false;
@@ -139,15 +134,20 @@ callButton.onclick = function call() {
   startToMiddle = new VideoPipe(localStream, true, false, (e) => {
     // Do not setup the receiver transform.
     maybeSetCodecPreferences(e);
-    videoMonitor.srcObject = e.streams[0];
+    const { streams } = e;
+    videoMonitor.srcObject = streams[0];
   });
+
   startToMiddle.pc1.getSenders().forEach(setupSenderTransform);
   startToMiddle.negotiate();
 
   startToEnd = new VideoPipe(localStream, true, true, (e) => {
-    setupReceiverTransform(e.receiver);
+    const { receiver, streams } = e;
+    setupReceiverTransform(receiver);
     maybeSetCodecPreferences(e);
-    gotRemoteStream(e.streams[0]);
+
+    remoteStream = streams[0];
+    video2.srcObject = streams[0];
   });
 
   startToEnd.pc1.getSenders().forEach(setupSenderTransform);
