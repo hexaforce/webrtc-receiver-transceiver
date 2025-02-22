@@ -11,19 +11,6 @@ const startButton = document.getElementById("startButton");
 const callButton = document.getElementById("callButton");
 const hangupButton = document.getElementById("hangupButton");
 
-// const cryptoKey = document.querySelector("#crypto-key");
-// const cryptoOffsetBox = document.querySelector("#crypto-offset");
-// const banner = document.querySelector("#banner");
-// const muteMiddleBox = document.querySelector("#mute-middlebox");
-
-startButton.onclick = start;
-callButton.onclick = call;
-hangupButton.onclick = hangup;
-
-// cryptoKey.addEventListener("change", setCryptoKey);
-// cryptoOffsetBox.addEventListener("change", setCryptoKey);
-// muteMiddleBox.addEventListener("change", toggleMute);
-
 let startToMiddle;
 let startToEnd;
 
@@ -86,7 +73,7 @@ function gotRemoteStream(stream) {
   video2.srcObject = stream;
 }
 
-function start() {
+startButton.onclick = function start() {
   console.log("Requesting local stream");
   startButton.disabled = true;
   const options = { audio: true, video: true };
@@ -97,7 +84,7 @@ function start() {
       alert("getUserMedia() failed");
       console.log("getUserMedia() error: ", e);
     });
-}
+};
 
 // We use a Worker to do the encryption and decryption.
 // See
@@ -170,7 +157,7 @@ function maybeSetCodecPreferences(trackEvent) {
   }
 }
 
-function call() {
+callButton.onclick = function call() {
   callButton.disabled = true;
   hangupButton.disabled = false;
   console.log("Starting call");
@@ -195,33 +182,12 @@ function call() {
   startToEnd.negotiate();
 
   console.log("Video pipes created");
-}
+};
 
-function hangup() {
+hangupButton.onclick = function hangup() {
   console.log("Ending call");
   startToMiddle.close();
   startToEnd.close();
   hangupButton.disabled = true;
   callButton.disabled = false;
-}
-
-// function setCryptoKey(event) {
-//   console.log("Setting crypto key to " + cryptoKey.value);
-//   const currentCryptoKey = cryptoKey.value;
-//   const useCryptoOffset = !cryptoOffsetBox.checked;
-//   if (currentCryptoKey) {
-//     banner.innerText = "Encryption is ON";
-//   } else {
-//     banner.innerText = "Encryption is OFF";
-//   }
-//   worker.postMessage({
-//     operation: "setCryptoKey",
-//     currentCryptoKey,
-//     useCryptoOffset,
-//   });
-// }
-
-function toggleMute(event) {
-  video2.muted = muteMiddleBox.checked;
-  videoMonitor.muted = !muteMiddleBox.checked;
-}
+};
