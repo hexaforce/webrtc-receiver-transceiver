@@ -17,7 +17,7 @@ let startToEnd;
 let localStream;
 let remoteStream;
 
-if (window.RTCRtpScriptTransform) {
+if (!!!window.RTCRtpScriptTransform) {
   const stream = new ReadableStream();
   window.postMessage(stream, "*", [stream]);
 }
