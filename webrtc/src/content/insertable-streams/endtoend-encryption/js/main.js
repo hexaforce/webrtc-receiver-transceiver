@@ -75,29 +75,6 @@ function setupReceiverTransform(receiver) {
   ]);
 }
 
-function maybeSetCodecPreferences({ track, transceiver }) {
-  if (!SupportsSetCodecPreferences) return;
-  if (track.kind === "audio") {
-    const { codecs } = RTCRtpReceiver.getCapabilities("audio");
-    const selectedCodecIndex = codecs.findIndex(
-      (c) => c.mimeType === "audio/opus"
-    );
-    const selectedCodec = codecs[selectedCodecIndex];
-    codecs.splice(selectedCodecIndex, 1);
-    codecs.unshift(selectedCodec);
-    transceiver.setCodecPreferences(codecs);
-  } else if (track.kind === "video") {
-    const { codecs } = RTCRtpReceiver.getCapabilities("video");
-    const selectedCodecIndex = codecs.findIndex(
-      (c) => c.mimeType === "video/H264"
-    );
-    const selectedCodec = codecs[selectedCodecIndex];
-    codecs.splice(selectedCodecIndex, 1);
-    codecs.unshift(selectedCodec);
-    transceiver.setCodecPreferences(codecs);
-  }
-}
-
 function VideoPipe(stream, forceSend, forceReceive, handler) {
   this.pc1 = new RTCPeerConnection({ encodedInsertableStreams: forceSend });
   this.pc2 = new RTCPeerConnection({ encodedInsertableStreams: forceReceive });
@@ -129,11 +106,9 @@ callButton.onclick = function call() {
   callButton.disabled = true;
   hangupButton.disabled = false;
   console.log("Starting call");
-  // 実際の使用例は、中央のボックスがパケットを中継してリッスンすることですが、生のパケットにアクセスできないため、同じビデオを両方の場所に送信するだけです。
   // The real use case is where the middle box relays the packets and listens in, but since we don't have access to raw packets, we just send the same video to both places.
   startToMiddle = new VideoPipe(localStream, true, false, (e) => {
     // Do not setup the receiver transform.
-    maybeSetCodecPreferences(e);
     const { streams } = e;
     videoMonitor.srcObject = streams[0];
   });
@@ -144,7 +119,6 @@ callButton.onclick = function call() {
   startToEnd = new VideoPipe(localStream, true, true, (e) => {
     const { receiver, streams } = e;
     setupReceiverTransform(receiver);
-    maybeSetCodecPreferences(e);
 
     remoteStream = streams[0];
     video2.srcObject = streams[0];
