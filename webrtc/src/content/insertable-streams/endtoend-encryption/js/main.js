@@ -22,25 +22,9 @@ const SupportsSetCodecPreferences =
   "setCodecPreferences" in window.RTCRtpTransceiver.prototype;
 
 let hasEnoughAPIs = !!window.RTCRtpScriptTransform;
-
 if (!hasEnoughAPIs) {
-  const SupportsInsertableStreams =
-    !!RTCRtpSender.prototype.createEncodedStreams;
-  let supportsTransferableStreams = false;
-  try {
-    const stream = new ReadableStream();
-    window.postMessage(stream, "*", [stream]);
-    supportsTransferableStreams = true;
-  } catch (e) {
-    console.error("Transferable streams are not supported.");
-  }
-  hasEnoughAPIs = SupportsInsertableStreams && supportsTransferableStreams;
-}
-
-if (!hasEnoughAPIs) {
-  startButton.disabled = true;
-  cryptoKey.disabled = true;
-  cryptoOffsetBox.disabled = true;
+  const stream = new ReadableStream();
+  window.postMessage(stream, "*", [stream]);
 }
 
 startButton.onclick = function start() {
@@ -122,8 +106,10 @@ function VideoPipe(stream, forceSend, forceReceive, handler) {
 }
 
 VideoPipe.prototype.negotiate = async function () {
-  this.pc1.onicecandidate = (e) => this.pc2.addIceCandidate(e.candidate);
-  this.pc2.onicecandidate = (e) => this.pc1.addIceCandidate(e.candidate);
+  this.pc1.onicecandidate = ({ candidate }) =>
+    this.pc2.addIceCandidate(candidate);
+  this.pc2.onicecandidate = ({ candidate }) =>
+    this.pc1.addIceCandidate(candidate);
 
   const offer = await this.pc1.createOffer();
   await this.pc2.setRemoteDescription(offer);
