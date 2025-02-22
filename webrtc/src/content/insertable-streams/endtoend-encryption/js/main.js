@@ -84,11 +84,8 @@ startButton.onclick = function start() {
     });
 };
 
-// We use a Worker to do the encryption and decryption.
-// See
-//   https://developer.mozilla.org/en-US/docs/Web/API/Worker
-// for basic concepts.
 const worker = new Worker("./js/worker.js", { name: "E2EE worker" });
+
 function setupSenderTransform(sender) {
   if (window.RTCRtpScriptTransform) {
     sender.transform = new RTCRtpScriptTransform(worker, {
@@ -96,20 +93,6 @@ function setupSenderTransform(sender) {
     });
     return;
   }
-
-  // Instead of creating the transform stream here, we do a postMessage to the worker. The first
-  // argument is an object defined by us, the second is a list of variables that will be transferred to
-  // the worker. See
-  //   https://developer.mozilla.org/en-US/docs/Web/API/Worker/postMessage
-  // If you want to do the operations on the main thread instead, comment out the code below.
-  /*
-  const transformStream = new TransformStream({
-    transform: encodeFunction,
-  });
-  senderStreams.readable
-      .pipeThrough(transformStream)
-      .pipeTo(senderStreams.writable);
-  */
   const { readable, writable } = sender.createEncodedStreams();
   worker.postMessage({ operation: "encode", readable, writable }, [
     readable,
@@ -124,7 +107,6 @@ function setupReceiverTransform(receiver) {
     });
     return;
   }
-
   const { readable, writable } = receiver.createEncodedStreams();
   worker.postMessage({ operation: "decode", readable, writable }, [
     readable,
