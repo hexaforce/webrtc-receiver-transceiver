@@ -1,17 +1,5 @@
-/*
- *  Copyright (c) 2020 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree.
- */
-
-/*
- * This is a worker doing the encode/decode transformations to add end-to-end
- * encryption to a WebRTC PeerConnection using the Insertable Streams API.
- */
-
 'use strict'
+
 let currentCryptoKey
 let useCryptoOffset = true
 let currentKeyIdentifier = 0
