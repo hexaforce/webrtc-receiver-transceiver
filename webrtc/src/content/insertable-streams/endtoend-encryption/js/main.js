@@ -56,7 +56,6 @@ VideoPipe.prototype.close = function () {
   this.pc2.close();
 };
 
-
 const worker = new Worker("./js/worker.js", { name: "E2EE worker" });
 
 function setupSenderTransform(sender) {
